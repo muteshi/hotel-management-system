@@ -98,6 +98,8 @@ celerybeat-schedule
 .venv
 env/
 venv/
+hotelsys-venv/
+HotelsMgmtSys45/
 ENV/
 env.bak/
 venv.bak/
