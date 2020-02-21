@@ -1,0 +1,25 @@
+{% extends "hotels/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="form-login">
+<div class="container">
+  <div class="form-inner">
+<div class="content-section">
+  <div class="jumbotron">
+<h5 class="display-5">Add Rooms to your property!</h5>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <fieldset class="form-group">
+      {{ form|crispy }}
+      </fieldset>
+      <div class="mt-10">
+        <button type="submit" class="btn btn-outline-success">Save and Close</button>
+        <a class="btn btn-outline-secondary" href="{% url 'room-list' %}">Cancel</a>
+      </div>
+  </form>
+  </div>
+    </div>
+    </div>
+    </div>
+  </div>
+{% endblock content %}

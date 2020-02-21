@@ -1,0 +1,27 @@
+{% load humanize %}
+{% load static %}
+<!-- Bootstrap -->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<h1>Marvellous Ventures Limited</h1>
+	{% for item in cart.cartitems_set.all %}
+<h3>Your Booking Details at {{ item.rooms.hotel.name }} from {{ item.CheckIn }} to {{ item.CheckOut }}</h3>
+		<p>Ksh{{ item.rooms.room_Price|intcomma }} per night</p>
+		<p>{{ item.quantity}} {{ item.rooms.room_Name }}-{{ item.rooms.room_Type }} room(s)</p>
+		<p>{{ item.stay_duration }} nights x {{ item.quantity}} room(s) x {{ item.rooms.room_Price|intcomma }} per night</p>
+
+		
+        <h4>Booking Total Ksh{{ cart.total|intcomma }}</h4>
+		{% endfor %}
+
+
+	
+
+</body>
+</html>
+

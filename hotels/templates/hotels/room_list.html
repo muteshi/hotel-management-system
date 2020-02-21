@@ -1,0 +1,97 @@
+{% extends "hotels/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+
+  <div class="ml-lg-auto text-left text-lg-right mt-20 mt-lg-0">
+
+    <a href="{% url 'room-create' %}" class="anchor btn btn-primary btn-wide mt-5">Add Another room</a>
+  </div>
+
+<div class="clear mb-50"></div>
+          <h3 class="mb-30" style="text-align:center;">{{ hotel.name }}</h3>
+
+
+            <div class="col-12 col-lg-9">
+
+              <div class="product-long-item-wrapper">
+               {% for aroom in rooms %}
+                <div class="product-long-item">
+
+                  <div class="row equal-height shrink-auto-md gap-15">
+
+                    <div class="col-12 col-shrink">
+
+                      <div class="image height-auto">
+                        <img src="{{ aroom.room_photo.url }}" alt="images" />
+                      </div>
+
+                    </div>
+
+                    <div class="col-12 col-auto">
+
+                      <div class="col-inner d-flex flex-column">
+
+                        <div class="content-top">
+
+                          <div class="d-flex">
+
+                            <div>
+
+                              <div class="rating-item rating-sm">
+                                <div class="rating-icons">
+                                  <input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
+                                </div>
+                              </div>
+                              <h5><a href="#">{{ aroom.room_Name }} {{ aroom.room_Type }} room</a></h5>
+                              <small>{{ aroom.hotel.name }}</small>
+                            </div>
+
+                            <div class="ml-auto">
+                              <div class="price">
+                                start from
+                                <span class="text-secondary">Ksh{{ aroom.room_Price }}</span>
+                                per night
+                              </div>
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <div class="content">
+                          <p>{{ aroom.room_details }}</p>
+                        </div>
+
+                        <div class="content-bottom mt-auto">
+                          <div class="d-flex align-items-center">
+                            <div>
+                              <ul class="meta-list">
+                                <li>{{ aroom.room_Capacity }} (Max Guests)</li>
+                                <li>{{ aroom.total_Rooms }} rooms</li>
+                              </ul>
+                            </div>
+                            <div class="ml-auto">
+                              <a href="{% url 'room-update' aroom.id %}" class="btn btn-primary btn-sm btn-wide">Edit Room</a>
+                              <a href="{% url 'room-delete' aroom.id %}" class="btn btn-danger btn-sm btn-wide">Delete</a>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+                <hr class="my-4">
+                {% endfor %}
+                </div>
+                </div>
+                </div>
+
+
+
+
+    {% endblock %}

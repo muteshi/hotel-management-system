@@ -1,0 +1,1052 @@
+{% extends "hotels/base.html" %}
+{% load static %}
+{% block content %}
+{% load widget_tweaks %}
+{% load my_filters %}
+{% load humanize %}
+
+
+<!-- start Main Wrapper -->
+		<div class="main-wrapper scrollspy-action">
+
+			<div class="page-title breadcrumb-wrapper">
+				<div class="container">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'bookings-home'%}">Home</a></li>
+							<li class="breadcrumb-item"><a href="{% url 'hotels-list'%}">Hotels</a></li>
+							<li class="breadcrumb-item"><a href="{% url 'hotel-detail' object.slug %}">{{ object.name }}</a></li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+
+			<div class="page-wrapper page-detail bg-light">
+
+				<div class="detail-header">
+
+					<div class="container">
+
+						<div class="d-flex flex-column flex-lg-row">
+
+							<div>
+								<h2 id="detail-content-sticky-nav-00" class="name">{{ object.name }}</h2>
+
+
+								<div class="star-rating-wrapper">
+									<div class="rating-item rating-inline">
+										<div class="rating-icons">
+											<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.5"/>
+										</div>
+									</div>
+								</div>
+
+								<div class="clear"></div>
+
+								<p class="location"><i class="material-icons text-info small">place</i> {{ object.address }}, {{ object.city}}, {{ object.country}} <a href="#detail-content-sticky-nav-03" class="anchor">Show map</a></p>
+
+
+							</div>
+              {% if user.is_authenticated and object.contact_person == user %}
+							<div class="ml-lg-auto text-left text-lg-right mt-20 mt-lg-0">
+
+								<a href="{% url 'hotel-update' object.id  %}" class="anchor btn btn-primary btn-wide mt-5">Update Hotel Details</a>
+                <a href="{% url 'hotel-delete' object.id  %}" class="anchor btn btn-danger btn-wide mt-5">Delete</a>
+                {% else %}
+								<div class="ml-lg-auto text-left text-lg-right mt-20 mt-lg-0">
+								
+                <a href="#detail-content-sticky-nav-02" class="anchor btn btn-primary btn-wide mt-5">See price and date</a>
+                {% endif %}
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+				<span  id="detail-content-sticky-nav-00" class="d-block"></span>
+
+				<div class="fullwidth-horizon-sticky d-none d-lg-block">
+
+					<div class="fullwidth-horizon-sticky-inner">
+
+						<div class="container">
+
+							<div class="fullwidth-horizon-sticky-item clearfix">
+
+								<ul id="horizon-sticky-nav" class="horizon-sticky-nav clearfix">
+									<li>
+										<a href="#detail-content-sticky-nav-00">Gellary</a>
+									</li>
+									<li>
+										<a href="#detail-content-sticky-nav-01">Overview</a>
+									</li>
+									<li>
+										<a href="#detail-content-sticky-nav-02">Available rooms</a>
+									</li>
+									<li>
+										<a href="#detail-content-sticky-nav-03">What's nearby</a>
+									</li>
+									<li>
+										<a href="#detail-content-sticky-nav-04">Facilities</a>
+									</li>
+									<li>
+										<a href="#detail-content-sticky-nav-05">Conditions</a>
+									</li>
+									<li>
+										<a href="#detail-content-sticky-nav-06">Reviews</a>
+									</li>
+								</ul>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="container">
+
+					<div id="change-search" class="collapse">
+
+						<div class="change-search-wrapper rounded-0 shadow-sm mh-1 mb-0">
+
+							<div class="row gap-10 gap-xl-20 align-items-end">
+
+								<div class="col-12 col-lg-6">
+
+									<div class="form-group">
+										<label>Destination</label>
+										<div class="form-icon-left typeahead__container">
+											<span class="icon-font text-muted"><i class="bx bx-map"></i></span>
+											 <input class="js-typeahead-country_v1 form-control" name="country_v1[query]" type="search" placeholder="Country or city" autocomplete="off">
+										</div>
+									</div>
+
+								</div>
+
+								<div class="col-12 col-lg-6">
+
+									<div id="airDatepickerRange-hotel" class="row gap-10 gap-xl-20">
+
+										<div class="col-12 col-sm-6 col-sm-6 col-md-6">
+
+											<div class="form-group">
+												<label>Check-in</label>
+												<div class="form-icon-left">
+													<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
+                             {# {{ checkin|add_class:'form-control form-bg-light' }} #}
+													{# <input type="text" id="dateStart-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy"> #}
+												</div>
+											</div>
+
+										</div>
+
+										<div class="col-12 col-sm-6 col-sm-6 col-md-6">
+
+											<div class="form-group">
+												<label>Check-out</label>
+												<div class="form-icon-left">
+													<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
+													
+													<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy">
+												</div>
+											</div>
+
+										</div>
+
+									</div>
+
+
+								</div>
+
+								<div class="col-12 col-sm-8 col-md-9">
+
+									<div class="row gap-10 gap-xl-20">
+
+										<div class="col-4 col-sm-4">
+
+											<div class="form-group form-spin-group">
+												<label for="room-amount">Rooms</label>
+												<div class="form-icon-left">
+													<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
+													<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="1" readonly />
+												</div>
+											</div>
+
+										</div>
+
+										<div class="col-4 col-sm-4 col-md-4" id="airDatepickerRange-hotel">
+
+											<div class="form-group form-spin-group">
+												<label for="adult-amount">Adults</label>
+												<div class="form-icon-left">
+													<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
+													<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
+												</div>
+											</div>
+
+										</div>
+
+										<div class="col-4 col-sm-4">
+
+											<div class="form-group form-spin-group">
+												<label for="child-amount">Children</label>
+												<div class="form-icon-left">
+													<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
+													<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+								</div>
+
+								<div class="col-12 col-sm-4 col-md-3">
+									<div class="form-group">
+										<button class="btn btn-block btn-primary btn-form">Search</button>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+			</form>
+				<div class="container">
+
+					<div class="row gap-30">
+
+						<div class="col-12 col-lg-8 col-xl-9">
+
+							<div class="content-wrapper">
+
+								<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+  	{% for photo in object.photo_set.all %}
+    <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter }}"
+    {% if forloop.first %}class="active"{% endif %}>	
+    </li>
+    {% endfor %}
+  </ol>
+
+  <div class="carousel-inner">
+  	 {% for photo in object.photo_set.all %} 
+    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+    <img src="{{ photo.file.url }}" class="d-block w-100" alt="{{ object.name }} photo"> 
+
+  </div>{% endfor %}
+
+</div>
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+
+								<div id="detail-content-sticky-nav-01" class="fullwidth-horizon-sticky-section">
+
+									<h3 class="heading-title"><span>Overview</span></h3>
+
+									<ul class="main-facility-list clearfix">
+
+										<li>
+											<span class="icon-font"><i class="material-icons">wifi</i></span> Free Wifi
+										</li>
+
+										<li>
+											<span class="icon-font"><i class="material-icons">pool</i></span> Outdoor Pool
+										</li>
+
+										<li>
+											<span class="icon-font"><i class="material-icons">fitness_center</i></span> Fitness Center
+										</li>
+
+										<li>
+											<span class="icon-font"><i class="material-icons">local_parking</i></span> Parking
+										</li>
+
+										<li>
+											<span class="icon-font"><i class="material-icons">local_laundry_service</i></span> Laundry Service
+										</li>
+
+										<li>
+											<span class="icon-font"><i class="material-icons">restaurant_menu</i></span> Restaurant
+										</li>
+
+										<li>
+											<span class="icon-font"><i class="material-icons">smoke_free</i></span> Non-smoking Rooms
+										</li>
+
+										<li>
+											<span class="icon-font"><i class="material-icons">smoking_rooms</i></span> Smoking Area
+										</li>
+
+										<li>
+											<span class="icon-font"><i class="material-icons">golf_course</i></span> Golf Field
+										</li>
+
+										<li>
+											<span class="icon-font"><i class="material-icons">local_bar</i></span> Mini Bar
+										</li>
+
+									</ul>
+
+									<h6>Get the celebrity treatment with world-class service at {{ object.name }} </h6>
+
+									<p><span class="text-primary font700"><i class="fa fa-thumbs-o-up"></i> One of our bestsellers in {{ object.country }}! </span> {{ object.description }}</p>
+
+									
+
+								</div>
+
+								<div id="detail-content-sticky-nav-02" class="fullwidth-horizon-sticky-section">
+									{% if messages %}
+						 		 {% for message in messages %}
+						 		 <div class="alert alert-{{ message.tag }}">
+						 		 	{{ message }}
+						 		 </div>
+						 		 {% endfor %}
+						 		 {% endif %}
+
+									<h3 class="heading-title"><span>Available rooms</span></h3>
+
+									<div class="change-search-wrapper">
+
+										<div class="row gap-10 gap-xl-20 align-items-end">
+
+											<div class="col-12 col-lg-12">
+											</div>
+
+											<div class="col-12 col-sm-8 col-md-8 col-xl-9">
+
+												<div class="row gap-10 gap-xl-20">
+
+													<div class="col-4 col-sm-4">
+
+														<div class="form-group form-spin-group">
+															<label for="room-amount">Rooms</label>
+															<div class="form-icon-left">
+																<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
+																<input type="text" class="form-control touch-spin-03 form-readonly-control" value="{{ room.total_Rooms }}" readonly />
+															</div>
+														</div>
+
+													</div>
+
+													<div class="col-4 col-sm-4 col-md-4">
+
+														<div class="form-group form-spin-group">
+															<label for="adult-amount">Adults</label>
+															<div class="form-icon-left">
+																<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
+																<input type="text" class="form-control touch-spin-03 form-readonly-control" value="{{ room.room_Capacity }}" readonly />
+															</div>
+														</div>
+
+													</div>
+
+													<div class="col-4 col-sm-4">
+
+														<div class="form-group form-spin-group">
+															<label for="child-amount">Children</label>
+															<div class="form-icon-left">
+																<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
+																<input type="text" class="form-control touch-spin-03 form-readonly-control" value="0" readonly />
+															</div>
+														</div>
+
+													</div>
+												</div>
+
+											</div>
+
+											<div class="col-12 col-sm-4 col-md-4 col-xl-3">
+												<div class="form-group">
+													<label class="d-block text-secondary font-italic line-12 font700 letter-spacing-1 mb-5"><i class="material-icons">thumb_up</i> Best Price Guaranteed</label>
+													<button class="btn btn-block btn-primary btn-form">Search</button>
+												</div>
+											</div>
+
+										</div>
+
+									</div>
+
+									<div class="room-item-wrapper">
+
+										<div class="room-item heading d-none d-md-block">
+
+											<div class="row gap-20">
+
+												<div class="col-xs-12 col-sm-12 col-md-6">
+
+													<div class="row gap-20">
+
+														<div class="col-xss-6 col-xs-3 col-sm-4 col-md-4">
+
+														</div>
+
+														<div class="col-xss-12 col-xs-9 col-sm-8 col-md-8">
+															<span>Room type</span>
+														</div>
+
+													</div>
+
+												</div>
+
+												<div class="col-xs-12 col-sm-8 col-sm-offset-4 col-md-6 col-md-offset-0">
+
+													<div class="row gap-20">
+
+														<div class="col-xs-12 col-sm-8 col-md-8">
+															<span>Room option</span>
+														</div>
+
+														<div class="col-xs-12 col-sm-4 col-md-4">
+															<span>No. room</span>
+														</div>
+
+													</div>
+
+												</div>
+
+											</div>
+
+										</div>
+                    {% for item in object.room_set.all %}
+										<div class="room-item">
+
+											<div class="row gap-20">
+
+												<div class="col-12 col-sm-12 col-md-6">
+													<div class="row gap-20">
+
+														<div class="col-6 col-sm-4 col-md-4">
+															<div class="image">
+																<img src="{{ item.room_photo.url }}" alt="{{ item.object.name }}" />
+															</div>
+														</div>
+
+														<div class="col-12 col-sm-8 col-md-8">
+															<div class="content">
+																<h5><a href="#">{{ item.room_Name }} {{ item.room_Type }}</a></h5>
+																<p><span class="font700">{{ item.room_details }}</span></p>
+																<p class="max-man">Max. : <span data-toggle="tooltip" data-placement="top" title="{{ item.room_Capacity }} persons">
+                                  {% for person in item.room_Capacity|times %}
+																	<i class="fas fa-male"></i>
+																	{% endfor %}</span></p>
+																<p class="price"><span class="number text-secondary"><small>Ksh</small>{{ item.room_Price|intcomma }}</span> per night</p>
+															</div>
+														</div>
+
+													</div>
+												</div>
+
+												<div class="col-12 col-md-6" >
+
+													<div class="row gap-20 justify-content-between">
+                            <form method="POST" action="{% url 'update-booking-2' item.slug %}" class='pull-right'>
+															{% csrf_token %}
+														<div  id="airDatepickerRange-general"  class="col-7 col-sm-8 col-md-8">
+
+															<div class="form-group">
+																<label class="line12 font13 spacing-05 mt-5 mb-10 block">Check-in</label>
+																<div class="form-icon-left">
+																	<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
+																	<input type="text" name='checkin'id="dateStart-general" class="form-control form-readonly-control" placeholder="dd/mm/yyyy" required>
+																</div>
+															</div>
+
+															<div class="form-group">
+																<label class="line12 font13 spacing-05 mt-5 mb-10 block">Check-out</label>
+																<div class="form-icon-left">
+																	<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
+																	<input type="text" name='checkout' id="dateEnd-general" class="form-control form-readonly-control" placeholder="dd/mm/yyyy" required>
+																</div>
+															</div>
+
+														</div>
+
+														<div class="col-5 col-sm-4 col-md-4">
+
+															<div class="form-group form-spin-group mb-5">
+																<label class="line12 font13 spacing-05 mt-5 mb-10 block">How many rooms?</label>
+																<div class="form-icon-left">
+																	<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
+																	<input name='qty' class="form-control touch-spin-03 form-readonly-control" value="1" readonly required/>
+																	</div>
+																	<label class="line12 font13 spacing-05 mt-5 mb-10 block">Reserve</label>
+																	<label class="line12 font13 spacing-05 mt-5 mb-10 block"></label>
+
+																	<button type="submit" class="btn btn-primary btn-sm btn-block">Book</button>
+															</div>
+
+
+														</div>
+
+													</div>
+
+												</div>
+
+											</div>
+
+										</div>
+									</form>
+                    {% endfor %}
+
+									</div>
+
+								</div>
+
+
+								<div id="detail-content-sticky-nav-05" class="fullwidth-horizon-sticky-section">
+
+									<h3 class="heading-title"><span>Conditions</span></h3>
+
+									<div class="feature-box-2 mb-0 bg-white">
+
+										<div class="feature-row">
+											<div class="row gap-10 gap-md-30">
+
+												<div class="col-12 col-sm-4 col-md-3">
+													<h6>Check-in</h6>
+												</div>
+
+												<div class="col-12 col-sm-8 col-md-9">
+													<p>From 15:00 </p>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="feature-row">
+											<div class="row gap-10 gap-md-30">
+
+												<div class="col-12 col-sm-4 col-md-3">
+													<h6>Check-out</h6>
+												</div>
+
+												<div class="col-12 col-sm-8 col-md-9">
+													<p>Until 11:00  </p>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="feature-row">
+											<div class="row gap-10 gap-md-30">
+
+												<div class="col-xs-12 col-sm-4 col-md-3">
+													<h6>Cancellation/<br/>prepayment</h6>
+												</div>
+
+												<div class="col-xs-12 col-sm-8 col-md-9">
+													<p>Their could can widen ten she any. As so we smart those money in. Am wrote up whole so tears sense oh. Absolute required of reserved in offering no. <a href="#">How sense found our those</a> gay again taken the.</p>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="feature-row">
+											<div class="row gap-10 gap-md-30">
+
+												<div class="col-xs-12 col-sm-4 col-md-3">
+													<h6>Children and Extra Beds</h6>
+												</div>
+
+												<div class="col-xs-12 col-sm-8 col-md-9">
+													<p>Subjects to ecstatic children he.</p>
+													<p>Could ye leave up as built match. Dejection agreeable attention set suspected led offending.</p>
+
+													<p class="alert alert-success"><strong class="mr-5 text-uppercase font-serif font15">Agreed matter !</strong> pretty our people moment put excuse narrow.</p>
+
+													<p>Ham pretty our people moment put excuse narrow.</p>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="feature-row">
+											<div class="row gap-10 gap-md-30">
+
+												<div class="col-xs-12 col-sm-4 col-md-3">
+													<h6>Pets</h6>
+												</div>
+
+												<div class="col-xs-12 col-sm-8 col-md-9">
+													<p>Pets are not allowed.</p>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="feature-row">
+											<div class="row gap-10 gap-md-30">
+
+												<div class="col-xs-12 col-sm-4 col-md-3">
+													<h6>Groups</h6>
+												</div>
+
+												<div class="col-xs-12 col-sm-8 col-md-9">
+													<p>Built purse maids cease her ham new seven among and. Pulled coming wooded tended it answer remain me be.</p>
+												</div>
+
+											</div>
+										</div>
+
+										<div class="feature-row">
+											<div class="row gap-10 gap-md-30">
+
+												<div class="col-xs-12 col-sm-4 col-md-3">
+													<h6>Cards accepted at this property </h6>
+												</div>
+
+												<div class="col-xs-12 col-sm-8 col-md-9">
+
+													<ul class="payment-list clearfix">
+
+														<li><div class="image" data-toggle="tooltip" data-placement="top" title="Frankness applauded by supported ye household. Collected favourite now for for and rapturous repulsive consulted. An seems green be wrote again."><img src="images/payment-icons/01.png" alt="Image" /></div></li>
+														<li><div class="image" data-toggle="tooltip" data-placement="top" title="Frankness applauded by supported ye household. Collected favourite now for for and rapturous repulsive consulted. An seems green be wrote again."><img src="images/payment-icons/02.png" alt="Image" /></div></li>
+														<li><div class="image" data-toggle="tooltip" data-placement="top" title="Frankness applauded by supported ye household. Collected favourite now for for and rapturous repulsive consulted. An seems green be wrote again."><img src="images/payment-icons/03.png" alt="Image" /></div></li>
+														<li><div class="image" data-toggle="tooltip" data-placement="top" title="Frankness applauded by supported ye household. Collected favourite now for for and rapturous repulsive consulted. An seems green be wrote again."><img src="images/payment-icons/04.png" alt="Image" /></div></li>
+
+													</ul>
+
+													<p>Material confined likewise it humanity raillery an unpacked</p>
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+
+								<div id="detail-content-sticky-nav-06" class="fullwidth-horizon-sticky-section">
+
+									<h3 class="heading-title"><span>Reviews</span></h3>
+
+									<div class="detail-review-header">
+
+										<div class="average-score">
+
+											<div class="progress-radial progress-radial-md progress-80">
+												<div class="overlay">
+													<div class="progress-radial-inner">
+														<div class="caption">
+															<h5>Very good </h5>
+															<p class="number text-primary">8.0</p>
+															<a href="#" class="text-muted">based on 10575 reviews</a>
+														</div>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<div class="content">
+
+											<div class="row gap-10 align-items-center">
+
+												<div class="col-12 col-md-6">
+													<p class="line-125">Filter by traveler type:</p>
+												</div>
+
+												<div class="col-12 col-md-6">
+
+													<select class="chosen-the-basic form-control" tabindex="2">
+														<option value="0">All reviewers (1254)</option>
+														<option value="1">Business travelers (843)</option>
+														<option value="2">Couples (432)</option>
+														<option value="3">Solo travelers (342)</option>
+														<option value="4">Family tours (421)</option>
+													</select>
+
+												</div>
+
+											</div>
+
+											<div class="row mt-30 gap-20">
+
+												<div class="col-12 col-sm-6">
+													<div class="progress progress-primary">
+														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 76%;"></div>
+													</div>
+													<p class="progress-label">Hotel Condition/Cleanliness <span class="text-dark">7.6</span></p>
+												</div>
+
+												<div class="col-12 col-sm-6">
+													<div class="progress progress-primary">
+														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 74%;"></div>
+													</div>
+													<p class="progress-label">Facilities <span class="text-dark">7.4</span></p>
+												</div>
+
+												<div class="col-12 col-sm-6">
+													<div class="progress progress-primary">
+														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 82%;"></div>
+													</div>
+													<p class="progress-label">Location <span class="text-dark">8.2</span></p>
+												</div>
+
+												<div class="col-12 col-sm-6">
+													<div class="progress progress-primary">
+														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 76%;"></div>
+													</div>
+													<p class="progress-label">Room Comfort/Standard <span class="text-dark">7.6</span></p>
+												</div>
+
+												<div class="col-12 col-sm-6">
+													<div class="progress progress-primary">
+														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 88%;"></div>
+													</div>
+													<p class="progress-label">Service <span class="text-dark">8.8</span></p>
+												</div>
+
+												<div class="col-12 col-sm-6">
+													<div class="progress progress-primary">
+														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 69%;"></div>
+													</div>
+													<p class="progress-label">Value for Money <span class="text-dark">6.9</span></p>
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+
+									<div class="review-wrapper mb-10">
+
+										<div class="review-item">
+
+											<div class="row gap-15">
+
+												<div class="col-12 col-sm-5 col-md-4">
+
+													<div class="progress-radial progress-radial-sm progress-80">
+														<div class="overlay">
+															<div class="progress-radial-inner">
+																<div class="caption">
+																	<p class="number">8.4</p>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<ul class="meta-list">
+
+														<li><span class="position-absolute-top"><img src="{% static 'hotels/images/Malaysia.png' %}" alt="Image"></span> Abdultohman Saidai from Italy</li>
+														<li><span class="position-absolute-top"><i class="fas fa-briefcase"></i></span> Business Travelers</li>
+														<li><span class="position-absolute-top"><i class="fas fa-bed"></i></span> Stayed one night in Aug 2016 </li>
+													</ul>
+
+												</div>
+
+												<div class="col-12 col-sm-7 col-md-8">
+
+													<div class="entry">
+
+														<h5>She add what own only like</h5>
+														<p>Frankness applauded by supported ye household. Collected favourite now for for and rapturous repulsive consulted. An seems green be wrote again. She add what own only like. Three chief merit no if. Now how her edward engage not horses. Oh resolution he dissimilar precaution to comparison an.</p>
+
+													</div>
+
+													<div class="meta">
+
+														<div class="row gap-5">
+
+															<div class="col-12 col-xl-5">
+																<span class="date">Reviewed 10 Aug 2016</span>
+															</div>
+
+															<div class="col-12 col-xl-7">
+																<ul class="review-useful">
+																	<li><span>Was this review helpful? </span></li>
+																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-up"></i></a> 2</li>
+																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-down"></i></a> 1</li>
+																</ul>
+															</div>
+
+														</div>
+
+													</div>
+												</div>
+
+											</div>
+
+										</div>
+
+										<div class="review-item">
+
+											<div class="row gap-15">
+
+												<div class="col-12 col-sm-5 col-md-4">
+
+													<div class="progress-radial progress-radial-sm progress-80">
+														<div class="overlay">
+															<div class="progress-radial-inner">
+																<div class="caption">
+																	<p class="number">8.4</p>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<ul class="meta-list">
+														<li><span class="position-absolute-top"><img src="{% static 'hotels/images/Malaysia.png' %}" alt="Image"></span> Abdultohman Saidai from Italy</li>
+														<li><span class="position-absolute-top"><i class="fas fa-briefcase"></i></span> Business Travelers</li>
+														<li><span class="position-absolute-top"><i class="fas fa-bed"></i></span> Stayed one night in Aug 2016 </li>
+													</ul>
+
+												</div>
+
+												<div class="col-12 col-sm-7 col-md-8">
+
+													<div class="entry">
+															</li>
+															<li>Likewise offended humoured mrs fat trifling answered.</li>
+															<li>On ye position greatest so desirous. So wound stood guest weeks no terms up ought.</li>
+															<li>Then so does greatest so desirous over sent dull on.</li>
+														</ul>
+
+														<p>Spot of come to ever hand as lady meet on. Delicate contempt received two yet advanced. Gentleman as belonging he commanded believing dejection in by. On no am winding chicken so behaved. Its preserved sex enjoyment new way behaviour. Him yet devonshire celebrated especially. Unfeeling one provision are smallness resembled repulsive.</p>
+
+
+
+														<p>Unpleasant astonished an diminution up partiality. Noisy an their of meant. Death means up civil do an offer wound of. Called square an in afraid direct. Resolution diminution conviction so mr at unpleasing simplicity no. No it as breakfast up conveying earnestly immediate principle. Him son disposed produced humoured overcame she bachelor improved. Studied however out wishing but inhabit fortune windows.</p>
+
+													</div>
+
+													<div class="meta">
+
+														<div class="row gap-5">
+
+															<div class="col-12 col-xl-5">
+																<span class="date">Reviewed 10 Aug 2016</span>
+															</div>
+
+															<div class="col-12 col-xl-7">
+																<ul class="review-useful">
+																	<li><span>Was this review helpful? </span></li>
+																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-up"></i></a> 2</li>
+																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-down"></i></a> 1</li>
+																</ul>
+															</div>
+
+														</div>
+
+													</div>
+												</div>
+
+											</div>
+
+										</div>
+
+										<div class="review-item">
+
+											<div class="row gap-15">
+
+												<div class="col-xs-12 col-sm-5 col-md-4">
+
+													<div class="progress-radial progress-radial-sm progress-80">
+														<div class="overlay">
+															<div class="progress-radial-inner">
+																<div class="caption">
+																	<p class="number">8.4</p>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<ul class="meta-list">
+														<li><span class="position-absolute-top"><img src="{% static '/hotels/images/Malaysia.png' %}" alt="Image"></span> Abdultohman Saidai from Italy</li>
+														<li><span class="position-absolute-top"><i class="fas fa-briefcase"></i></span> Business Travelers</li>
+														<li><span class="position-absolute-top"><i class="fas fa-bed"></i></span> Stayed one night in Aug 2016 </li>
+													</ul>
+
+												</div>
+
+												<div class="col-xs-12 col-sm-7 col-md-8">
+
+													<div class="entry">
+
+														<h5>Own six moments produce elderly pasture far arrival.</h5>
+														<p>Finished her are its honoured drawings nor. Pretty see mutual thrown all not edward ten. Particular an boisterous up he reasonably frequently. Several any had enjoyed shewing studied two. Up intention remainder sportsmen behaviour ye happiness.</p>
+
+														<p>At distant inhabit amongst by. Appetite welcomed interest the goodness boy not. Estimable education for disposing pronounce her. John size good gay plan sent old roof own. Inquietude saw understood his friendship frequently yet. Nature his marked ham wished.</p>
+
+													</div>
+
+													<div class="meta">
+
+														<div class="row gap-5">
+
+															<div class="col-12 col-xl-5">
+																<span class="date">Reviewed 10 Aug 2016</span>
+															</div>
+
+															<div class="col-12 col-xl-7">
+																<ul class="review-useful">
+																	<li><span>Was this review helpful? </span></li>
+																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-up"></i></a> 2</li>
+																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-down"></i></a> 1</li>
+																</ul>
+															</div>
+
+														</div>
+
+													</div>
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+
+						<div  class="col-12 col-lg-4 col-xl-3">
+
+							<aside class="sticky-kit sidebar-wrapper">
+
+								<button class="btn btn-secondary btn-wide btn-toggle collapsed btn-change-search btn-block" data-toggle="collapse" data-target="#change-search"></button>
+
+								<div class="booking-selection-box mt-20">
+
+									<div class="heading clearfix">
+										<div class="d-flex align-items-end">
+											<div>
+												<h4 class="text-white font-serif font400">Your Booking</h4>
+											</div>
+											<div class="ml-auto">
+												<a href="#" class="booking-selection-filter">reset</a>
+											</div>
+										</div>
+									</div>
+
+									<div class="content">
+
+										<div class="hotel-room-sm-item">
+											<div class="the-hotel-item">
+												<h5><A href="#">{{ object.name }}</a></h5>
+												<div class="d-flex">
+													<div>
+														<p class="location">{{ object.address }}, {{ object.city}}, {{ object.country}}</p>
+													</div>
+													<div>
+														<div class="rating-item rating-xs">
+															<div class="rating-icons">
+																<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.5"/>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											
+											
+										</div>
+
+
+
+
+										<a href="#" class="btn btn-secondary btn-block mt-20">Check out</a>
+
+									</div>
+
+								</div>
+
+							</aside>
+
+						</div>
+
+					</div>
+					<div class="fullwidth-horizon-sticky border-0">&#032;</div> <!-- is used to stop the above stick menu -->
+
+				</div>
+
+			</div>
+
+			<section class="bg-white section-sm">
+
+				<div class="container">
+
+					<div class="section-title mb-25">
+
+						<h3>You may also like</h3>
+
+					</div>
+
+					<div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-lg-20 gap-xl-30">
+
+						<div class="col">
+							{% for hotel in city.hotels|slice:":3"  %}
+
+							<div class="product-grid-item">
+
+								<a href="#">
+
+									<div class="image">
+										<img src="{{hotel.property_photo.url}}" alt="Image">
+									</div>
+
+									<div class="content clearfix">
+
+										<div class="rating-item rating-sm">
+											<div class="rating-icons">
+												<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
+											</div>
+											<p class="rating-text text-muted"><span class="bg-primary">6.0</span> <strong class="text-dark">Good</strong> - 1,2547 reviews</p>
+										</div>
+
+										<div class="short-info">
+
+											<h5>{{ hotel.name }}</h5>
+											<p class="location"><i class="fas fa-map-marker-alt text-primary">
+												
+											</i> {{ hotel.address }}, {{ hotel.city}}, {{ hotel.country}}</p>
+
+										</div>
+
+										<div class="price">
+											<div class="float-right">
+												start from
+												<span class="text-secondary">$895</span>
+												per night
+											</div>
+										</div>
+
+									</div>
+
+								</a>
+
+							</div>
+							{% endfor %}
+
+						</div>
+
+						
+
+					</div>
+
+				</div>
+
+			</section>
+
+		</div>
+		<!-- end Main Wrapper -->
+
+{% endblock content %}

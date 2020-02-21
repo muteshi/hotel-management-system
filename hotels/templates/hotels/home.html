@@ -1,0 +1,688 @@
+{% extends "hotels/base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- start Main Wrapper -->
+		<div class="main-wrapper scrollspy-action">
+
+
+
+			<!-- start Hero Banner -->
+			<div class="hero-banner hero-flex" data-dark-overlay="4" style="background-image: url('{% static "hotels/images/hotel/02.jpg"%}')";>
+				<div class="hero-inner hero-flex set-height-01">
+
+					<div class="container hero-middle">
+
+						<div class="row gap-40 gap-lg-60 align-items-center">
+
+							<div class="col-12 col-lg-6 col-xl-7">
+
+								<div class="hero-text">
+
+									<h2>Your perfect, holiday destination</h2>
+									<p class="lead">Starts here right now!</p>
+									<p class="hero-price">
+										Packages starting from
+										<span>KES 15,999</span>
+									</p>
+									<a href="#" class="btn btn-secondary btn-wide">Book now</a>
+								<!--	<p class="font-sm mt-25 line-125 spacing-1">*
+                    Booking period June 15 to June, 23 2019<br/>*
+                    Traveling period  Nov 15 to Nov 23, 2019</p> -->
+
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+			<!-- end Hero Banner -->
+
+
+
+			<!-- start Site Content -->
+			<div class="main-search-form-horizontal-wrapper">
+
+				<div class="menu-horizontal-wrapper-05">
+
+					<div class="container">
+
+						<nav class="menu-horizontal-05">
+							<ul class="nav">
+								<li>
+									<a class="active" data-toggle="tab" href="#formSearchMain-01">Accommodation</a>
+								</li>
+								<li>
+									<a data-toggle="tab" href="#formSearchMain-02">Flights</a>
+								</li>
+							</ul>
+						</nav>
+
+					</div>
+
+				</div>
+
+				<div class="container">
+
+					<div class="tab-content">
+
+						<div role="tabpanel" class="tab-pane active" id="formSearchMain-01">
+
+							<div class="tab-inner">
+
+								<div class="main-search-form-horizontal">
+
+									<form method=”POST” action="{% url 'search' %}">
+                    {% csrf_token %}
+
+										<div class="form-inner">
+
+											<div class="row gap-5 align-items-center">
+
+												<div class="col-12 col-lg-4 col-xl-5">
+													<div class="form-single bg-change-focus-addclass">
+														<div class="typeahead__container">
+															<input class="js-typeahead-country_v1 form-control" name="search" type="search" placeholder="Where are you going?" id = "search" autocomplete="off">
+                               <ul id ="search-results">
+
+                               </ul>
+                            </div>
+													</div>
+												</div>
+
+												<div class="col-12 col-md-6 col-lg-3 col-xl-3">
+													<div id="airDatepickerRange-hotel" class="form-double d-flex bg-change-focus-addclass">
+														<div class="form-group">
+															<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" placeholder="Check-in">
+														</div>
+														<div class="form-group">
+															<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" placeholder="Check-out">
+														</div>
+													</div>
+												</div>
+
+												<div class="col-12 col-md-6 col-lg-4 col-xl-3">
+													<div class="form-tripple d-flex flex-row bg-change-focus-addclass">
+														<div class="form-group form-spin-group">
+															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Adult" readonly />
+														</div>
+														<div class="form-group form-spin-group">
+															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Child" readonly />
+														</div>
+														<div class="form-group form-spin-group">
+															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Infant" readonly />
+														</div>
+													</div>
+												</div>
+
+												<div class="col-12 col-lg-1">
+													<a href="#" class="btn btn-secondary btn-block btn-search"><i class="bx bx-search"></i></a>
+												</div>
+
+											</div>
+
+										</div>
+
+									</form>
+
+								</div>
+
+							</div>
+
+						</div>
+
+						<div role="tabpanel" class="tab-pane fade in" id="formSearchMain-02">
+
+							<div class="tab-inner menu-horizontal-content">
+
+								<div class="main-search-form-horizontal">
+
+									<form>
+
+										<div class="form-inner">
+
+											<div class="row gap-5 align-items-center">
+
+												<div class="col-sm-6 col-xl-3">
+													<div class="form-single bg-change-focus-addclass">
+														<div class="typeahead__container">
+															<input class="js-typeahead-country_v1 form-control" name="country_v1[query]" type="search" placeholder="From" autocomplete="off">
+														</div>
+													</div>
+												</div>
+
+												<div class="col-sm-6 col-xl-3">
+													<div class="form-single bg-change-focus-addclass">
+														<div class="typeahead__container">
+															<input class="js-typeahead-country_v1 form-control" name="country_v1[query]" type="search" placeholder="To" autocomplete="off">
+														</div>
+													</div>
+												</div>
+
+												<div class="col-sm-6 col-xl-2">
+													<div class="form-single bg-change-focus-addclass">
+														<div class="form-group">
+															<input type="text" class="form-control form-readonly-control air-datepicker" placeholder="Departure" data-date-format="dd mm yyyy" data-language="en" data-auto-close="true" readonly>
+														</div>
+													</div>
+												</div>
+
+												<div class="col-sm-6 col-lg-5 col-xl-3">
+													<div class="form-tripple d-flex flex-row bg-change-focus-addclass">
+														<div class="form-group form-spin-group">
+															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Adult" readonly />
+														</div>
+														<div class="form-group form-spin-group">
+															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Child" />
+														</div>
+														<div class="form-group form-spin-group">
+															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Infant" />
+														</div>
+													</div>
+												</div>
+
+												<div class="col-12 col-lg-1  col-lg-1">
+													<a href="#" class="btn btn-secondary btn-block btn-search"><i class="bx bx-search"></i></a>
+												</div>
+
+											</div>
+
+										</div>
+
+										<div class="mt-20">
+
+											<div class="custom-control custom-radio  custom-control-inline">
+												<input type="radio" id="trainRadio221" name="customRadioInline" class="custom-control-input" checked >
+												<label class="custom-control-label" for="trainRadio221">One-way</label>
+											</div>
+
+											<div class="custom-control custom-radio  custom-control-inline">
+												<input type="radio" id="trainRadio222" name="customRadioInline" class="custom-control-input">
+												<label class="custom-control-label" for="trainRadio222">Return</label>
+											</div>
+
+											<div class="custom-control custom-radio  custom-control-inline">
+												<input type="radio" id="trainRadio223" name="customRadioInline" class="custom-control-input">
+												<label class="custom-control-label" for="trainRadio223">Multi cities</label>
+											</div>
+
+										</div>
+
+									</form>
+
+								</div>
+
+							</div>
+
+						</div>
+
+
+					</div>
+
+				</div>
+
+			</div>
+
+
+
+			<section>
+
+				<div class="container">
+
+					<div class="section-title text-center">
+
+						<h2>Today’s most popular deals</h2>
+
+					</div>
+
+					<div class="row equal-height cols-2 cols-md-2 cols-lg-4 gap-10 gap-md-20 gap-xl-30">
+
+						<div class="col">
+
+							<figure class="featured-image-grid-item with-highlight">
+								<div class="image">
+									<img src="{% static 'hotels/images/image-regular/01.jpg' %}"alt="image"/>
+								</div>
+								<figcaption class="content">
+									<div class="d-flex justify-content-between align-items-center">
+										<div>
+											<span class="item-highlight text-secondary">
+												Save up to<span>35%</span>
+											</span>
+										</div>
+										<div>
+											<span class="item-expire">5 days left</span>
+										</div>
+									</div>
+									<h5 class="mb-0">Weekend Self Drives</h5>
+									<p>Book now and save</p>
+									<span class="act-as-btn text-secondary">Book Now <i class="material-icons">arrow_forward</i></span>
+								</figcaption>
+								<a href="" class="position-absolute-href"></a>
+							</figure>
+
+						</div>
+
+						<div class="col">
+
+							<figure class="featured-image-grid-item with-highlight">
+								<div class="image">
+									<img src="{% static 'hotels/images/image-regular/02.jpg' %}"alt="image"/>
+								</div>
+								<figcaption class="content">
+									<div class="d-flex justify-content-between align-items-center">
+										<div>
+											<span class="item-highlight text-secondary">
+												Save up to<span>25%</span>
+											</span>
+										</div>
+										<div>
+											<span class="item-expire">Expire tomorrow</span>
+										</div>
+									</div>
+									<h5 class="mb-0">Coast Flash Sale</h5>
+									<p>save 35% on selected hotels</p>
+									<span class="act-as-btn text-secondary">Book Now <i class="material-icons">arrow_forward</i></span>
+								</figcaption>
+								<a href="" class="position-absolute-href"></a>
+							</figure>
+
+						</div>
+
+						<div class="col">
+
+							<figure class="featured-image-grid-item with-highlight">
+								<div class="image">
+									<img src="{% static 'hotels/images/image-regular/03.jpg' %}"alt="image"/>
+								</div>
+								<figcaption class="content">
+									<div class="d-flex justify-content-between align-items-center">
+										<div>
+											<span class="item-highlight text-secondary">
+												Save up to<span>25%</span>
+											</span>
+										</div>
+										<div>
+											<span class="item-expire">Only 3 days</span>
+										</div>
+									</div>
+									<h5 class="mb-0">Safaris Deals</h5>
+									<p>Book now and save</p>
+									<span class="act-as-btn text-secondary">Book Now <i class="material-icons">arrow_forward</i></span>
+								</figcaption>
+								<a href="" class="position-absolute-href"></a>
+							</figure>
+
+						</div>
+
+						<div class="col">
+
+							<figure class="featured-image-grid-item with-highlight">
+								<div class="image">
+									<img src="{% static 'hotels/images/image-regular/04.jpg' %}"alt="image"/>
+								</div>
+								<figcaption class="content">
+									<div class="d-flex justify-content-between align-items-center">
+										<div>
+											<span class="item-highlight text-secondary">
+												Save up to<span>40%</span>
+											</span>
+										</div>
+										<div>
+											<span class="item-expire">Only 3 days</span>
+										</div>
+									</div>
+									<h5 class="mb-0">Hotel deals every day</h5>
+									<p>Get 40% off featured hotels</p>
+									<span class="act-as-btn text-secondary">Book Now <i class="material-icons">arrow_forward</i></span>
+								</figcaption>
+								<a href="{% url 'hotels-list' %}" class="position-absolute-href"></a>
+							</figure>
+
+						</div>
+
+					</div>
+
+					<div class="mb-80"></div>
+
+					<div class="section-title text-center">
+
+						<h2>Our Top Destinations</h2>
+
+					</div>
+
+					<div class="row cols-2 cols-md-3 cols-lg-4 gap-10 gap-md-20">
+
+						<div class="col-6 col-lg-3">
+
+							<figure class="image-caption-01">
+
+								<a href="#">
+
+									<div class="image overlay-relative caption-relative">
+										<img src="{% static 'hotels/images/image-destination/01.jpg' %}" alt="image" />
+										<div class="overlay-holder opacity-2"></div>
+										<figcaption class="caption-holder">
+											<div class="caption-inner caption-middle text-center">
+												<h5>Kisumu</h5>
+												<span class="d-block">start from $543</span>
+											</div>
+										</figcaption>
+									</div>
+
+								</a>
+
+							</figure>
+
+						</div>
+
+						<div class="col-6 col-lg-3">
+
+							<figure class="image-caption-01">
+
+								<a href="#">
+
+									<div class="image overlay-relative caption-relative">
+										<img src="{% static 'hotels/images/image-destination/02.jpg' %}" alt="image" />
+										<div class="overlay-holder opacity-2"></div>
+										<figcaption class="caption-holder">
+											<div class="caption-inner caption-middle text-center">
+												<h5>Nairobi</h5>
+												<span class="d-block">start from $458</span>
+											</div>
+										</figcaption>
+									</div>
+
+								</a>
+
+							</figure>
+
+						</div>
+
+						<div class="col">
+
+							<figure class="image-caption-01">
+
+								<a href="#">
+
+									<div class="image overlay-relative caption-relative">
+										<img src="{% static 'hotels/images/image-destination/03.jpg' %}" alt="image" />
+										<div class="overlay-holder opacity-2"></div>
+										<figcaption class="caption-holder">
+											<div class="caption-inner caption-middle text-center">
+												<h5>Machakos</h5>
+												<span class="d-block">start from $825</span>
+											</div>
+										</figcaption>
+									</div>
+
+								</a>
+
+							</figure>
+
+						</div>
+
+						<div class="col">
+
+							<figure class="image-caption-01">
+
+								<a href="#">
+
+									<div class="image overlay-relative caption-relative">
+										<img src="{% static 'hotels/images/image-destination/04.jpg' %}" alt="image" />
+										<div class="overlay-holder opacity-2"></div>
+										<figcaption class="caption-holder">
+											<div class="caption-inner caption-middle text-center">
+												<h5>Nakuru</h5>
+												<span class="d-block">start from $354</span>
+											</div>
+										</figcaption>
+									</div>
+
+								</a>
+
+							</figure>
+
+						</div>
+
+						<div class="col">
+
+							<figure class="image-caption-01">
+
+								<a href="#">
+
+									<div class="image overlay-relative caption-relative">
+										<img src="{% static 'hotels/images/image-destination/05.jpg' %}" alt="image" />
+										<div class="overlay-holder opacity-2"></div>
+										<figcaption class="caption-holder">
+											<div class="caption-inner caption-middle text-center">
+												<h5>Naivasha</h5>
+												<span class="d-block">start from $543</span>
+											</div>
+										</figcaption>
+									</div>
+
+								</a>
+
+							</figure>
+
+						</div>
+
+						<div class="col">
+
+							<figure class="image-caption-01">
+
+								<a href="#">
+
+									<div class="image overlay-relative caption-relative">
+										<img src="{% static 'hotels/images/image-destination/06.jpg' %}" alt="image" />
+										<div class="overlay-holder opacity-2"></div>
+										<figcaption class="caption-holder">
+											<div class="caption-inner caption-middle text-center">
+												<h5>Mombasa</h5>
+												<span class="d-block">start from $417</span>
+											</div>
+										</figcaption>
+									</div>
+
+								</a>
+
+							</figure>
+
+						</div>
+
+						<div class="col">
+
+							<figure class="image-caption-01">
+
+								<a href="#">
+
+									<div class="image overlay-relative caption-relative">
+										<img src="{% static 'hotels/images/image-destination/07.jpg' %}" alt="image" />
+										<div class="overlay-holder opacity-2"></div>
+										<figcaption class="caption-holder">
+											<div class="caption-inner caption-middle text-center">
+												<h5>Kajiado</h5>
+												<span class="d-block">start from $745</span>
+											</div>
+										</figcaption>
+									</div>
+
+								</a>
+
+							</figure>
+
+						</div>
+
+						<div class="col">
+
+							<figure class="image-caption-01">
+
+								<a href="#">
+
+									<div class="image overlay-relative caption-relative">
+										<img src="{% static 'hotels/images/image-destination/08.jpg' %}" alt="image" />
+										<div class="overlay-holder opacity-2"></div>
+										<figcaption class="caption-holder">
+											<div class="caption-inner caption-middle text-center">
+												<h5>Malindi</h5>
+												<span class="d-block">start from $552</span>
+											</div>
+										</figcaption>
+									</div>
+
+								</a>
+
+							</figure>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</section>
+
+			<div class="bg-image cta-promo-list" data-white-overlay="3"
+
+      style="background-image: url('{% static "hotels/images/image-bg-on-left/01.jpg" %}')";>
+
+				<div class="container position-relative">
+
+					<div class="row">
+
+						<div class="col-12 col-md-8 col-lg-6">
+
+							<h2 class="heading-title">Why <span class="text-primary text-underline font-italic">Book</span> with Us?</h2>
+
+							<p class="font-lg">We let you focus on enjoying yourself and help you get best deals</p>
+
+							<ul class="list-icon-absolute mt-30">
+
+								<li>
+									<span class="icon-font text-primary"><i class="material-icons-outlined">card_giftcard</i></span>
+									<h5 class="text-capitalize">We find better Deals</h5>
+									<!-- <p>Winter can indeed letter oppose way change is improve my charmed exposed adapted demands.</p> -->
+								</li>
+
+								<li>
+									<span class="icon-font text-primary"><i class="material-icons-outlined">thumb_up_alt</i></span>
+									<h5 class="text-capitalize">Best Price Guaranteed</h5>
+								<!--	<p>Received had end prepared off man branched is money so large decay voice there.</p> -->
+								</li>
+
+								<li>
+									<span class="icon-font text-primary"><i class="material-icons-outlined">favorite_border</i></span>
+									<h5 class="text-capitalize">Travellers Love Us</h5>
+								<!--	<p>Preserved be mr cordially incommode as doors quick child an point style off why him.</p> -->
+								</li>
+
+							</ul>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<section>
+
+				<div class="container">
+
+					<div class="section-title text-center">
+
+						<h2>What People Say About Us</h2>
+
+					</div>
+
+					<div class="row equal-height cols-1 cols-md-3 gap-20 gap-xl-30">
+
+						<div class="col">
+							<div class="testimonial-grid">
+								<div class="testimonial-header">
+									<h6>Ange Ermolova</h6>
+									<span class="text-muted spacing-1">From Bangkok, Thailand</span>
+								</div>
+								<div class="testimonial-body">
+									<p>Real sold my in call. Invitation on an advantages collecting. Had sister see wooded favour income has. </p>
+								</div>
+								<div class="testimonial-footer">
+									<div class="rating-item rating-sm rating-inline">
+										<div class="rating-icons">
+											<input type="hidden" class="rating" data-filled="rating-icon ri-star rating-rated" data-empty="rating-icon ri-star-empty" data-fractions="2" data-readonly value="4.0"/>
+										</div>
+										<p class="rating-text font500 text-muted font-10 ml-5">8/10</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col">
+							<div class="testimonial-grid">
+								<div class="testimonial-header">
+									<h6>Christine Gateau</h6>
+									<span class="text-muted spacing-1">From Paris, France</span>
+								</div>
+								<div class="testimonial-body">
+									<p>Greatly hearted has who margaret drawings repeated recurred exercise.</p>
+								</div>
+								<div class="testimonial-footer">
+									<div class="rating-item rating-sm rating-inline">
+										<div class="rating-icons">
+											<input type="hidden" class="rating" data-filled="rating-icon ri-star rating-rated" data-empty="rating-icon ri-star-empty" data-fractions="2" data-readonly value="3.5"/>
+										</div>
+										<p class="rating-text font500 text-muted font-10 ml-5">7/10</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col">
+							<div class="testimonial-grid">
+								<div class="testimonial-header">
+									<h6>Suttira Ketkaew</h6>
+									<span class="text-muted spacing-1">From Rome, Italy</span>
+								</div>
+								<div class="testimonial-body">
+									<p>Extremely eagerness principle estimable cannot going laughing may you about water defer.</p>
+								</div>
+								<div class="testimonial-footer">
+									<div class="rating-item rating-sm rating-inline">
+										<div class="rating-icons">
+											<input type="hidden" class="rating" data-filled="rating-icon ri-star rating-rated" data-empty="rating-icon ri-star-empty" data-fractions="2" data-readonly value="4.5"/>
+										</div>
+										<p class="rating-text font500 text-muted font-10 ml-5">9/10</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+			</section>
+			<!-- end Site Content -->
+
+			<section class="partners-wrapper border-top pv-60">
+				<div class="container">
+					<div class="d-md-flex justify-content-center">
+						<img src="{% static 'hotels/images/image-logo-grid/20.png' %}" class="image-partner" alt="Partners" />
+						<img src="{% static 'hotels/images/image-logo-grid/21.png' %}" class="image-partner" alt="Partners" />
+						<img src="{% static 'hotels/images/image-logo-grid/22.png' %}" class="image-partner" alt="Partners" />
+						<img src="{% static 'hotels/images/image-logo-grid/23.png' %}" class="image-partner" alt="Partners" />
+						<img src="{% static 'hotels/images/image-logo-grid/25.png' %}" class="image-partner" alt="Partners" />
+					</div>
+				</div>
+			</section>
+
+		</div>
+		<!-- end Main Wrapper -->
+{% endblock content %}

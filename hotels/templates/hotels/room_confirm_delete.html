@@ -1,0 +1,21 @@
+{% extends "hotels/base.html" %}
+{% block content %}
+{{ form.non_field_errors }}
+<div class="container">
+<div class="content-section">
+  <div class="jumbotron">
+<h3 class="display-4">Delete this rooms?</h3>
+  <form method="POST">
+    {% csrf_token %}
+    <fieldset class="form-group">
+      </fieldset>
+      <div class="mt-10">
+        <h2>Are you sure you want to delete "{{ object.room_Name }} {{ object.room_Type }}" in {{ object.hotel }}  ? This action is irreversible!</h2>
+        <button type="submit" class="btn btn-outline-danger">Yes, Delete</button>
+        <a class="btn btn-outline-secondary" href="{% url 'room-list' %}">Cancel</a>
+      </div>
+  </form>
+  </div>
+    </div>
+  </div>
+{% endblock content %}

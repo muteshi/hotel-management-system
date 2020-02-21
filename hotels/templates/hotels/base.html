@@ -1,0 +1,229 @@
+{% load static %}
+{% load userfilters %}
+<!doctype html>
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Title Of Site -->
+  {% if title %}
+	   <title>Marvellous Ventures Ltd- {{title}}</title>
+  {% else %}
+      <title>Marvellous Ventures Ltd</title>
+  {% endif %}
+	<meta name="description" content="Book your perfect holiday destination from Marvellous Ventures Ltd" />
+	<meta name="keywords" content="Nairobi accommodation, booking, holiday, hostel, hotel, motel, reservation, resort, tour, tourism, travel, travel agency, trip, vacation, flight, guide, journey, rental, destination, travel booking" />
+	<meta name="author" content="MarvellousVenturesLtd">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Load Bootstrap -->
+
+	<!-- Fav and Touch Icons -->
+	<link href="{% static  'hotels/images/ico/apple-touch-icon-144-precomposed.png' %}" sizes="144x144" rel="apple-touch-icon-precomposed">
+	<link href="{% static  'hotels/images/ico/apple-touch-icon-114-precomposed.png' %}" sizes="114x114" rel="apple-touch-icon-precomposed">
+	<link href="{% static  'hotels/images/ico/apple-touch-icon-72-precomposed.png' %}" sizes="72x72" rel="apple-touch-icon-precomposed">
+	<link href="{% static  'hotels/images/ico/apple-touch-icon-57-precomposed.png' %}" rel="apple-touch-icon-precomposed">
+	<link href="{% static  'hotels/images/ico/favicon.png' %}" sizes="144x144" rel="shortcut icon">
+	<link rel="shortcut icon" href="{% static 'hotels/images/ico/favicon.png' %}">
+
+	<!-- Font face -->
+	<link href='http://fonts.googleapis.com/css?family=Oxygen:400,300,700' rel='stylesheet' type='text/css'>
+	<link href="https://fonts.googleapis.com/css?family=Aleo:300,300i,400,400i,700,700i|Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap" rel="stylesheet">
+
+<!-- Bootstrap -->
+<link href="{% static '/hotels/register/css/bootstrap.min.css' %}" rel="stylesheet">
+
+	<!-- CSS -->
+	<link href="{% static  'hotels/css/font-icons.css' %}" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static 'hotels/bootstrap/css/bootstrap.min.css' %}" media="screen">
+	<link href="{% static  'hotels/css/animate.css' %}" rel="stylesheet">
+	<link href="{% static  'hotels/css/main.css' %}" rel="stylesheet">
+	<link href="{% static  'hotels/css/plugin.css' %}" rel="stylesheet">
+	<link href="{% static  'hotels/css/style.css' %}" rel="stylesheet">
+	<link href="{% static  'hotels/css/your-style.css' %}" rel="stylesheet">
+</head>
+<body class="with-waypoint-sticky">
+
+	<!-- start Body Inner -->
+	<div class="body-inner">
+
+
+
+		<!-- start Header -->
+		<header id="header-waypoint-sticky" class="header-main header-mobile-menu with-absolute-navbar">
+
+			<div class="header-top">
+
+				<div class="container">
+					<div class="row align-items-center ">
+						<div class="col-4">
+							<div class="header-logo">
+								<a href="{% url 'bookings-home' %}"><img src="{% static 'hotels/images/logo-white.png' %}" alt="Logo" /></a>
+							</div>
+						</div>
+						<div class="col-8">
+							<div class="mini-menu">
+								<ul>
+									<li class="d-block d-md-none">
+										<div class="dropdown dropdown-currency">
+											<a href="#" class="btn btn-text-inherit btn-interactive" id="dropdownMobileSetting" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												<i class="fas fa-cogs"></i>
+											</a>
+											<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMobileSetting">
+												<div class="dropdown-menu-inner">
+													<a class="dropdown-item active" href="#">USD - Dollar</a>
+													<a class="dropdown-item" href="#">GBP - Pound</a>
+													<a class="dropdown-item" href="#">EUR - Euro</a>
+													<a class="dropdown-item" href="#">JPY - Yen</a>
+													<div class="dropdown-divider"></div>
+
+												</div>
+											</div>
+										</div>
+									</li>
+
+										<div class="dropdown dropdown-login dropdown-tab">
+											{% if user.is_authenticated %}
+														<a href="{% url 'dashboard' %}" class="btn" style="color:white">Your Account</a>
+														<a href="{% url 'logout' %}" class="btn" style="color:white">Logout</a>
+											{% else %}
+											      <a href="{% url 'hotel-create' %}" class="btn" style="color:white">List Property</a>
+														<a href="{% url 'login' %}" class="btn" style="color:white">Login</a>
+
+
+											{% endif %}
+
+
+
+										</div>
+									</li>
+									<li class="d-lg-none">
+										<button class="btn btn-toggle collapsed" data-toggle="collapse" data-target="#mobileMenuMain"></button>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="header-nav">
+
+				<div class="container">
+
+					<div class="navbar-wrapper">
+
+						<div class="navbar navbar-expand-lg">
+
+							<div id="mobileMenuMain" class="collapse navbar-collapse">
+
+								<nav class="main-nav-menu main-menu-nav navbar-arrow">
+
+									<ul class="main-nav">
+										<li><a href="{% url 'bookings-home' %}">Home</a>	</li>
+										<li><a href="{% url 'hotels-list'%}">Accommodation</a></li>
+										<li><a href="javascript:void(0)">Destination</a></li>
+										<li><a href="javascript:void(0)">Corporates</a></li>
+										<li><a href="javascript:void(0)">Packages</a></li>
+
+										<li><a href="javascript:void(0)">About Us</a></li>
+										<li><a href="javascript:void(0)">Contact Us</a></li>
+										<li>
+											<a href="{% url 'cart' %}" class="btn" style="color:black">
+									 <span class="badge badge-light">{% if not request.session.items_total %} 0 {% else %} {{ request.session.items_total }} {% endif %}</span> Bookings </a>
+
+
+										</li>
+									</ul>
+								</nav><!--/.nav-collapse -->
+
+							</div>
+
+							<div class="navbar-phone d-none d-lg-block">
+								<i class="material-icons">phone</i> Hotline: +66 74 665 855
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</header>
+     {% if messages %}
+		 {% for message in messages %}
+		 <div class="alert alert-{{ message.tag }}">
+		 	{{ message }}
+		 </div>
+		 {% endfor %}
+		 {% endif %}
+    {% block content %}{% endblock %}
+		<!-- end Header -->
+
+		<!-- start Footer Wrapper -->
+		<footer class="footer-wrapper scrollspy-stopper">
+
+
+			<div class="post-footer">
+
+				<div class="container">
+
+					<p class="footer-copy-right">&#169;  {% now "Y" %} - Marvellous Ventures Ltd., All Rights Reserved.</p>
+
+				</div>
+
+			</div>
+
+		</footer>
+		<!-- start Footer Wrapper -->
+
+
+
+	</div>
+	<!-- end Body Inner -->
+
+
+
+	<!-- start Back To Top -->
+		<a id="back-to-top" href="#" class="back-to-top" role="button" title="Click to return to top" data-toggle="tooltip" data-placement="left"><i class="bx bx-chevron-up"></i></a>
+	<!-- end Back To Top -->
+
+
+
+	<!-- JS -->
+
+
+	<!-- <link href="{% static  'hotels/css/font-icons.css' %}" rel="stylesheet"> -->
+	<script type="text/javascript" src="{% static 'hotels/js/jquery-2.2.4.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'hotels/js/ajax.js' %}"></script>
+	<script type="text/javascript" src="{% static 'hotels/js/plugins.js' %}"></script>
+	<script type="text/javascript" src="{% static 'hotels/js/custom-core.js' %}"></script>
+	<script type="text/javascript" src="{% static 'hotels/js/jquery.typeahead.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'hotels/js/custom-autocomplete.js' %}"></script>
+
+	<script src="{% static '/hotels/register/js/jquery-3.1.1.min.js' %}"></script>
+	<script src="{% static '/hotels/register/js/bootstrap.min.js' %}"></script>
+
+	{% block javascript %}
+{# JQUERY FILE UPLOAD SCRIPTS #}
+<script src="{% static '/hotels/register/js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+<script src="{% static '/hotels/register/js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+<script src="{% static '/hotels/register/js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+
+{# PHOTOS PAGE SCRIPTS #}
+<script src="{% static '/hotels/register/photos/js/basic-upload.js' %}"></script>
+{% endblock %}
+
+</body>
+<!-- end Body -->
+
+
+
+</html>

@@ -1,0 +1,42 @@
+{% extends "hotels/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{{ form.non_field_errors }}
+<div class="booking">
+
+<div class="form-login">
+
+
+  <form method="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+
+
+    <div class="form-inner">
+
+      <div class="login-with-socials">
+        <button class="btn btn-facebook btn-block">Register with Facebook</button>
+        <!-- <button class="btn btn-google btn-block">Register with Google</button> -->
+        <button class="btn btn-twitter btn-block">Register with Twitter</button>
+        <!-- <button class="btn btn-pinterest btn-block">Register with Pinterest</button> -->
+      </div>
+
+      <div class="text-seperator">
+        <span>or</span>
+      </div>
+
+      {{ form|crispy }}
+
+      <label>Already have an account? <a href="{% url 'login' %}">Sign In</a>.</label>
+
+      <div class="mt-10">
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </div>
+
+    </div>
+
+  </form>
+
+</div>
+
+</div>
+{% endblock content %}

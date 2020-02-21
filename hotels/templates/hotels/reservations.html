@@ -1,0 +1,26 @@
+{% extends "hotels/base.html" %}
+{% block content %}
+<div class="container">
+
+
+{{ user.reservation_set.all }}
+
+<table class="table table-striped">
+  <th>Reservation Number</th>
+  <th>Reservation Date</th>
+  <th>Hotel Name</th>
+  <th>Total price</th>
+  {% for item in user.reservation_set.all %}
+  <tr><td> <a href="{% url 'single_order' item.id %}">{{ item.reservation_id }} </a></td>
+    <td>{{ item.timestamp }}</td>
+    {% for i in item.cart.cartitems_set.all %}
+    <td>{{ i.rooms.hotel.name }}</td>
+    <td>{{ item.final_total }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "hotels/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{{ form.non_field_errors }}
+<div class="form-login">
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="booking">
+
+    <div class="form-inner">
+
+      <div class="login-with-socials">
+        <button class="btn btn-facebook btn-block">Login with Facebook</button>
+        <!-- <button class="btn btn-google btn-block">Login with Google</button> -->
+        <button class="btn btn-twitter btn-block">Login with Twitter</button>
+        <!-- <button class="btn btn-pinterest btn-block">Login with Pinterest</button> -->
+      </div>
+
+      <div class="text-seperator">
+        <span>or</span>
+      </div>
+
+      <!-- <div class="form-group">
+        <input id="login_username" class="form-control" placeholder="Email address / phone number" type="text">
+      </div>
+      <div class="form-group">
+        <input id="login_password" class="form-control" placeholder="Password" type="password">
+      </div> -->
+
+      {{ form|crispy }}
+
+      <div class="row gap-5 mt-5">
+        <div class="col-12 col-sm-6">
+          <div class="custom-control custom-checkbox style-01 mt-5">
+            <input type="checkbox" class="custom-control-input" id="loginForm-02-checkbox-in-tab">
+            <label class="custom-control-label line-145 pt-5" for="loginForm-02-checkbox-in-tab">Remember me</label>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 text-right">
+          <div class="nav text-right d-inline-block">
+            <a href="{% url 'password_reset' %}">Forgot pass?</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+      </div>
+      <div class="border-top pt-3">
+        <small class='text-muted'>
+          Create a new account in less than 5 minutes! <a class="ml-2" href="{% url 'register' %}">Register today for free!</a>
+        </small>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  </form>
+
+
+</div>
+
+</div>
+{% endblock content %}
