@@ -991,9 +991,10 @@
 					</div>
 
 					<div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-lg-20 gap-xl-30">
-
+						{% for hotel in hotels  %}
+						{% if hotel.city == object.city %}
 						<div class="col">
-							{% for hotel in city.hotels|slice:":3"  %}
+							
 
 							<div class="product-grid-item">
 
@@ -1034,9 +1035,12 @@
 								</a>
 
 							</div>
-							{% endfor %}
+							
 
 						</div>
+						{% endif %}
+
+						{% endfor %}
 
 						
 

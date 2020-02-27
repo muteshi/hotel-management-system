@@ -1,12 +1,13 @@
+from datetime import timedelta
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 
 from django.contrib.auth.decorators import login_required
 from hotels.models import Cart
-from .models import Reservation
+from .models import Reservation, PackageReservation
 import time, datetime
-from .utils import id_generator
-from hotels.models import Room, CartItems
+from .utils import id_generator, pack_id_generator
+from hotels.models import Room, CartItems, HotelPackages, CartPackageItems
 
 
 
@@ -33,27 +34,11 @@ def check_out(request):
         new_reservation.payment_option = "pay_on_checkin"
         new_reservation.save()
 
-
-        #send email
-
-        # context = {"cart": cart, "booking": new_reservation}
-        # message = render_to_string("hotels/user_reservation_details.html", context)
-        # plain_message = strip_tags(message)
-        # subject = f"Your reservation details for #{new_reservation.reservation_id}"
-        # mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [new_reservation.user.email], html_message=message)
-
     except:
         return HttpResponseRedirect(reverse('cart'))
 
 
     if new_reservation.status == "Finished":
-
-
-        # booking = Reservation.objects.get(reservation_id=new_reservation.reservation_id)
-        # # calculate the remaining number of rooms
-        # new_rooms_total = booking.cart.cartitems_set.all()[0].rooms.total_Rooms - booking.cart.cartitems_set.all()[0].quantity
-        # print(new_rooms_total)
-        # print(booking.cart.cartitems_set.all()[0].quantity)
 
         del request.session['cart_id']
         del request.session['items_total']
@@ -65,8 +50,49 @@ def check_out(request):
     return render(request, template, context)
 
 
+#checkout for package booking
+
+@login_required
+def package_check_out(request):
+    try:
+        the_id = request.session['cart_id']
+        cart = Cart.objects.get(id=the_id)
+       
+    except:
+        the_id = None
+        return HttpResponseRedirect(reverse('package-cart'))
+
+    try:
+        new_reservation = PackageReservation.objects.get(cart=cart)
+
+    except PackageReservation.DoesNotExist:
+        new_reservation = PackageReservation()
+        new_reservation.cart = cart
+        new_reservation.user = request.user
+        new_reservation.reservation_id = pack_id_generator()
+        new_reservation.final_total =cart.total
+        # new_reservation.status = "Finished"
+        new_reservation.payment_option = "pay_on_checkin"
+        new_reservation.save()
+
+    except:
+        return HttpResponseRedirect(reverse('package-cart'))
+
+
+    if new_reservation.status == "Finished":
+
+        del request.session['cart_id']
+        del request.session['items_total']
+        return HttpResponseRedirect(reverse('package-cart'))
+
+    context = {"cart": cart, "reservation": new_reservation}
+    template = "hotels/package_checkout.html"
+
+    return render(request, template, context)
+
+
 def add_to_cart(request, slug):
-    request.session.set_expiry(900)
+    request.session.set_expiry(1800)
 #Create  reservation order
     try:
         the_id = request.session['cart_id']
@@ -109,9 +135,43 @@ def add_to_cart(request, slug):
     return HttpResponseRedirect(reverse("cart"))
 
 
-# def reservation_details(request, id):
-#     global new_reservation
-#     """Display all hotels"""
-#
-#     context = {'booking': Reservation.objects.get(reservation_id=new_reservation)}
-#     return render(request, 'hotels/reservation_details.html', context)
+#Add to cart package reservation
+def package_add_to_cart(request, id):
+    request.session.set_expiry(1800)
+#Create  reservation order
+    try:
+        the_id = request.session['cart_id']
+    except:
+        new_cart = Cart()
+        new_cart.save()
+        request.session['cart_id'] = new_cart.id
+        the_id = new_cart.id
+
+    request.session['cart_id']
+    cart = Cart.objects.get(id=the_id)
+    try:
+        package = HotelPackages.objects.get(id=id)
+    except HotelPackages.DoesNotExist:
+        pass
+    except:
+        pass
+
+    #Capture users booking details from the booking form
+    if request.method == "POST":
+        qty = request.POST['qty']
+        checkin = request.POST['checkin']
+        cart_package_item = CartPackageItems.objects.create(cart=cart, hotel_package=package)
+        CheckIn = datetime.datetime.strptime(checkin, "%m/%d/%Y").date()
+        stay_duration = package.duration
+
+       
+
+        cart_package_item.quantity = qty
+        cart_package_item.CheckIn = CheckIn
+        cart_package_item.CheckOut = CheckIn + timedelta(days=stay_duration)
+        cart_package_item.save()
+        return HttpResponseRedirect(reverse("package-cart"))
+
+    return HttpResponseRedirect(reverse("package-cart"))
+
+

@@ -9,6 +9,7 @@ __pycache__/
 
 # C extensions
 *.so
+*.zip
 
 # Distribution / packaging
 .Python
@@ -99,6 +100,7 @@ celerybeat-schedule
 env/
 venv/
 hotelsys-venv/
+dev/
 HotelsMgmtSys45/
 ENV/
 env.bak/
@@ -137,4 +139,4 @@ dmypy.json
 
 # End of https://www.gitignore.io/api/python,vagrant
 eb-package.zip
-static/
+media/

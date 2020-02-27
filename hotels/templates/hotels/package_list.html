@@ -1,0 +1,93 @@
+{% extends "hotels/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+
+  
+
+<div class="clear mb-50"></div>
+          
+            <div class="col-12 col-lg-9">
+
+              <div class="product-long-item-wrapper">
+               {% for package in packages %}
+  
+                <div class="product-long-item">
+
+                  <div class="row equal-height shrink-auto-md gap-15">
+
+                    <div class="col-12 col-shrink">
+                       
+                      <div class="image height-auto">
+                        <img src="{{ package.cover_photo.url }}" alt="{{ package.title }} photo" />
+                      </div>
+                      
+
+                    </div>
+
+                    <div class="col-12 col-auto">
+
+                      <div class="col-inner d-flex flex-column">
+
+                        <div class="content-top">
+
+                          <div class="d-flex">
+
+                            <div>
+
+                              <div class="rating-item rating-sm">
+                                <div class="rating-icons">
+                                  <input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
+                                </div>
+                              </div>
+
+                              <h5><a href="{% url 'package-detail' package.slug %}">{{ package.title }}</a></h5>
+                              
+                            </div>
+
+                            <div class="ml-auto">
+                              <div class="price">
+                                start from
+                                <span class="text-secondary">Ksh{{ min.package_Price__min }}</span>
+                                per person sharing
+                              </div>
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <div class="content">
+                          <p>{{ package.description }}</p>
+                        </div>
+
+                        <div class="content-bottom mt-auto">
+                          <div class="d-flex align-items-center">
+                            <div>
+                              
+                                <a href="{% url 'package-hotel-create' package.id %}"><button type="button" class="btn btn-primary btn-xs">Add hotels</button></a>
+                                <a href="{% url 'itinirery-create' package.id %}"><button type="button" class="btn btn-primary btn-xs"> Add Itinirary</button></a>
+                             
+                            </div>
+                            
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+                <hr class="my-4">
+                {% endfor %}
+              
+                </div>
+                </div>
+                </div>
+
+
+
+
+    {% endblock %}

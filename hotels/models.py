@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.utils import timezone
 from users.models import UserProfile
@@ -63,13 +64,7 @@ class Hotels(models.Model):
             img.thumbnail(output_size)
             rgb_img =img.convert('RGB')
             rgb_img.save(self.property_photo.path)
-   
-            
-
-
-    # def get_absolute_url(self):
-    #     return reverse('hotel-detail', kwargs={'pk': self.pk})
-
+ 
 def create_slug(instance, new_slug=None):
     slug = slugify(instance.name)
     if new_slug is not None:
@@ -137,6 +132,11 @@ class Room(models.Model):
 
     def __str__(self):
          return f'{self.room_Name}-{self.room_Type} room-{self.hotel.name}'
+
+
+    def get_absolute_url(self):
+        #Redirects the form to photo uploads
+        return reverse('room-list')
 
 
     def save(self):
@@ -227,3 +227,130 @@ class HotelService(models.Model):
 
     class Meta:
         verbose_name_plural = 'Services'
+
+
+
+class Packages(models.Model):
+    """Stores all the information about a particular package"""
+    PACKAGE_TYPES = (
+    ('honeymoon', "Honeymoon"),
+    ('easter', "Easter"),
+    ('christmas', "Christmas"),
+    ('coast', "Coast"),
+    ('selfdrive', "Weekend Gateway"),
+      )
+
+    title = models.CharField(max_length=255) #The name of the package
+    package_type = models.CharField(max_length=120, choices=PACKAGE_TYPES, default='honeymoon')
+    city = models.CharField(max_length=255, null=True, blank=True,)
+    country = models.CharField(max_length=255, null=True, blank=True,)
+    created_at = models.DateTimeField(default=timezone.now)
+    last_modified = models.DateTimeField(auto_now=True)
+    cover_photo = models.ImageField(default='default.jpg', upload_to='package_photos')
+    description = models.TextField()
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True,)
+    slug = models.SlugField(unique=True)
+    
+    class Meta:
+        unique_together = ('title', 'slug')
+        verbose_name_plural = 'Packages'
+
+    def __str__(self):
+        """Prints the name of the Hotel"""
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('package-hotel-create', kwargs={'pk': self.pk})
+    
+def create_package_slug(instance, new_slug=None):
+    slug = slugify(instance.title)
+    if new_slug is not None:
+        slug = new_slug
+    qs = Packages.objects.filter(slug=slug).order_by("-id")
+    exists = qs.exists()
+    if exists:
+        new_slug = f'{slug}-{qs.first().id}'
+        return create_package_slug(instance, new_slug=new_slug)
+    return slug
+
+def pre_save_package_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = create_package_slug(instance)
+
+pre_save.connect(pre_save_package_receiver, sender=Packages)
+
+
+
+class HotelPackages(models.Model):
+    """Creates package itinirery details"""
+    hotel = models.OneToOneField(Hotels,on_delete = models.CASCADE, null=False, blank=False)
+    package_Price= models.PositiveIntegerField(default = 0)
+    meal_Plans= models.TextField()
+    package = models.ForeignKey(Packages,on_delete=models.CASCADE, null=True, blank=True,)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True,)
+    duration = models.PositiveIntegerField(default=1)
+    start_Date = models.DateField(null=False, blank=False)
+    end_Date = models.DateField(null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+    	verbose_name = 'Hotel Package'
+    	verbose_name_plural = 'Hotel Packages'
+
+    def __str__(self):
+         return f'{self.package} in {self.hotel}'
+
+
+    def get_absolute_url(self):
+        
+        return reverse('package-list')
+
+    @property
+    def is_past_due(self):
+        return date.today() > self.end_Date
+
+    def meals_as_list(self):
+        return self.meal_Plans.split('\n')
+
+
+class Itinirery(models.Model):
+    """Creates package itinirery details"""
+    title = models.CharField(max_length=255)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True,)
+    package = models.ForeignKey(Packages,on_delete = models.CASCADE, null=True, blank=True,)
+    package_photo = models.ImageField(default='default.jpg', upload_to='itinirery_photos')
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name_plural = 'Package Itinireries'
+
+    def __str__(self):
+         return f'{self.title}-{self.package}'
+
+
+
+class CartPackageItems(models.Model):
+    cart = models.ForeignKey('Cart', on_delete = models.CASCADE, null=True, blank=True)
+    quantity = models.PositiveIntegerField(default = 1)
+    hotel_package = models.ForeignKey(HotelPackages, on_delete = models.CASCADE, null=True, blank=True)
+    line_total = models.DecimalField(max_digits=1000, decimal_places=2, default=0.00)
+    CheckIn = models.DateField(null=True, blank=True)
+    CheckOut = models.DateField(null=True, blank=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    timestamp =models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    def __str__(self):
+         return f'{self.hotel_package.hotel}'
+
+    class Meta:
+        verbose_name_plural = 'Pakage Cart Items'
+
+
+    
+
+
+
+

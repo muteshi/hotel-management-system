@@ -11,10 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import json
-
-with open('/etc/config.json') as config_file:
-	config = json.load(config_file)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,16 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config['SECRET_KEY']
+SECRET_KEY = 'r54odcl#02^*(od8*=l*jyuu*e(fnz23s3yl2ry28!nm^-il&m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-
-ALLOWED_HOSTS = ['www.marvellousventures.com','marvellousventures.com',]
-
-SITE_URL = 'https://www.marvellousventures.com'
+ALLOWED_HOSTS = ['167.172.229.67']
 
 
 # Application definition
@@ -114,12 +106,17 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+AUTHENTICATION_BACKENDS = (
+    ('django.contrib.auth.backends.ModelBackend'),
+)
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Africa/Nairobi'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -146,9 +143,16 @@ LOGIN_REDIRECT_URL = 'hotels-list'
 
 LOGIN_URL = 'login'
 
+DEFAULT_FROM_EMAIL = "Marvellous Ventures Limited <marvellousventures@gmail.com>"
+
+
+SITE_URL = "167.172.229.67:8000"
+
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = config.get('EMAIL_PASS')
+EMAIL_HOST_USER = 'marvellousventures@gmail.com'
+EMAIL_HOST_PASSWORD = 'wwcwbemmzcrwkzpn'

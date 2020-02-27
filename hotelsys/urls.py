@@ -20,6 +20,7 @@ from users import views as user_views
 from reservations import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls import include, url
 
 urlpatterns = [
@@ -34,10 +35,14 @@ urlpatterns = [
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'),name='password_reset_complete'),
     path('', include('hotels.urls')),
     path('checkout/', views.check_out, name='checkout'),
+    path('hotels/package/checkout/', views.package_check_out, name='package-checkout'),
     url(r'^cart/(?P<slug>[\w-]+)/$', views.add_to_cart, name='update-booking-2'),
+    url(r'^hotels/package/cart/(?P<id>[\w-]+)/$', views.package_add_to_cart, name='package-booking'),
     path('hotels/bookings/<int:pk>/', views.check_out, name='single_order'),
 ]
 
+
+urlpatterns += static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
 # Will only apply when development mode
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

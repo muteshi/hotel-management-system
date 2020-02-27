@@ -1,6 +1,8 @@
+import datetime
+
 from django.shortcuts import render, redirect, HttpResponseRedirect, Http404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Hotels, Room
+from .models import Hotels, Room, Packages, Itinirery, HotelPackages, CartPackageItems
 from django.http import JsonResponse
 from django.views import View
 from django.urls import reverse
@@ -10,13 +12,14 @@ from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.core import mail
 from django.contrib import messages
-from .forms import RoomForm
+from .forms import RoomForm, PhotoForm, PackageForm, HotelPackagesForm, ItinireryForm
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
-import datetime
 
-from .forms import PhotoForm
+from django.db.models import Min
+
+
 from .models import Photo, Cart, CartItems
 from reservations.models import Reservation
 
@@ -92,6 +95,33 @@ class HotelsDetailView(DetailView):
     """List all details of the hotel"""
     model = Hotels
 
+    def get_context_data(self, *args, **kwargs):
+    	context = super(HotelsDetailView, self).get_context_data(*args, **kwargs)
+
+    	# hotel = Hotels.objects.get(contact_person = self.request.user, id=self.kwargs.get('pk'))
+
+    	context['hotels'] = Hotels.objects.all()
+    	# 'min':Hotels.objects.all().aggregate(Min('package_Price'))
+    	# context['cities'] = Hotels.objects.get(city__iexact=hotel.city)
+
+    	return context
+
+
+class PackagesDetailView(DetailView):
+    """List all details of the hotel"""
+    model = Packages
+
+    def get_context_data(self, *args, **kwargs):
+    	context = super(PackagesDetailView, self).get_context_data(*args, **kwargs)
+
+    	# hotel = Hotels.objects.get(contact_person = self.request.user, id=self.kwargs.get('pk'))
+
+    	context['packages'] = Packages.objects.all()
+    	# 'min':Hotels.objects.all().aggregate(Min('package_Price'))
+    	# context['cities'] = Hotels.objects.get(city__iexact=hotel.city)
+
+    	return context
+
 
 class HotelsCreateView(LoginRequiredMixin, CreateView):
     """Creates hotels form"""
@@ -111,7 +141,6 @@ class HotelsCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.contact_person = self.request.user
-
         return super().form_valid(form)
 
 class HotelsUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -206,6 +235,31 @@ def new_room(request):
     return render(request, 'hotels/room_form.html', {'form': form})
 
 
+# class RoomCreateView(LoginRequiredMixin, CreateView):
+#     """Creates hotels form"""
+#     model = Room
+
+#     fields = ('hotel','room_Type','room_Name','room_Capacity','room_Price','total_Rooms','room_details','room_photo',)
+
+
+#     def form_valid(self, form):
+
+#         room_form = form.save(commit=False)
+#         try:
+#             hotel_room = Hotels.objects.filter(contact_person = self.request.user).first()
+            
+#         except Hotels.DoesNotExist:
+#             raise Http404
+#         room_form.hotel = hotel_room
+#         room_form.user = self.request.user
+#         room_form.save()
+        
+
+#         return super().form_valid(form)
+
+
+
+
 class PhotoUploadView(LoginRequiredMixin,View):
     def get(self, request, pk):
         photos_list = Photo.objects.all()
@@ -278,6 +332,7 @@ def reservations(request):
     context = {}
     return render(request, template, context)
 
+#room reservation 
 def view(request):
     try:
         the_id = request.session['cart_id']
@@ -301,6 +356,30 @@ def view(request):
     return render(request, template, context)
 
 
+#package reservation
+def package_view(request):
+    try:
+        the_id = request.session['cart_id']
+        cart = Cart.objects.get(id=the_id)
+    except:
+        the_id = None
+    if the_id:
+        new_total = 0.00
+        for item in cart.cartpackageitems_set.all():
+            line_total = float(item.hotel_package.package_Price) * item.quantity 
+            new_total += line_total
+        request.session['items_total'] = cart.cartpackageitems_set.count()
+        cart.total = new_total
+        cart.save()
+        context = {"cart": cart}
+    else:
+        empty_message = "You are yet to make any reservation"
+        context = {"empty": True, "empty_message": empty_message}
+
+    template = "hotels/package_booking.html"
+    return render(request, template, context)
+
+
 def remove_from_cart(request, id):
     try:
         the_id = request.session['cart_id']
@@ -314,3 +393,112 @@ def remove_from_cart(request, id):
     cart_item.save()
 
     return HttpResponseRedirect(reverse("cart"))
+
+
+#Remove from package cart
+
+def remove_from_packagecart(request, id):
+    try:
+        the_id = request.session['cart_id']
+        cart = Cart.objects.get(id=the_id)
+    except:
+        return HttpResponseRedirect(reverse("package-cart"))
+
+    cart_package_item = CartPackageItems.objects.get(id = id)
+    # cart_item.delete()
+    cart_package_item.cart = None
+    cart_package_item.save()
+
+    return HttpResponseRedirect(reverse("package-cart"))
+
+
+
+class PackagesCreateView(LoginRequiredMixin, CreateView):
+    """Creates hotels form"""
+    model = Packages
+
+    fields = ('title','package_type','description','cover_photo',)
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+
+        return super().form_valid(form)
+
+
+class HotelPackagesCreateView(LoginRequiredMixin, CreateView):
+    """Creates hotels form"""
+    model = HotelPackages
+
+    form_class = HotelPackagesForm
+
+
+    def form_valid(self, form):
+
+        hotel_package = form.save(commit=False)
+        try:
+            package = Packages.objects.get(user = self.request.user, id=self.kwargs.get('pk'))
+            
+        except Packages.DoesNotExist:
+            raise Http404
+        hotel_package.package = package
+        hotel_package.user = self.request.user
+        hotel_package.save()
+        
+
+        return super().form_valid(form)
+
+
+
+class ItinireryCreateView(LoginRequiredMixin, CreateView):
+    """Creates hotels form"""
+    model = Itinirery
+
+    fields = ('title','description','package_photo','description',)
+
+
+    def form_valid(self, form):
+
+        itinirery = form.save(commit=False)
+        try:
+            pack = Packages.objects.get(user = self.request.user, id=self.kwargs.get('pk'))
+        except Packages.DoesNotExist:
+            raise Http404
+        itinirery.package = pack
+        itinirery.user = self.request.user
+        itinirery.save()
+        
+
+        return HttpResponseRedirect(reverse("package-list"))
+
+
+# class PackageListView(LoginRequiredMixin, ListView):
+#     """List select all rooms"""
+#     model = Packages
+#     template_name = 'hotels/package_list.html'
+#     context_object_name = 'packages'
+#     # ordering = ['-date_posted']
+#     # paginate_by = 1
+
+
+def package_list(request):
+    """Display all packages according to the chosen criteria"""
+
+    context = {
+        'packages': Packages.objects.all(),
+        'min':HotelPackages.objects.all().aggregate(Min('package_Price'))
+    }
+    return render(request, 'hotels/package_list.html', context)
+
+
+def package_main_list(request):
+    """Display all packages according to the chosen criteria"""
+
+    context = {
+        'packages': Packages.objects.all(),
+        'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
+        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+    }
+    return render(request, 'hotels/packages.html', context)
+
+
+

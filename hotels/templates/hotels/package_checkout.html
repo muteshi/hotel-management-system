@@ -1,0 +1,165 @@
+{% extends "hotels/base.html" %}
+{% block content %}
+{% load widget_tweaks %}
+{% load humanize %}
+<div class="main-wrapper scrollspy-action">
+  <div class="page-title breadcrumb-wrapper">
+				<div class="container">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="#">Home</a></li>
+							<li class="breadcrumb-item"><a href="#">Desinations</a></li>
+							<li class="breadcrumb-item"><a href="#">City</a></li>
+							<li class="breadcrumb-item"><a href="#">Result</a></li>
+							<li class="breadcrumb-item"><a href="#">Detail</a></li>
+							<li class="breadcrumb-item"><a href="#">Payment</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Confirmation</li>
+						</ol>
+					</nav>
+<div class="row gap-30 equal-height">
+
+					<div class="col-12 col-lg-4 order-lg-last">
+            {% for item in cart.cartpackageitems_set.all %}
+						<aside class="sidebar-wrapper pt-30 pb-30 bg-white-shadow">
+              
+							<h3 class="heading-title"><span> Package Booking Summary</span></h3>
+
+							<div class="product-small-item no-image shadow-none">
+								<div class="content">
+									<div class="content-body">
+										<div class="rating-item rating-sm mb-7">
+											<div class="rating-icons">
+												<input type="hidden" class="rating" data-filled="rating-icon ri-star rating-rated" data-empty="rating-icon ri-star-empty" data-fractions="2" data-readonly value="4.5"/>
+											</div>
+										</div>
+										<h6>{{ item.hotel_package.hotel.name }}</h6>
+										<span class="meta text-muted"><i class="ion-location text-info"></i>
+                    {{ item.hotel_package.hotel.address }}, {{ item.hotel_package.hotel.city}}, {{ item.hotel_package.hotel.country}}
+                     </span>
+									</div>
+								</div>
+							</div>
+
+							<hr class="mb-30 mt-30" />
+
+							<ul class="confirmation-list">
+								
+								<li class="clearfix">
+									<span class="font-weight-bold">Price per person:</span>
+									<span>Ksh{{ item.hotel_package.package_Price|intcomma }}</span>
+								</li>
+								<li class="clearfix">
+									<span class="font-weight-bold">Check-in:</span>
+									<span>{{ item.CheckIn }}</span>
+								</li>
+								<li class="clearfix">
+									<span class="font-weight-bold">Check-out:</span>
+									<span>{{ item.CheckOut }}</span>
+								</li>
+							</ul>
+
+							<div class="mb-40"></div>
+
+							<h3 class="heading-title"><span>Charge</span></h3>
+
+							<ul class="confirmation-list">
+								<li class="clearfix">
+									<span class="font-weight-bold">Duration:</span>
+									<span>{{ item.hotel_package.duration }} nights</span>
+								</li>
+								<li class="clearfix">
+									<span class="font-weight-bold">Guests:</span>
+									<span>{{ item.quantity }}</span>
+								</li>
+								
+								<li class="clearfix">
+									<span class="font-weight-bold">Fee:</span>
+									<span>Ksh{{ item.hotel_package.package_Price|intcomma }} x {{ item.quantity }}</span>
+								</li>
+								<li class="clearfix total">
+									<span class="font-weight-bold">Total</span>
+									<span class="text-main text-secondary">Ksh{{ cart.total|intcomma }}</span>
+								</li>
+							</ul>
+
+						</aside>
+           
+            
+					</div>
+
+					<div class="col-12 col-lg-8">
+
+						<div class="content-wrapper pt-30 pb-30 bg-white-shadow">
+
+							<h3 class="heading-title"><span>{{ item.hotel_package }} Details</span></h3>
+
+							<ul class="confirmation-list">
+								<li class="clearfix">
+									<span class="font-weight-bold">Reservation number:</span>
+									<span>#{{ reservation.reservation_id }}</span>
+								</li>
+								
+								<li class="clearfix">
+									<span class="font-weight-bold">Full name:</span>
+									<span>{{ reservation.user.name }}</span>
+								</li>
+								<li class="clearfix">
+									<span class="font-weight-bold">E-mail:</span>
+									<span>{{ reservation.user }}</span>
+								</li>
+                <li class="clearfix">
+									<span class="font-weight-bold">Payment Status:</span>
+									<span>Pay On Arrival</span>
+								</li>
+
+							</ul>
+
+							<div class="mb-40"></div>
+
+							<h3 class="heading-title"><span>Payment</span></h3>
+
+							<div class="clear"></div>
+
+							{% endfor %}
+
+							<p>Up branch to easily missed by do. Admiration considered acceptance too led one melancholy expression. Are will took form the nor true. Winding enjoyed minuter her letters evident use eat colonel. He attacks observe mr cottage inquiry am examine gravity. Are dear but near left was. Year kept on over so as this of.</p>
+
+							<p class="text-uppercase text-secondary font600">Payments can be made via Mpesa or VISA card</p>
+
+							<div class="clear mb-20"></div>
+
+						</div>
+
+					</div>
+
+
+				</div>
+</div>  <div class="container">
+<div class="row shrink-auto-md gap-30 mt-40">
+
+						<div class="col-12 col-shrink">
+							<div class="featured-contact-01">
+								<h6>Need help? Call us on</h6>
+								<span class="phone-number"><i class="material-icons">phone</i> 1985 5524 145</span>
+								It's free to call from anywhere
+							</div>
+						</div>
+
+
+						<div class="col-12 col-auto">
+
+							<h6 class="text-uppercase letter-spacing-2 line-1 font500"><span>Why Book With Marvellous Ventures</span></h6>
+
+							<ul class="list-icon-data-attr font-ionicons">
+								<li data-content="&#xf383">Excited him now natural saw passage age explain.</li>
+								<li data-content="&#xf383">Farther so friends is detract do private.</li>
+								<li data-content="&#xf383">Procured is material his offering humanity laughing moderate can.</li>
+							</ul>
+
+						</div>
+            <div class="clear mb-40"></div>
+
+					</div>
+
+        </div>
+{% endblock %}
