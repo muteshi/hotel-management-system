@@ -25,7 +25,11 @@ from reservations.models import Reservation
 
 
 def home(request):
-    return render(request, 'hotels/home.html')
+
+    context = {
+        'min': HotelPackages.objects.all().aggregate(Min('package_Price')),
+    }
+    return render(request, 'hotels/home.html', context)
 
 
 def company(request):
@@ -417,7 +421,7 @@ class PackagesCreateView(LoginRequiredMixin, CreateView):
     """Creates hotels form"""
     model = Packages
 
-    fields = ('title','package_type','description','cover_photo',)
+    fields = ('title','package_type','city', 'country','description','cover_photo',)
 
     def form_valid(self, form):
         form.instance.user = self.request.user

@@ -52,10 +52,20 @@ section,
     padding: 50px 0;
 }
 
-.booking {
-  width: 100%;
-  padding-top: 40px;
-  margin: 0 auto;
+@media only screen and (min-width: 600px) {
+  .booking {
+    width: 50%;
+    padding-top: 40px;
+    margin: 0 auto;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .booking {
+    width: 100%;
+    padding-top: 40px;
+    margin: 0 auto;
+  }
 }
 
 .section-sm {

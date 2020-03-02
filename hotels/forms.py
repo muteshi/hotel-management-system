@@ -32,7 +32,7 @@ class PackageForm(forms.ModelForm):
     """Room form details"""
     class Meta:
         model = Packages
-        fields = ('title','package_type','description',)
+        fields = ('title','package_type', 'city', 'country','description',)
 
 class DateInput(forms.DateInput):
     input_type = 'date'

@@ -1,5 +1,6 @@
 {% extends "hotels/base.html" %}
 {% load static %}
+{% load humanize %}
 {% block content %}
 
 <!-- start Main Wrapper -->
@@ -23,9 +24,10 @@
 									<p class="lead">Starts here right now!</p>
 									<p class="hero-price">
 										Packages starting from
-										<span>KES 15,999</span>
+										<span>Ksh{{ min.package_Price__min|intcomma }}</span>
 									</p>
 									<a href="#" class="btn btn-secondary btn-wide">Book now</a>
+									
 								<!--	<p class="font-sm mt-25 line-125 spacing-1">*
                     Booking period June 15 to June, 23 2019<br/>*
                     Traveling period  Nov 15 to Nov 23, 2019</p> -->
