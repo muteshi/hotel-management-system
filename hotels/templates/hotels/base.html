@@ -129,10 +129,22 @@
 										<li><a href="{% url 'hotels-list'%}">Accommodation</a></li>
 										<li><a href="javascript:void(0)">Destination</a></li>
 										<li><a href="javascript:void(0)">Corporates</a></li>
-										<li><a href="{% url 'packages-main-list' %}">Packages</a></li>
+										<li>
+										<a href="{% url 'packages-main-list' %}">Packages</a>
+										 <ul>
+											<li><a href="index-layout-02.html">Honeymoon</a></li>
+										</ul>
+									</li>
+										
+										<li>
 
-										<li><a href="javascript:void(0)">About Us</a></li>
-										<li><a href="javascript:void(0)">Contact Us</a></li>
+										<li>
+										<a href="javascript:void(0)">About Us</a>
+										 <ul>
+											<li><a href="index-layout-02.html">Contact Us</a></li>
+										</ul>
+									</li>
+										
 										<li>
 											<a href="{% url 'cart' %}" class="btn" style="color:black">
 									 <span class="badge badge-light">{% if not request.session.items_total %} 0 {% else %} {{ request.session.items_total }} {% endif %}</span> Bookings </a>

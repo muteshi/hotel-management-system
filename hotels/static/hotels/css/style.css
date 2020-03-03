@@ -43,6 +43,11 @@
  * Layout
  */
 
+ input::placeholder {
+  color: #242b34!important;
+  font-weight: 700
+}
+
 .with-navbar-fixed-top .body-inner {
     padding-top: 69px;
 }
@@ -446,7 +451,7 @@ section,
         border-bottom: 0;
     }
     .header-main .main-nav > li > a {
-        font-size: 13px;
+        font-size: 14px;
         padding: 0;
         padding-top: 21px;
         padding-bottom: 20px;

@@ -2,7 +2,7 @@ import datetime
 
 from django.shortcuts import render, redirect, HttpResponseRedirect, Http404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Hotels, Room, Packages, Itinirery, HotelPackages, CartPackageItems
+from .models import Hotels, Room, Packages, Itinirery, HotelPackages, CartPackageItems, Slider
 from django.http import JsonResponse
 from django.views import View
 from django.urls import reverse
@@ -28,6 +28,7 @@ def home(request):
 
     context = {
         'min': HotelPackages.objects.all().aggregate(Min('package_Price')),
+        'sliders': Slider.objects.all()
     }
     return render(request, 'hotels/home.html', context)
 

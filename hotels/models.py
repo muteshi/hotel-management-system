@@ -349,6 +349,25 @@ class CartPackageItems(models.Model):
         verbose_name_plural = 'Pakage Cart Items'
 
 
+
+class Slider(models.Model):
+    image = models.ImageField(default='default.jpg', upload_to='slider_photos')
+    header_text = models.CharField(max_length=120, null=True, blank=True)
+    text = models.CharField(max_length=120, null=True, blank=True)
+    active = models.BooleanField(default=False)
+    featured = models.BooleanField(default=False)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    start_Date = models.DateField(auto_now_add=False, null=True, blank=True)
+    end_Date = models.DateField(auto_now_add=False, null=True, blank=True)
+
+    def __str__(self):
+         return f'Slider {self.id}'
+
+    class Meta:
+        ordering = ['-start_Date', '-end_Date']
+        verbose_name_plural = 'Sliders'
+
+
     
 
 
