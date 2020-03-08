@@ -1,0 +1,77 @@
+{% load humanize %}
+{% load static %}
+<!-- Bootstrap -->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+table, td, th {  
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 15px;
+}
+</style>
+</head>
+<body>
+	<h1>Marvellous Ventures Limited</h1>
+<h3>Hello {{ title }} {{ name }}</h3>
+<h4>Your booking #{{ order_number }} details are as follows</h4>
+<table>
+	<tr>
+		<th>
+			Hotel:
+		</th>
+		<th>
+			{{items.rooms.hotel}}
+		</th>
+	</tr>
+	<tr>
+		<th>
+			Room:
+		</th>
+		<th>
+			{{items.rooms}}
+		</th>
+	</tr>
+	<tr>
+		<th>
+			CheckIn Date:
+		</th>
+		<th>
+			{{items.CheckIn}}
+		</th>
+	</tr>
+	<tr>
+		<th>
+			CheckOut Date:
+		</th>
+		<th>
+			{{items.CheckOut}}
+		</th>
+	</tr>
+	<tr>
+		<th>
+			Total:
+		</th>
+		<th>
+			Ksh{{ cart.total|intcomma }} ({{ items.stay_duration }} nights x {{ items.quantity }} room(s) x Ksh{{ items.rooms.room_Price|intcomma }} per night)
+		</th>
+	</tr>
+
+</table>
+<h4>Welcome to {{items.rooms.hotel}} and may you enjoy your stay!</h4>
+
+
+</body>
+</html>
+

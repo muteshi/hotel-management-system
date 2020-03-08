@@ -1,0 +1,23 @@
+{% extends "hotels/base.html" %}
+{% block content %}
+{% load widget_tweaks %}
+{% load humanize %}
+<div class="container">
+  <p></p>
+  <p></p>
+  <p></p>
+<div class="booking">
+  <h2 align="center">Thank You!</h2>
+  <p align="center">Your booking is complete.</p>
+  <p align="center">Please check your email for our confirmation email</p>
+  <a href="{% url 'bookings-home' %}" class="btn btn-secondary btn-block mt-20">Go to Homepage</a>
+
+
+</div>
+</div>
+</div>
+<p></p>
+<p></p>
+<p></p>
+
+{% endblock %}

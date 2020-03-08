@@ -1,0 +1,168 @@
+{% extends "hotels/base.html" %}
+{% block content %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+<!-- start Main Wrapper -->
+    <div class="main-wrapper scrollspy-action">
+      
+      <div class="page-title breadcrumb-wrapper">
+        <div class="container">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Desinations</a></li>
+              <li class="breadcrumb-item"><a href="#">City</a></li>
+              <li class="breadcrumb-item"><a href="#">Result</a></li>
+              <li class="breadcrumb-item"><a href="#">Detail</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Payment</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+      
+      <div class="page-wrapper page-payment bg-light">
+
+        <div class="container">
+          {% for item in cart.cartpackageitems_set.all %}
+
+          <div class="row gap-30">
+            
+            <div class="col-12 col-lg-4 order-lg-last">
+            
+              <aside class="sticky-kit sidebar-wrapper">
+
+                <a href="#" class="product-small-item">
+                  <div class="image">
+                    <img src="{{ item.hotel_package.package.cover_photo.url }}" alt="{{ item.hotel_package.package.title }}" />
+                  </div>
+                  <div class="content">
+                    <div class="content-body">
+                      <div class="rating-item rating-sm rating-inline mb-7">
+                        <div class="rating-icons">
+                          <input type="hidden" class="rating" data-filled="rating-icon ri-star rating-rated" data-empty="rating-icon ri-star-empty" data-fractions="2" data-readonly value="4.5"/>
+                        </div>
+                        <p class="rating-text text-muted font-10">26 reviews</p>
+                      </div>
+                      <h6>{{ item.hotel_package.package.title }}</h6>
+                      <span class="meta text-muted">
+                        <i class="ion-location text-info"></i> {{ item.hotel_package.package.city }}, {{ item.hotel_package.package.country}}</span>
+                    </div>
+                    <div class="price">
+                      from <span class="text-secondary font700">Ksh{{ min.package_Price__min|intcomma }}</span> /pps
+                    </div>
+                  </div>
+                </a>
+                
+                <div class="clear"></div>
+                
+                <div class="booking-selection-box">
+
+                  <div class="content">
+                  
+                    <h5 class="font-serif font400">Booking {{ item.hotel_package.hotel.name }} for {{ item.hotel_package.duration }} nights</h5>
+                    
+                    <ul class="booking-amount-list clearfix mb-20">
+                      <li>
+                        {{ item.CheckIn }}<span class="font700">{{ item.CheckIn|date:"l" }}</span>
+                      </li>
+                      <li class="text-right">
+                        {{ item.CheckOut }}<span class="font700">{{ item.CheckOut|date:"l" }}</span>
+                      </li>
+                    </ul>
+                    
+                    <h5 class="font-serif font400">Rooms</h5>
+                    <div class="hotel-room-sm-item mb-30">
+                     
+                      <div class="the-room-item">
+                        <h6>Standard room in {{ item.hotel_package.hotel.name }}</h6>
+                        <div class="clearfix">
+                          <span class="amount"> {{ item.quantity }} person(s) x Ksh{{ item.hotel_package.package_Price|intcomma }} per person sharing for {{ item.hotel_package.duration }} nights</span>
+                          <span class="price">Ksh{{ item.hotel_package.package_Price|intcomma }}</span>
+                        </div>
+                      </div>
+                   
+                      
+                    
+                    <h5 class="font-serif font400">Price</h5>
+                    <ul class="summary-price-list">
+                      <li>{{ item.quantity }} x Ksh{{ item.hotel_package.package_Price|intcomma }}/pps<span class="absolute-right">Ksh{{ cart.total|intcomma }}</span></li>
+                      {# <li>taxes and fees <span class="absolute-right">$26.36</span></li> #}
+                      <li class="total">Total <span class="text-main absolute-right">Ksh{{ cart.total|intcomma }}</span></li>
+                    </ul>
+                    
+                  </div>
+                  
+                </div>
+              
+              </aside>
+              
+            </div>
+            
+            <div class="col-12 col-lg-8">
+              
+              <div class="content-wrapper">
+
+                <div class="success-box">
+              
+                  <div class="icon">
+                    
+                    <span><i class="ri ri-check-square"></i></span>
+                    
+                  </div>
+                  
+                  <div class="content">
+                    <h4>Great choice! You’re just 1 minute away from booking this package. </h4>
+                    <p>Fill in your details below to complete the booking. Once your booking is accepted, we will send you a confirmation email.</p>
+                  </div>
+                  
+                </div>
+                
+                <div class="alert alert-warning pt-10 pb-10 mb-30" role="alert"><i class="fas fa-info-circle mr-5"></i>Returning customer? <a href="{% url 'login' %}" class="letter-spacing-0">Click here to login</a></div>
+                
+                  <h3 class="heading-title"><span>Billing Information</span></h3>
+                  
+                  <div class="bg-white-shadow pt-25 ph-30">
+                    <div class="row gap-20 mb-0">
+                   <form method="POST">
+                      {% csrf_token %}
+
+                      <div class="form-row">
+                        <div class="form-group col-md-2 mb-0">
+                          {{ form.title|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-5 mb-0">
+                          {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-5 mb-0">
+                          {{ form.last_name|as_crispy_field }}
+                        </div>
+                      </div>
+                      {{ form.mobile_Number|as_crispy_field }}
+                      {{ form.email|as_crispy_field }}
+                      {{ form.special_requests|as_crispy_field }}
+                      {{ form.payment_option|as_crispy_field }}
+                      <button type="submit" class="btn btn-primary btn-send disabled">Complete Booking</button>
+
+                    </form>
+                    </div>
+                    
+             
+         
+                
+                </div>
+                
+              </div>
+              
+            </div>
+
+          </div>
+          {% endfor %}
+          </div>
+          </div>
+
+        
+          <div class="fullwidth-horizon-sticky border-0">&#032;</div> <!-- is used to stop the above stick menu -->
+
+{% endblock %}
