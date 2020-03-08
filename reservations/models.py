@@ -4,6 +4,8 @@ from users.models import UserProfile
 
 from django.conf import settings
 
+from django.core.mail import send_mail
+
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -23,7 +25,7 @@ PAYMENT_OPTIONS = (
 )
 
 class Reservation(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True,)
+    user = models.ForeignKey(UserProfile, on_delete = models.CASCADE, null = True, blank = True)
     reservation_id = models.CharField(max_length=120, default='ABC',unique=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True, blank=True,)
     sub_total = models.DecimalField(max_digits=1000, decimal_places=2, default=0.00)
@@ -33,7 +35,7 @@ class Reservation(models.Model):
     payment_option = models.CharField(max_length=120, choices=PAYMENT_OPTIONS, default='pay_on_checkin')
     special_request = models.TextField(null=True, blank=True,)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
-    timestamp =models.DateTimeField(auto_now_add=True, auto_now=False)
+    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 
     class Meta:
         verbose_name_plural = 'Reservations'
@@ -70,6 +72,41 @@ class PackageReservation(models.Model):
 
     class Meta:
         verbose_name_plural = 'Package Reservations'
+
+    def __str__(self):
+         return f'Reservation #{self.reservation_id}'
+
+
+TITLE_OPTIONS = (
+    ("mr", 'Mr.'),
+    ("mrs", 'Mrs.'),
+    ("ms", 'Ms.'),
+)
+
+PAYMENT_OPTIONS = (
+    ("pay_on_checkin", 'Pay on CheckIn'),
+    ("visa_mastercard", 'Visa or MasterCard'),
+)
+
+class Booking(models.Model):
+    """Database table for users booking details"""
+    title = models.CharField(max_length=120, choices=TITLE_OPTIONS, default='mr')
+    email = models.EmailField(max_length=255, unique=False)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    mobile_Number = models.CharField(max_length=12)
+    reservation_id = models.CharField(max_length=120, default='ABC',unique=True)
+    payment_option = models.CharField(max_length=120, choices=PAYMENT_OPTIONS, default='pay_on_checkin')
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True, blank=True,)
+    final_total = models.DecimalField(max_digits=1000, decimal_places=2, default=0.00)
+    special_requests = models.TextField(null=True, blank=True,)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+    register_as_user = models.BooleanField(default=False)
+   
+
+    class Meta:
+        verbose_name_plural = 'Bookings'
 
     def __str__(self):
          return f'Reservation #{self.reservation_id}'

@@ -131,7 +131,7 @@ class Room(models.Model):
         verbose_name_plural = 'Rooms'
 
     def __str__(self):
-         return f'{self.room_Name}-{self.room_Type} room-{self.hotel.name}'
+         return f'{self.room_Name}-{self.room_Type}'
 
 
     def get_absolute_url(self):

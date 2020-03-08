@@ -507,3 +507,63 @@ def package_main_list(request):
 
 
 
+def package_honeymoon_list(request):
+    """Display all packages according to the chosen criteria"""
+    packages = Packages.objects.all()
+
+    context = {
+        'packages': packages,
+        'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
+        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+    }
+    return render(request, 'hotels/package_honeymoon_list.html', context)
+
+
+def package_easter_list(request):
+    """Display all packages according to the chosen criteria"""
+    packages = Packages.objects.all()
+
+    context = {
+        'packages': packages,
+        'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
+        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+    }
+    return render(request, 'hotels/package_easter_list.html', context)
+
+def package_christmas_list(request):
+    """Display all packages according to the chosen criteria"""
+    packages = Packages.objects.all()
+    empty_message = "Sorry, no packages in this category"
+
+    context = {
+        'empty_message': empty_message,
+        'packages': packages,
+        'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
+        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+    }
+    return render(request, 'hotels/package_christmas_list.html', context)
+
+def package_coast_list(request):
+    """Display all packages according to the chosen criteria"""
+    packages = Packages.objects.all()
+
+    context = {
+        'packages': packages,
+        'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
+        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+    }
+    return render(request, 'hotels/package_coast_list.html', context)
+
+def package_selfdrive_list(request):
+    """Display all packages according to the chosen criteria"""
+    packages = Packages.objects.all()
+
+    context = {
+        'packages': packages,
+        'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
+        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+    }
+    return render(request, 'hotels/package_selfdrive_list.html', context)
+
+
+
