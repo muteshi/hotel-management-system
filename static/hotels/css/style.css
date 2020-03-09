@@ -1209,7 +1209,7 @@ section,
     margin: 0;
 }
 
-.main-search-form-horizontal-wrapper .menu-horizontal-wrapper-05 {
+.main-search-form-horizontal-wrapper{
     position: relative;
     z-index: 5;
     margin-top: -70px;
@@ -1424,7 +1424,7 @@ section,
 
 @media (min-width: 768px) {
     .main-search-form-horizontal-wrapper .menu-horizontal-wrapper-05 {
-        margin-top: -80px;
+        margin-top: -180px;
     }
     .main-search-form-horizontal-wrapper .menu-horizontal-wrapper-05:before {
         bottom: -35px;
@@ -1703,6 +1703,7 @@ section,
 
 .menu-horizontal-05 ul li a.active {
     color: #FFF;
+    background: #bf202e;
 }
 
 nav.menu-vertical-wrapper-01 {
