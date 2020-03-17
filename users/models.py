@@ -36,7 +36,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     """Database model for users in the system"""
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
     objects = UserProfileManager()
@@ -64,6 +64,7 @@ class Profile(models.Model):
     city = models.CharField(max_length  = 255)
     country = models.CharField(max_length  = 255)
     telephone_Number = models.CharField(max_length=12)
+    email_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.name} Profile'

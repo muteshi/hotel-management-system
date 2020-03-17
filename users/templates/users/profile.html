@@ -63,6 +63,13 @@
 
 						<div class="col-12 col-md-8 col-lg-9">
 
+							<div class="ml-lg-auto text-left text-lg-right mt-20 mt-lg-0">
+								
+                <a href="{% url 'hotel-create' %}" class="anchor btn btn-primary btn-wide mt-5">Add Property</a>
+               
+
+							</div>
+
 							<div class="content-wrapper">
 
 								<h3 class="heading-title">My profile</h3>
@@ -78,7 +85,7 @@
 
 											<div class="avatar-upload">
                         {% if user.profile.image %}
-                            {# {{ p_form.image.url|add_class:'profile-pic d-block'  }} #}
+                            
 												            <img class="profile-pic d-block" src="{{ user.profile.image.url }}" alt="avatar" />
                         {% else %}
                                 <img class="profile-pic d-block" <img src="{% static '/hotels/images/default.jpg' %}" alt="avatar" />
@@ -107,7 +114,7 @@
 													<div class="form-group mb-0">
 														<label>Your Full Name</label>
                             {{ u_form.name|add_class:'form-control form-bg-light' }}
-														{# <input type="text" class="form-control form-bg-light" value="{{ user.name }}"> #}
+														
 													</div>
 												</div>
 
@@ -115,31 +122,23 @@
                           <div class="form-group mb-0">
                             <label>Phone Number</label>
                             {{ p_form.telephone_Number|add_class:'form-control form-bg-light' }}
-                            {# <input type="text" class="form-control form-bg-light" value="{{ user.profile.telephone_Number }}"> #}
+                    
                           </div>
                         </div>
 
 												<div class="col-12 col-sm-6">
 													<div class="form-group mb-0">
-														<label>Email</label>
-                            {{ u_form.email|add_class:'form-control form-bg-light' }}
-														{# <input type="email" class="form-control form-bg-light" value="{{ user.email }}"> #}
+														<label>Address</label>
+                            {{ p_form.address|add_class:'form-control form-bg-light' }}
+														
 													</div>
 												</div>
 
-												<div class="col-12 col-sm-12">
-													<div class="form-group mb-0">
-														<label>Address</label>
-                            {{ p_form.address|add_class:'form-control form-bg-light' }}
-														{# <input type="text" class="form-control form-bg-light" value="{{ user.profile.address }}"> #}
-													</div>
-												</div>
 
 												<div class="col-12 col-sm-6">
 													<div class="form-group mb-0">
 														<label>City/town</label>
                             {{ p_form.city|add_class:'form-control form-bg-light' }}
-														{# <input type="text" class="form-control form-bg-light" value="{{ user.profile.city }} "> #}
 													</div>
 												</div>
 
@@ -150,7 +149,7 @@
 													</div>
 												</div>
 
-                        <div class="col-12 col-sm-6">
+                        <div class="col-12 col-sm-12">
 													<div class="form-group mb-0">
 														<label>Profile Photo</label>
                             {{ p_form.image|add_class:'form-control form-bg-light' }}
@@ -161,28 +160,7 @@
 
 											<hr class="mt-40 mb-40" />
 
-											<h5 class="text-uppercase">Social medias</h5>
-
-											<div class="row gap-20">
-												<div class="col-12 col-sm-8">
-													<div class="form-group mb-0">
-														<label><i class="fab fa-facebook mr-5"></i> Facebook</label>
-														<input type="text" class="form-control form-bg-light" value="https://www.facebook.com/user">
-													</div>
-												</div>
-												<div class="col-12 col-sm-8">
-													<div class="form-group mb-0">
-														<label><i class="fab fa-twitter mr-5"></i> Twitter</label>
-														<input type="text" class="form-control form-bg-light" value="https://www.twitter.com/user">
-													</div>
-												</div>
-												<div class="col-12 col-sm-8">
-													<div class="form-group mb-0">
-														<label><i class="fab fa-google-plus mr-5"></i> Google+</label>
-														<input type="text" class="form-control form-bg-light" value="https://www.google.com/plus/user">
-													</div>
-												</div>
-											</div>
+											
 
 											<div class="mb-30"></div>
 

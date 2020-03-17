@@ -1,0 +1,111 @@
+{% extends "hotels/base.html" %}
+{% block content %}
+{% load widget_tweaks %}
+{% load humanize %}
+<div class="container">
+  <p></p>
+  <p></p>
+  <p></p>
+<div class="booking">
+
+<aside class="sticky-kit sidebar-wrapper">
+
+  <button class="btn btn-secondary btn-wide btn-toggle collapsed btn-change-search btn-block" data-toggle="collapse" data-target="#change-search"></button>
+
+  <div class="booking-selection-box mt-20">
+
+    <div class="heading clearfix">
+      <div class="d-flex align-items-end">
+        <div>
+          <h4 class="text-white font-serif font400">Your Booking</h4>
+        </div>
+        {% if not empty %}
+        {% for item in cart.cartconferenceitems_set.all %}
+        <div class="ml-auto">
+          <a href="{% url 'remove-conference-booking' item.id %} " class="booking-selection-filter">reset</a>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+
+      <ul class="booking-amount-list clearfix mb-20">
+        <li>
+          {{ item.CheckIn }}<span class="font700">{{ item.CheckIn|date:"l" }}</span>
+        </li>
+        <li class="text-right">
+          {{ item.CheckOut }}<span class="font700">{{ item.CheckOut|date:"l" }}</span>
+        </li>
+      </ul>
+
+      <div class="hotel-room-sm-item">
+        <div class="the-hotel-item">
+          <h5><A href="#">{{ item.rooms.hotel.name }}</a></h5>
+          <div class="d-flex">
+            <div>
+              <p class="location">
+                {{ item.rooms.hotel.address }}, {{ item.rooms.hotel.city}}, {{ item.rooms.hotel.country}}
+              </p>
+            </div>
+            <div>
+              <div class="rating-item rating-xs">
+                <div class="rating-icons">
+                  <input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.5"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="the-room-item">
+          <h6>{{ item.rooms.room_Name }}</h6>
+          <div class="clearfix">
+            <span class="amount"> {{ item.conference_duration }} days x {{ item.guests }} guests x Ksh{{ item.rooms.room_Price|intcomma }} per guest</span>
+            <span class="price">Ksh{{ line_total|intcomma }}</span>
+          </div>
+          
+        </div>
+        {% if item.double_room %}
+        <div class="the-room-item">
+          <h6>{{ item.double_room }}</h6>
+          <div class="clearfix">
+            <span class="amount"> {{ item.nights }} nights x {{ item.double_room_total }} guests x Ksh{{ item.double_room_price|intcomma }} per night</span>
+            <span class="price">Ksh{{ d_room_total|intcomma }}</span>
+          </div>    
+        </div> {% endif %}
+        {% if item.single_room %}
+        <div class="the-room-item">
+          <h6>{{ item.single_room }}</h6>
+          <div class="clearfix">
+            <span class="amount"> {{ item.nights }} nights x {{ item.single_room_total }} guests x Ksh{{ item.single_room_price|intcomma }} per night</span>
+            <span class="price">Ksh{{ s_room_total|intcomma }}</span>
+          </div>
+        </div> {% endif %}
+        <div class="the-room-item">
+          <h6>Price Total</h6>
+          <div class="clearfix">
+            <span class="amount"> {% if item.single_room or item.double_room %}Accomodation and Conferencing {% else %} Conferencing {% endif %}</span>
+            <span class="price">Ksh{{ cart.total|floatformat:2|intcomma }}</span>
+          </div>
+          
+          
+        </div>
+
+      <a href="{% url 'conference-booking-checkout' %}" class="btn btn-secondary btn-block mt-20">Confirm Booking</a>
+    </div>{% endfor %} {% else %}
+          <h2 style="text-align:center;">{{ empty_message }}</h2>
+        
+{% endif %}
+
+  </div>
+
+</aside>
+
+
+
+</div>
+</div>
+</div>
+<p></p>
+<p></p>
+<p></p>
+
+{% endblock %}

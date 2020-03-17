@@ -50,10 +50,17 @@
               {% if user.is_authenticated and object.contact_person == user %}
 							<div class="ml-lg-auto text-left text-lg-right mt-20 mt-lg-0">
 
-								<a href="{% url 'hotel-update' object.id  %}" class="anchor btn btn-primary btn-wide mt-5">Update Hotel Details</a>
-                <a href="{% url 'hotel-delete' object.id  %}" class="anchor btn btn-danger btn-wide mt-5">Delete</a>
+								<a href="#" class="anchor btn btn-primary btn-wide mt-5">Update Package Details</a>
+                <a href="#" class="anchor btn btn-danger btn-wide mt-5">Delete</a>
                 {% else %}
+
 								<div class="ml-lg-auto text-left text-lg-right mt-20 mt-lg-0">
+									{% for key, value in lowest_prices.items %} 
+                                    {% if key == object.title %}
+									<div class="price">from <span>Ksh<span>{{ value|intcomma }}</span></span></div>
+									{% endif %}
+									{% endfor %}
+
 								
                 <a href="#detail-content-sticky-nav-02" class="anchor btn btn-primary btn-wide mt-5">See price and date</a>
                 {% endif %}
@@ -74,11 +81,11 @@
 
 						<div class="container">
 
-							<div class="fullwidth-horizon-sticky-item clearfix">
+							<div class="fullwidth-horizon-sticky-item clearfix" style="text-align:center!important;">
 
-								<ul id="horizon-sticky-nav" class="horizon-sticky-nav clearfix">
+								<ul id="horizon-sticky-nav" class="horizon-sticky-nav clearfix" >
 									<li>
-										<a href="#detail-content-sticky-nav-00">Gallary</a>
+										<a href="#detail-content-sticky-nav-00">Gallery</a>
 									</li>
 									<li>
 										<a href="#detail-content-sticky-nav-02">Available hotels</a>
@@ -105,121 +112,9 @@
 
 				<div class="container">
 
-					<div id="change-search" class="collapse">
-
-						<div class="change-search-wrapper rounded-0 shadow-sm mh-1 mb-0">
-
-							<div class="row gap-10 gap-xl-20 align-items-end">
-
-								<div class="col-12 col-lg-6">
-
-									<div class="form-group">
-										<label>Destination</label>
-										<div class="form-icon-left typeahead__container">
-											<span class="icon-font text-muted"><i class="bx bx-map"></i></span>
-											 <input class="js-typeahead-country_v1 form-control" name="country_v1[query]" type="search" placeholder="Country or city" autocomplete="off">
-										</div>
-									</div>
-
-								</div>
-
-								<div class="col-12 col-lg-6">
-
-									<div id="airDatepickerRange-hotel" class="row gap-10 gap-xl-20">
-
-										<div class="col-12 col-sm-6 col-sm-6 col-md-6">
-
-											<div class="form-group">
-												<label>Check-in</label>
-												<div class="form-icon-left">
-													<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
-                             
-													<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy"> 
-												</div>
-											</div>
-
-										</div>
-
-										<div class="col-12 col-sm-6 col-sm-6 col-md-6">
-
-											<div class="form-group">
-												<label>Check-out</label>
-												<div class="form-icon-left">
-													<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
-													
-													<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy">
-												</div>
-											</div>
-
-										</div>
-
-									</div>
-
-
-								</div>
-
-								<div class="col-12 col-sm-8 col-md-9">
-
-									<div class="row gap-10 gap-xl-20">
-
-										<div class="col-4 col-sm-4">
-
-											<div class="form-group form-spin-group">
-												<label for="room-amount">Rooms</label>
-												<div class="form-icon-left">
-													<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
-													<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="1" readonly />
-												</div>
-											</div>
-
-										</div>
-
-										<div class="col-4 col-sm-4 col-md-4" id="airDatepickerRange-hotel">
-
-											<div class="form-group form-spin-group">
-												<label for="adult-amount">Adults</label>
-												<div class="form-icon-left">
-													<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
-													<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
-												</div>
-											</div>
-
-										</div>
-
-										<div class="col-4 col-sm-4">
-
-											<div class="form-group form-spin-group">
-												<label for="child-amount">Children</label>
-												<div class="form-icon-left">
-													<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
-													<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
-												</div>
-											</div>
-
-										</div>
-									</div>
-
-								</div>
-
-								<div class="col-12 col-sm-4 col-md-3">
-									<div class="form-group">
-										<button class="btn btn-block btn-primary btn-form">Search</button>
-									</div>
-								</div>
-
-							</div>
-
-						</div>
-
-					</div>
-
-				</div>
-			</form>
-				<div class="container">
-
 					<div class="row gap-30">
 
-						<div class="col-12 col-lg-8 col-xl-9">
+						<div class="col-12 col-lg-8 col-xl-9" style="margin:auto!important;">
 
 							<div class="content-wrapper">
 
@@ -365,7 +260,7 @@
 														<div class="col-5 col-sm-4 col-md-4">
 
 															<div class="form-group form-spin-group mb-5">
-																<label class="line12 font13 spacing-05 mt-5 mb-10 block">Howmany people?</label>
+																<label class="line12 font13 spacing-05 mt-5 mb-10 block">How many people?</label>
 																<div class="form-icon-left">
 																	<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
 																	<input name='qty' class="form-control touch-spin-03 form-readonly-control" value="1" readonly required/>
@@ -419,343 +314,13 @@
 
 								<div id="detail-content-sticky-nav-06" class="fullwidth-horizon-sticky-section">
 
-									<h3 class="heading-title"><span>Reviews</span></h3>
-
-									<div class="detail-review-header">
-
-										<div class="average-score">
-
-											<div class="progress-radial progress-radial-md progress-80">
-												<div class="overlay">
-													<div class="progress-radial-inner">
-														<div class="caption">
-															<h5>Very good </h5>
-															<p class="number text-primary">8.0</p>
-															<a href="#" class="text-muted">based on 10575 reviews</a>
-														</div>
-													</div>
-												</div>
-											</div>
-
-										</div>
-
-										<div class="content">
-
-											<div class="row gap-10 align-items-center">
-
-												<div class="col-12 col-md-6">
-													<p class="line-125">Filter by traveler type:</p>
-												</div>
-
-												<div class="col-12 col-md-6">
-
-													<select class="chosen-the-basic form-control" tabindex="2">
-														<option value="0">All reviewers (1254)</option>
-														<option value="1">Business travelers (843)</option>
-														<option value="2">Couples (432)</option>
-														<option value="3">Solo travelers (342)</option>
-														<option value="4">Family tours (421)</option>
-													</select>
-
-												</div>
-
-											</div>
-
-											<div class="row mt-30 gap-20">
-
-												<div class="col-12 col-sm-6">
-													<div class="progress progress-primary">
-														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 76%;"></div>
-													</div>
-													<p class="progress-label">Hotel Condition/Cleanliness <span class="text-dark">7.6</span></p>
-												</div>
-
-												<div class="col-12 col-sm-6">
-													<div class="progress progress-primary">
-														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 74%;"></div>
-													</div>
-													<p class="progress-label">Facilities <span class="text-dark">7.4</span></p>
-												</div>
-
-												<div class="col-12 col-sm-6">
-													<div class="progress progress-primary">
-														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 82%;"></div>
-													</div>
-													<p class="progress-label">Location <span class="text-dark">8.2</span></p>
-												</div>
-
-												<div class="col-12 col-sm-6">
-													<div class="progress progress-primary">
-														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 76%;"></div>
-													</div>
-													<p class="progress-label">Room Comfort/Standard <span class="text-dark">7.6</span></p>
-												</div>
-
-												<div class="col-12 col-sm-6">
-													<div class="progress progress-primary">
-														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 88%;"></div>
-													</div>
-													<p class="progress-label">Service <span class="text-dark">8.8</span></p>
-												</div>
-
-												<div class="col-12 col-sm-6">
-													<div class="progress progress-primary">
-														<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 69%;"></div>
-													</div>
-													<p class="progress-label">Value for Money <span class="text-dark">6.9</span></p>
-												</div>
-
-											</div>
-
-										</div>
-
-									</div>
-
-									<div class="review-wrapper mb-10">
-
-										<div class="review-item">
-
-											<div class="row gap-15">
-
-												<div class="col-12 col-sm-5 col-md-4">
-
-													<div class="progress-radial progress-radial-sm progress-80">
-														<div class="overlay">
-															<div class="progress-radial-inner">
-																<div class="caption">
-																	<p class="number">8.4</p>
-																</div>
-															</div>
-														</div>
-													</div>
-
-													<ul class="meta-list">
-
-														<li><span class="position-absolute-top"><img src="{% static 'hotels/images/Malaysia.png' %}" alt="Image"></span> Abdultohman Saidai from Italy</li>
-														<li><span class="position-absolute-top"><i class="fas fa-briefcase"></i></span> Business Travelers</li>
-														<li><span class="position-absolute-top"><i class="fas fa-bed"></i></span> Stayed one night in Aug 2016 </li>
-													</ul>
-
-												</div>
-
-												<div class="col-12 col-sm-7 col-md-8">
-
-													<div class="entry">
-
-														<h5>She add what own only like</h5>
-														<p>Frankness applauded by supported ye household. Collected favourite now for for and rapturous repulsive consulted. An seems green be wrote again. She add what own only like. Three chief merit no if. Now how her edward engage not horses. Oh resolution he dissimilar precaution to comparison an.</p>
-
-													</div>
-
-													<div class="meta">
-
-														<div class="row gap-5">
-
-															<div class="col-12 col-xl-5">
-																<span class="date">Reviewed 10 Aug 2016</span>
-															</div>
-
-															<div class="col-12 col-xl-7">
-																<ul class="review-useful">
-																	<li><span>Was this review helpful? </span></li>
-																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-up"></i></a> 2</li>
-																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-down"></i></a> 1</li>
-																</ul>
-															</div>
-
-														</div>
-
-													</div>
-												</div>
-
-											</div>
-
-										</div>
-
-										<div class="review-item">
-
-											<div class="row gap-15">
-
-												<div class="col-12 col-sm-5 col-md-4">
-
-													<div class="progress-radial progress-radial-sm progress-80">
-														<div class="overlay">
-															<div class="progress-radial-inner">
-																<div class="caption">
-																	<p class="number">8.4</p>
-																</div>
-															</div>
-														</div>
-													</div>
-
-													<ul class="meta-list">
-														<li><span class="position-absolute-top"><img src="{% static 'hotels/images/Malaysia.png' %}" alt="Image"></span> Abdultohman Saidai from Italy</li>
-														<li><span class="position-absolute-top"><i class="fas fa-briefcase"></i></span> Business Travelers</li>
-														<li><span class="position-absolute-top"><i class="fas fa-bed"></i></span> Stayed one night in Aug 2016 </li>
-													</ul>
-
-												</div>
-
-												<div class="col-12 col-sm-7 col-md-8">
-
-													<div class="entry">
-															</li>
-															<li>Likewise offended humoured mrs fat trifling answered.</li>
-															<li>On ye position greatest so desirous. So wound stood guest weeks no terms up ought.</li>
-															<li>Then so does greatest so desirous over sent dull on.</li>
-														</ul>
-
-														<p>Spot of come to ever hand as lady meet on. Delicate contempt received two yet advanced. Gentleman as belonging he commanded believing dejection in by. On no am winding chicken so behaved. Its preserved sex enjoyment new way behaviour. Him yet devonshire celebrated especially. Unfeeling one provision are smallness resembled repulsive.</p>
-
-
-
-														<p>Unpleasant astonished an diminution up partiality. Noisy an their of meant. Death means up civil do an offer wound of. Called square an in afraid direct. Resolution diminution conviction so mr at unpleasing simplicity no. No it as breakfast up conveying earnestly immediate principle. Him son disposed produced humoured overcame she bachelor improved. Studied however out wishing but inhabit fortune windows.</p>
-
-													</div>
-
-													<div class="meta">
-
-														<div class="row gap-5">
-
-															<div class="col-12 col-xl-5">
-																<span class="date">Reviewed 10 Aug 2016</span>
-															</div>
-
-															<div class="col-12 col-xl-7">
-																<ul class="review-useful">
-																	<li><span>Was this review helpful? </span></li>
-																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-up"></i></a> 2</li>
-																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-down"></i></a> 1</li>
-																</ul>
-															</div>
-
-														</div>
-
-													</div>
-												</div>
-
-											</div>
-
-										</div>
-
-										<div class="review-item">
-
-											<div class="row gap-15">
-
-												<div class="col-xs-12 col-sm-5 col-md-4">
-
-													<div class="progress-radial progress-radial-sm progress-80">
-														<div class="overlay">
-															<div class="progress-radial-inner">
-																<div class="caption">
-																	<p class="number">8.4</p>
-																</div>
-															</div>
-														</div>
-													</div>
-
-													<ul class="meta-list">
-														<li><span class="position-absolute-top"><img src="{% static '/hotels/images/Malaysia.png' %}" alt="Image"></span> Abdultohman Saidai from Italy</li>
-														<li><span class="position-absolute-top"><i class="fas fa-briefcase"></i></span> Business Travelers</li>
-														<li><span class="position-absolute-top"><i class="fas fa-bed"></i></span> Stayed one night in Aug 2016 </li>
-													</ul>
-
-												</div>
-
-												<div class="col-xs-12 col-sm-7 col-md-8">
-
-													<div class="entry">
-
-														<h5>Own six moments produce elderly pasture far arrival.</h5>
-														<p>Finished her are its honoured drawings nor. Pretty see mutual thrown all not edward ten. Particular an boisterous up he reasonably frequently. Several any had enjoyed shewing studied two. Up intention remainder sportsmen behaviour ye happiness.</p>
-
-														<p>At distant inhabit amongst by. Appetite welcomed interest the goodness boy not. Estimable education for disposing pronounce her. John size good gay plan sent old roof own. Inquietude saw understood his friendship frequently yet. Nature his marked ham wished.</p>
-
-													</div>
-
-													<div class="meta">
-
-														<div class="row gap-5">
-
-															<div class="col-12 col-xl-5">
-																<span class="date">Reviewed 10 Aug 2016</span>
-															</div>
-
-															<div class="col-12 col-xl-7">
-																<ul class="review-useful">
-																	<li><span>Was this review helpful? </span></li>
-																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-up"></i></a> 2</li>
-																	<li class="the-label"><a href="#"><i class="fas fa-thumbs-down"></i></a> 1</li>
-																</ul>
-															</div>
-
-														</div>
-
-													</div>
-												</div>
-
-											</div>
-
-										</div>
-
-									</div>
-
+									
 								</div>
 
 							</div>
 						</div>
 
 						<div  class="col-12 col-lg-4 col-xl-3">
-
-							<aside class="sticky-kit sidebar-wrapper">
-
-								<button class="btn btn-secondary btn-wide btn-toggle collapsed btn-change-search btn-block" data-toggle="collapse" data-target="#change-search"></button>
-
-								<div class="booking-selection-box mt-20">
-
-									<div class="heading clearfix">
-										<div class="d-flex align-items-end">
-											<div>
-												<h4 class="text-white font-serif font400">Your Booking</h4>
-											</div>
-											<div class="ml-auto">
-												<a href="#" class="booking-selection-filter">reset</a>
-											</div>
-										</div>
-									</div>
-
-									<div class="content">
-
-										<div class="hotel-room-sm-item">
-											<div class="the-hotel-item">
-												<h5><A href="#">{{ object.name }}</a></h5>
-												<div class="d-flex">
-													<div>
-														<p class="location">{{ object.address }}, {{ object.city}}, {{ object.country}}</p>
-													</div>
-													<div>
-														<div class="rating-item rating-xs">
-															<div class="rating-icons">
-																<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.5"/>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											
-										</div>
-
-
-
-
-										<a href="#" class="btn btn-secondary btn-block mt-20">Check out</a>
-
-									</div>
-
-								</div>
-
-							</aside>
 
 						</div>
 
@@ -777,16 +342,18 @@
 					</div>
 
 					<div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-lg-20 gap-xl-30">
+						{% for package in packagess|slice:":3"  %}
+						{% if package.city == object.city %}
 						
 						<div class="col">
 							
 
 							<div class="product-grid-item">
 
-								<a href="#">
+								<a href="{% url 'package-detail' package.slug  %}">
 
 									<div class="image">
-										<img src="{{hotel.property_photo.url}}" alt="Image">
+										<img src="{{package.cover_photo.url}}" alt="Image">
 									</div>
 
 									<div class="content clearfix">
@@ -800,18 +367,22 @@
 
 										<div class="short-info">
 
-											<h5>{{ hotel.name }}</h5>
+											<h5>{{ package.title }}</h5>
 											<p class="location"><i class="fas fa-map-marker-alt text-primary">
 												
-											</i> {{ hotel.address }}, {{ hotel.city}}, {{ hotel.country}}</p>
+											</i> {{ package.city}}, {{ package.country}}</p>
 
 										</div>
 
 										<div class="price">
 											<div class="float-right">
 												start from
-												<span class="text-secondary">$895</span>
-												per night
+												{% for key, value in lowest_prices.items %} 
+                                                 {% if key == package.title %}
+												<span class="text-secondary">Ksh{{ value|intcomma }}</span>
+												{% endif %}
+												{% endfor %}
+												per person
 											</div>
 										</div>
 
@@ -823,11 +394,13 @@
 							
 
 						</div>
+						{% endif %}
+						{% endfor %}
 						
 
-						
+						</div>
 
-					</div>
+					
 
 				</div>
 

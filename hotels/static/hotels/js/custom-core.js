@@ -220,7 +220,10 @@ jQuery(function($) {
 		autoClose: true,
 		language : "en",
 	})
-	
+
+	// my own CheckIN date function
+
+
 	var $airDatepickerRangeStartFlight = $('#airDatepickerRange-flight #dateStart-flight'),
 		$airDatepickerRangeEndFlight = $('#airDatepickerRange-flight #dateEnd-flight');
 

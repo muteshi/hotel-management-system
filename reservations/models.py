@@ -1,5 +1,5 @@
 from django.db import models
-from hotels.models import Hotels, Room, Cart
+from hotels.models import Hotels, Room, Cart, ConferenceRoom
 from users.models import UserProfile
 
 from django.conf import settings
@@ -43,19 +43,6 @@ class Reservation(models.Model):
     def __str__(self):
          return f'Reservation #{self.reservation_id}'
 
-
-    # def save(self):
-    #     """Override default save method to resize the photo"""
-    #     super().save()
-    #     #Send email on Successfull reservation creation
-    #     cart2 = Reservation.objects.get(cart2=self.cart.id)
-    #     context = {"user":  self.user.name, "room": cart2.cart.cartitems_set.all()[0].rooms}
-    #     message = render_to_string("hotels/user_reservation_details.html", context)
-    #     plain_message = strip_tags(message)
-    #     subject = f"Registration details for {room}"
-    #     mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.user.email], html_message=message)
-
-    #     self.status = "Finished"
 
 class PackageReservation(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True,)
@@ -110,4 +97,34 @@ class Booking(models.Model):
 
     def __str__(self):
          return f'Reservation #{self.reservation_id}'
+
+
+class ConferenceReservation(models.Model):
+    """Database table for users booking details"""
+    organisation_name = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255, unique=False)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    mobile_Number = models.CharField(max_length=12)
+    reservation_id = models.CharField(max_length=120, default='ABC',unique=True)
+    start_time = models.TimeField(auto_now=False, auto_now_add=False)
+    attachment = models.FileField(upload_to='pay_attachments', null=True, blank=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True, blank=True,)
+    crooms = models.ForeignKey(ConferenceRoom, on_delete = models.CASCADE, null=True, blank=True)
+    hrooms = models.ForeignKey(Room, on_delete = models.CASCADE, null=True, blank=True)
+    final_total = models.DecimalField(max_digits=1000, decimal_places=2, default=0.00)
+    name_of_guests = models.TextField(null=True, blank=True,)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+    
+   
+
+    class Meta:
+        verbose_name_plural = 'Conference Reservations'
+
+    def __str__(self):
+         return f'Reservation #{self.reservation_id}'
+
+    def guests_as_list(self):
+        return self.name_of_guests.split('\n')
 

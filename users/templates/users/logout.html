@@ -1,12 +1,14 @@
 {% extends "hotels/base.html" %}
 {% block content %}
+<div class="booking">
 <div class="container">
 <div class="jumbotron">
-  <h1 class="display-4">You have been logged out!</h1>
+  <h2>You have been logged out!</h2>
   <p class="lead">You can login again by simply clicking on the login button below</p>
   <hr class="my-4">
   <p>Thank you for visiting our site</p>
   <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login Again</a>
+</div>
 </div>
 </div>
 {% endblock content %}

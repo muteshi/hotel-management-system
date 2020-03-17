@@ -1,46 +1,46 @@
 {% extends "hotels/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-{{ form.non_field_errors }}
-<div class="container">
 <div class="booking">
+<div class="container">
+  <div class="form-inner">
+<div class="content-section">
   <div class="jumbotron">
-<h4 class="display-6">Register your Property with us</h4>
+<h5 class="display-5">Add Conference Rooms to your property</h5>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+
+    {{ cform.hotel|as_crispy_field }}
+   
+    <div class="form-row">
+      <div class="form-group col-md-6 mb-0">
+        {{ cform.room_Name|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6 mb-0">
+        {{ cform.room_discount|as_crispy_field }}
+      </div>
+    </div>
+
+
+    <div class="form-row">
+      <div class="form-group col-md-6 mb-0">
+        {{ cform.room_Price|as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6 mb-0">
+        {{ cform.room_Capacity|as_crispy_field }}
+      </div>
+    </div>
+    {{ cform.room_photo|as_crispy_field }}
+    {{ cform.room_details|as_crispy_field }}
     
-      <div class="form-row">
-      <div class="form-group col-md-6 mb-0">
-        {{ form.name|as_crispy_field }}
-      </div>
-      <div class="form-group col-md-6 mb-0">
-        {{ form.address|as_crispy_field }}
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-6 mb-0">
-        {{ form.city|as_crispy_field }}
-      </div>
-      <div class="form-group col-md-6 mb-0">
-        {{ form.country|as_crispy_field }}
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-6 mb-0">
-        {{ form.mobile_number|as_crispy_field }}
-      </div>
-      <div class="form-group col-md-6 mb-0">
-        {{ form.star_rating|as_crispy_field }}
-      </div>
-    </div>
-    {{ form.property_photo|as_crispy_field }}
-    {{ form.description|as_crispy_field }}
-      <div class="mt-5">
+      <div class="mt-10">
         <button type="submit" class="btn btn-outline-success">Save and Close</button>
         <a class="btn btn-outline-secondary" href="javascript:history.back()">Cancel</a>
       </div>
   </form>
   </div>
+    </div>
+    </div>
     </div>
   </div>
 {% endblock content %}

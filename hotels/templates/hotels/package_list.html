@@ -48,7 +48,11 @@
                             <div class="ml-auto">
                               <div class="price">
                                 start from
-                                <span class="text-secondary">Ksh{{ min.package_Price__min }}</span>
+                              {% for key, value in lowest_prices.items %} 
+                              {% if key == package.title %}
+                              <span class="text-secondary">Ksh{{ value|intcomma }}</span>
+                              {% endif %}
+                              {% endfor %}
                                 per person sharing
                               </div>
                             </div>

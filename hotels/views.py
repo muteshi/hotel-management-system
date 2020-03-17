@@ -1,18 +1,20 @@
 import datetime
+from django.utils import timezone
 
 from django.shortcuts import render, redirect, HttpResponseRedirect, Http404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Hotels, Room, Packages, Itinirery, HotelPackages, CartPackageItems, Slider
+from .models import Hotels, Room, Packages, Itinirery, HotelPackages, CartPackageItems, Slider, ConferenceRoom, CartConferenceItems
 from django.http import JsonResponse
 from django.views import View
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.core import mail
 from django.contrib import messages
-from .forms import RoomForm, PhotoForm, PackageForm, HotelPackagesForm, ItinireryForm
+from django.contrib.messages.views import SuccessMessageMixin
+from .forms import RoomForm, PhotoForm, PackageForm, HotelPackagesForm, ItinireryForm, ConferenceRoomForm, HotelsForm
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
@@ -39,10 +41,40 @@ def company(request):
 def hotels(request):
     """Display all hotels"""
 
+    lowest_prices = {}
+    for i in Hotels.objects.all():
+        price = Room.objects.filter(hotel=i.id)[0].room_Price
+        lowest_prices[i.name] = price
+
+
     context = {
-        'hotels': Hotels.objects.all()
+        'hotels': Hotels.objects.all(),
+        'lowest_prices': lowest_prices,
+        'title': 'Bed & Breakfast, Hotels, Accomodation and more..'
+        
     }
     return render(request, 'hotels/hotels.html', context)
+
+def conference_hotels(request):
+    """Display all hotels"""
+
+    rooms = Hotels.objects.all().annotate(min_price=Min('conferenceroom__room_Price'))
+    lowest_prices = {}
+    for i in Hotels.objects.all():
+        if room.objects.filter(hotel=i.id).exists():
+            price = ConferenceRoom.objects.filter(hotel=i.id)[0].room_Price
+            lowest_prices[i.name] = price
+
+    context = {
+        'hotels': Hotels.objects.all(),
+        'min':ConferenceRoom.objects.all().aggregate(Min('room_Price')),
+        'lowest_prices': lowest_prices,
+
+
+        
+    }
+    return render(request, 'hotels/conference_hotels.html', context)
+
 
 def single(request, slug):
     """Display all hotels"""
@@ -101,15 +133,38 @@ class HotelsDetailView(DetailView):
     model = Hotels
 
     def get_context_data(self, *args, **kwargs):
-    	context = super(HotelsDetailView, self).get_context_data(*args, **kwargs)
+        context = super(HotelsDetailView, self).get_context_data(*args, **kwargs)
+        lowest_prices = {}
+        for i in Hotels.objects.all():
+            if Room.objects.filter(hotel=i.id).exists():
+                price = Room.objects.filter(hotel=i.id)[0].room_Price
+                lowest_prices[i.name] = price
 
-    	# hotel = Hotels.objects.get(contact_person = self.request.user, id=self.kwargs.get('pk'))
+        context['hotels'] = Hotels.objects.all()
+        context['min'] = Room.objects.all().aggregate(Min('room_Price'))
+        context['lowest_prices'] = lowest_prices
 
-    	context['hotels'] = Hotels.objects.all()
-    	# 'min':Hotels.objects.all().aggregate(Min('package_Price'))
-    	# context['cities'] = Hotels.objects.get(city__iexact=hotel.city)
+        return context
 
-    	return context
+class ConferenceHotelsDetailView(DetailView):
+    """List all details of the hotel"""
+    model = Hotels
+    template_name = 'hotels/conference_hotel_details.html'
+
+    def get_context_data(self, *args, **kwargs):
+
+        context = super(ConferenceHotelsDetailView, self).get_context_data(*args, **kwargs)
+        lowest_prices = {}
+        for i in Hotels.objects.all():
+            if ConferenceRoom.objects.filter(hotel=i.id).exists():
+                price = ConferenceRoom.objects.filter(hotel=i.id)[0].room_Price
+                lowest_prices[i.name] = price
+
+        context['hotels'] = Hotels.objects.all()
+        context['min'] = ConferenceRoom.objects.all().aggregate(Min('room_Price'))
+        context['lowest_prices'] = lowest_prices
+
+        return context
 
 
 class PackagesDetailView(DetailView):
@@ -117,41 +172,51 @@ class PackagesDetailView(DetailView):
     model = Packages
 
     def get_context_data(self, *args, **kwargs):
-    	context = super(PackagesDetailView, self).get_context_data(*args, **kwargs)
+        context = super(PackagesDetailView, self).get_context_data(*args, **kwargs)
+        lowest_prices = {}
+        for i in Packages.objects.all():
+            if HotelPackages.objects.filter(package=i.id).exists():
+                price = HotelPackages.objects.filter(package=i.id)[0].package_Price
+                lowest_prices[i.title] = price
 
-    	# hotel = Hotels.objects.get(contact_person = self.request.user, id=self.kwargs.get('pk'))
-
-    	context['packages'] = Packages.objects.all()
-    	# 'min':Hotels.objects.all().aggregate(Min('package_Price'))
-    	# context['cities'] = Hotels.objects.get(city__iexact=hotel.city)
-
-    	return context
+        context['packages'] = Packages.objects.all()
+        context['lowest_prices'] = lowest_prices
+        return context
 
 
 class HotelsCreateView(LoginRequiredMixin, CreateView):
     """Creates hotels form"""
     model = Hotels
+    form_class = HotelsForm
 
-    fields = [
-            'name',
-            'address',
-            'city',
-            'country',
-            'mobile_number',
-            'property_photo',
-            'star_rating',
-            'description',
-            'property_photo',
-    ]
 
     def form_valid(self, form):
-        form.instance.contact_person = self.request.user
+        hotel = form.save(commit=False)
+        hotel.contact_person = self.request.user
+        hotel.save()
+        # messages.success(self.request, f'You have successfully created {self.hotel.name}!')
+        #Send email on Successfull property creation
+        property_url ="%s/%s" %(settings.SITE_URL,reverse("hotel-detail", args=[hotel.slug]))
+        context = {"property_url": property_url,"user":  hotel.contact_person.name,}
+        message = render_to_string("hotels/property_register_success.html", context)
+        plain_message = strip_tags(message)
+        subject = f"Registration details for {hotel.name}"
+        mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [hotel.contact_person.email], html_message=message)
+
         return super().form_valid(form)
 
-class HotelsUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+
+
+
+
+
+class HotelsUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """Update all details of the hotel"""
     model = Hotels
+    template_name = "hotels/edit_hotel.html"
+    context_object_name = 'hotel'
     fields = [
+            'name',
             'name',
             'address',
             'city',
@@ -163,9 +228,11 @@ class HotelsUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     ]
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
+        hotel = form.save(commit=False)
+        hotel.last_modified = timezone.now()
+        hotel.contact_person = self.request.user
+        hotel.save()
+        return redirect("hotel-detail", hotel.slug)
 
     def test_func(self):
         hotel = self.get_object()
@@ -173,17 +240,23 @@ class HotelsUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
-    def get_success_url(self):
-        return reverse('hotels-list')
 
-class RoomUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+
+
+class RoomUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """Update all details of the hotel"""
     model = Room
-    fields = ('hotel','room_Type','room_Name','room_Capacity','room_Price','total_Rooms','room_details','room_photo',)
+    template_name = "hotels/edit_room.html"
+    context_object_name = 'room'
+    fields = ('room_Type','room_Name','room_Capacity','room_Price','total_Rooms','room_details','room_photo',)
+
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+        room = form.save(commit=False)
+        room.last_modified = timezone.now()
+        room.user = self.request.user
+        room.save()
+        return redirect("hotel-detail", room.hotel.slug)
 
 
     def test_func(self):
@@ -192,9 +265,28 @@ class RoomUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
-    def get_success_url(self):
-        return reverse('room-list')
 
+class ConferenceRoomUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Update all details of the conference room"""
+    model = ConferenceRoom
+    fields = ('room_Name','room_Capacity','room_Price', 'room_discount', 'room_photo','room_details',)
+    template_name = "hotels/edit_conferenceroom.html"
+    success_message = "%(room_Name)s was updated successfully"
+    context_object_name = 'conference_room'
+
+    def form_valid(self, form):
+        room = form.save(commit=False)
+        room.last_modified = timezone.now()
+        room.user = self.request.user
+        room.save()
+        return redirect("conference-hotel-detail", room.hotel.slug)
+
+
+    def test_func(self):
+        room = self.get_object()
+        if self.request.user == room.user:
+            return True
+        return False
 
 
 class HotelsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -212,7 +304,7 @@ class HotelsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class RoomDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """Deletes a room"""
     model = Room
-    success_url = '/hotels/rooms/'
+    
 
     def test_func(self):
         room = self.get_object()
@@ -220,6 +312,16 @@ class RoomDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+    def get_context_data(self, **kwargs):
+        context=super(RoomDeleteView, self).get_context_data(**kwargs)
+        context[next]=self.request.POST.get('previous_page')
+        return context
+
+    def get_success_url(self):
+        redirect_to=self.request.POST.get('previous_page')
+        return redirect_to
+
+    
 
 @login_required
 def new_room(request):
@@ -232,35 +334,57 @@ def new_room(request):
             room = form.save(commit=False)
             room.user = request.user
             room.save()
+            room_Name = form.cleaned_data.get('room_Name')
+            room_Type = form.cleaned_data.get('room_Type')
+            messages.success(request, f'You have successfully created {room_Name}-{room_Type} room!')
 
-            return redirect('room-list')
+            return redirect("hotel-detail", room.hotel.slug)
     else:
         form = RoomForm(request.user)
 
     return render(request, 'hotels/room_form.html', {'form': form})
 
 
-# class RoomCreateView(LoginRequiredMixin, CreateView):
-#     """Creates hotels form"""
-#     model = Room
+@login_required
+def new_conferenceroom(request):
+    if request.method == 'POST':
+        cform = ConferenceRoomForm(request.user,
+                        request.POST,
+                        request.FILES
+                        )
+        if cform.is_valid():
+            room = cform.save(commit=False)
+            room.user = request.user
+            room.conference = True
+            room.save()
 
-#     fields = ('hotel','room_Type','room_Name','room_Capacity','room_Price','total_Rooms','room_details','room_photo',)
+            return redirect("conference-hotel-detail", room.hotel.slug)
+    else:
+        cform = ConferenceRoomForm(request.user)
+
+    return render(request, 'hotels/conferenceroom_form.html', {'cform': cform})
 
 
-#     def form_valid(self, form):
+class ConferenceRoomDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Deletes a room"""
+    model = ConferenceRoom
+    
 
-#         room_form = form.save(commit=False)
-#         try:
-#             hotel_room = Hotels.objects.filter(contact_person = self.request.user).first()
-            
-#         except Hotels.DoesNotExist:
-#             raise Http404
-#         room_form.hotel = hotel_room
-#         room_form.user = self.request.user
-#         room_form.save()
-        
+    def test_func(self):
+        room = self.get_object()
+        if self.request.user == room.user:
+            return True
+        return False
 
-#         return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context=super(ConferenceRoomDeleteView, self).get_context_data(**kwargs)
+        context[next]=self.request.POST.get('previous_page')
+        return context
+
+    def get_success_url(self):
+        redirect_to=self.request.POST.get('previous_page')
+        return redirect_to
+
 
 
 
@@ -276,7 +400,7 @@ class PhotoUploadView(LoginRequiredMixin,View):
         if form.is_valid():
             photo = form.save(commit=False)
             try:
-                hotel = Hotels.objects.get(contact_person = self.request.user, id=self.kwargs.get('pk'))
+                hotel = Hotels.objects.get(contact_person=self.request.user, id=self.kwargs.get('pk'))
             except Hotels.DoesNotExist:
                 raise Http404
             photo.hotel = hotel
@@ -294,20 +418,6 @@ def clear_database(request):
     return redirect(request.POST.get('next'))
 
 
-
-# class ReviewCreateView(CreateView):
-#
-#     model = Review
-#     fields = ['comment','rating']
-#     #success_url = '/hotels/'
-#     def get_success_url(self):
-#         hotelid = self.kwargs['id']
-#         url = reverse('hotel-detail', args=[hotelid])
-#         return url
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user
-#         form.instance.hotel_id = self.kwargs['id']
-#         return super(ReviewCreateView, self).form_valid(form)
 
 def bookRoom(request):
 
@@ -384,6 +494,60 @@ def package_view(request):
     template = "hotels/package_booking.html"
     return render(request, template, context)
 
+#Conference room reservation
+
+def conference_view(request):
+    try:
+        the_id = request.session['cart_id']
+        cart = Cart.objects.get(id=the_id)
+    except:
+        the_id = None
+    if the_id:
+        new_total = 0.00
+        line_total = 0.00
+        s_room_total = 0.00
+        d_room_total = 0.00
+
+
+        for item in cart.cartconferenceitems_set.all():
+            
+            line_total = float(item.rooms.room_Price) * item.guests * item.conference_duration
+            request.session['line_total'] = line_total
+
+            if item.single_room != None:
+                s_room_total = float(item.single_room_price) * item.nights * float(item.single_room_total) * float(100 - (item.rooms.room_discount))/100
+                request.session['s_room_total'] = s_room_total
+            else:
+                s_room_total = 0.00
+
+                
+                
+            if item.double_room != None:
+                d_room_total = float(item.double_room_price) * item.nights * float(item.double_room_total)  * float(100 - (item.rooms.room_discount))/100
+                request.session['d_room_total'] = d_room_total
+
+            else:
+                d_room_total = 0.00
+                
+
+            new_total = line_total + s_room_total + d_room_total
+            request.session['discount'] = int(item.rooms.room_discount)
+
+
+        request.session['items_total'] = cart.cartconferenceitems_set.count()
+
+      
+
+        cart.total = new_total
+        cart.save()
+        context = {"cart":cart, "line_total":line_total, "s_room_total":s_room_total, "d_room_total":d_room_total}
+    else:
+        empty_message = "You are yet to make any conference room reservation"
+        context = {"empty": True, "empty_message": empty_message}
+
+    template = "hotels/conference-booking.html"
+    return render(request, template, context)
+
 
 def remove_from_cart(request, id):
     try:
@@ -415,6 +579,21 @@ def remove_from_packagecart(request, id):
     cart_package_item.save()
 
     return HttpResponseRedirect(reverse("package-cart"))
+
+
+def remove_from_conferencecart(request, id):
+    try:
+        the_id = request.session['cart_id']
+        cart = Cart.objects.get(id=the_id)
+    except:
+        return HttpResponseRedirect(reverse("conference-cart"))
+
+    cart_item = CartConferenceItems.objects.get(id = id)
+    # cart_item.delete()
+    cart_item.cart = None
+    cart_item.save()
+
+    return HttpResponseRedirect(reverse("conference-cart"))
 
 
 
@@ -488,9 +667,17 @@ class ItinireryCreateView(LoginRequiredMixin, CreateView):
 def package_list(request):
     """Display all packages according to the chosen criteria"""
 
+    lowest_prices = {}
+    for i in Packages.objects.all():
+        if HotelPackages.objects.filter(package=i.id).exists():
+            price = HotelPackages.objects.filter(package=i.id)[0].package_Price
+            lowest_prices[i.name] = price
+
+
     context = {
         'packages': Packages.objects.all(),
-        'min':HotelPackages.objects.all().aggregate(Min('package_Price'))
+        'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
+        'lowest_prices': lowest_prices,
     }
     return render(request, 'hotels/package_list.html', context)
 
@@ -498,10 +685,17 @@ def package_list(request):
 def package_main_list(request):
     """Display all packages according to the chosen criteria"""
 
+    lowest_prices = {}
+    for i in Packages.objects.all():
+        if HotelPackages.objects.filter(package=i.id).exists():
+            price = HotelPackages.objects.filter(package=i.id)[0].package_Price
+            lowest_prices[i.title] = price
+
     context = {
         'packages': Packages.objects.all(),
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
-        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+        'time':HotelPackages.objects.all().aggregate(Min('duration')),
+        'lowest_prices': lowest_prices,
     }
     return render(request, 'hotels/packages.html', context)
 
@@ -510,11 +704,17 @@ def package_main_list(request):
 def package_honeymoon_list(request):
     """Display all packages according to the chosen criteria"""
     packages = Packages.objects.all()
+    lowest_prices = {}
+    for i in Packages.objects.all():
+        if HotelPackages.objects.filter(package=i.id).exists():
+            price = HotelPackages.objects.filter(package=i.id)[0].package_Price
+            lowest_prices[i.title] = price
 
     context = {
         'packages': packages,
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
-        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+        'time':HotelPackages.objects.all().aggregate(Min('duration')),
+        'lowest_prices': lowest_prices,
     }
     return render(request, 'hotels/package_honeymoon_list.html', context)
 
@@ -522,11 +722,17 @@ def package_honeymoon_list(request):
 def package_easter_list(request):
     """Display all packages according to the chosen criteria"""
     packages = Packages.objects.all()
+    lowest_prices = {}
+    for i in Packages.objects.all():
+        if HotelPackages.objects.filter(package=i.id).exists():
+            price = HotelPackages.objects.filter(package=i.id)[0].package_Price
+            lowest_prices[i.title] = price
 
     context = {
         'packages': packages,
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
-        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+        'time':HotelPackages.objects.all().aggregate(Min('duration')),
+        'lowest_prices': lowest_prices,
     }
     return render(request, 'hotels/package_easter_list.html', context)
 
@@ -534,34 +740,52 @@ def package_christmas_list(request):
     """Display all packages according to the chosen criteria"""
     packages = Packages.objects.all()
     empty_message = "Sorry, no packages in this category"
+    lowest_prices = {}
+    for i in Packages.objects.all():
+        if HotelPackages.objects.filter(package=i.id).exists():
+            price = HotelPackages.objects.filter(package=i.id)[0].package_Price
+            lowest_prices[i.title] = price
 
     context = {
         'empty_message': empty_message,
         'packages': packages,
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
-        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+        'time':HotelPackages.objects.all().aggregate(Min('duration')),
+        'lowest_prices': lowest_prices,
     }
     return render(request, 'hotels/package_christmas_list.html', context)
 
 def package_coast_list(request):
     """Display all packages according to the chosen criteria"""
     packages = Packages.objects.all()
+    lowest_prices = {}
+    for i in Packages.objects.all():
+        if HotelPackages.objects.filter(package=i.id).exists():
+            price = HotelPackages.objects.filter(package=i.id)[0].package_Price
+            lowest_prices[i.title] = price
 
     context = {
         'packages': packages,
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
-        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+        'time':HotelPackages.objects.all().aggregate(Min('duration')),
+        'lowest_prices': lowest_prices,
     }
     return render(request, 'hotels/package_coast_list.html', context)
 
 def package_selfdrive_list(request):
     """Display all packages according to the chosen criteria"""
     packages = Packages.objects.all()
+    lowest_prices = {}
+    for i in Packages.objects.all():
+        if HotelPackages.objects.filter(package=i.id).exists():
+            price = HotelPackages.objects.filter(package=i.id)[0].package_Price
+            lowest_prices[i.title] = price
 
     context = {
         'packages': packages,
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
-        'time':HotelPackages.objects.all().aggregate(Min('duration'))
+        'time':HotelPackages.objects.all().aggregate(Min('duration')),
+        'lowest_prices': lowest_prices,
     }
     return render(request, 'hotels/package_selfdrive_list.html', context)
 

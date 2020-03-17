@@ -1,7 +1,6 @@
 {% extends "hotels/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-{{ form.non_field_errors }}
 <div class="form-login">
 
   <form method="POST">
@@ -21,17 +20,11 @@
         <span>or</span>
       </div>
 
-      <!-- <div class="form-group">
-        <input id="login_username" class="form-control" placeholder="Email address / phone number" type="text">
-      </div>
-      <div class="form-group">
-        <input id="login_password" class="form-control" placeholder="Password" type="password">
-      </div> -->
-
       {{ form|crispy }}
 
       <div class="row gap-5 mt-5">
         <div class="col-12 col-sm-6">
+          <input name="next" type="hidden" value="{{next}}">
           <div class="custom-control custom-checkbox style-01 mt-5">
             <input type="checkbox" class="custom-control-input" id="loginForm-02-checkbox-in-tab">
             <label class="custom-control-label line-145 pt-5" for="loginForm-02-checkbox-in-tab">Remember me</label>

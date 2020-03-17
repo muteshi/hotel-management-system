@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (Hotels, Room, Photo, Cart, CartItems, HotelService,
 					Packages, Itinirery, HotelPackages, CartPackageItems,
-                    Slider
+                    Slider, ConferenceRoom, CartConferenceItems
 
 
 						 )
@@ -18,6 +18,18 @@ class PackagesAdmin(admin.ModelAdmin):
 class RoomAdmin(admin.ModelAdmin):
     # list_display = ('title', 'body',)
     prepopulated_fields = {'slug': ('room_Name','room_Type',)} # new
+    class Meta:
+        model = ConferenceRoom
+
+
+class ConferenceRoomAdmin(admin.ModelAdmin):
+    list_display = ["__str__", "hotel", "created_at", "room_Capacity", "published"]
+    prepopulated_fields = {'slug': ('room_Name',)} # new
+
+# class CartConferenceItemsAdmin(admin.ModelAdmin):
+#     list_display = ["__str__", "double_room", "single_room", "CheckIn", "CheckOut", "RoomCheckIn", "RoomCheckOut", "total"]
+#     class Meta:
+#         model = CartConferenceItems
 
 class CartAdmin(admin.ModelAdmin):
     class Meta:
@@ -49,5 +61,9 @@ admin.site.register(HotelPackages)
 admin.site.register(CartPackageItems)
 
 admin.site.register(Slider, SliderAdmin)
+
+admin.site.register(ConferenceRoom, ConferenceRoomAdmin)
+
+admin.site.register(CartConferenceItems)
 
 

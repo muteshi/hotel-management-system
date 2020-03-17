@@ -9,7 +9,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'bookings-home' %}">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Hotels</li>
+    <li class="breadcrumb-item active" aria-current="page">Meetings & Conference</li>
   </ol>
 </nav>
 </div>
@@ -25,7 +25,7 @@
 
 								<div class="product-grid-item">
 
-									<a href="{% url 'hotel-detail' hotel.slug %}">
+									<a href="{% url 'conference-hotel-detail' hotel.slug %}">
 
 										<div class="image">
 											<img src="{{ hotel.property_photo.url }}" alt="Image">
@@ -51,15 +51,15 @@
 
 											<div class="price">
 												<div class="float-right">
+													{% for key, value in lowest_prices.items %} 
+                          							{% if key == hotel.name %}
 													start from
-                          {% for key, value in lowest_prices.items %} 
-                          {% if key == hotel.name %}
-                          
+                   
 													<span class="text-secondary">Ksh{{ value|intcomma }}</span>
-													
-                           {% endif %}
-                          {% endfor %}
-													per night
+													{% endif %}
+													{% endfor %}
+                         
+													per person
 												</div>
 											</div>
 

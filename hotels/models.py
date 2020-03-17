@@ -36,6 +36,7 @@ class Hotels(models.Model):
     class Meta:
         unique_together = ('name', 'slug')
         verbose_name_plural = 'Hotels'
+        ordering = ('created_at',)
 
 
     def __str__(self):
@@ -49,14 +50,6 @@ class Hotels(models.Model):
     def save(self):
         """Override default save method to resize the photo"""
         super().save()
-        #Send email on Successfull property creation
-        property_url ="%s/%s" %(settings.SITE_URL,reverse("hotel-detail", args=[self.slug]))
-        context = {"property_url": property_url,"user":  self.contact_person.name,}
-        message = render_to_string("hotels/property_register_success.html", context)
-        plain_message = strip_tags(message)
-        subject = f"Registration details for {self.name}"
-        mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.contact_person.email], html_message=message)
-        
         img = Image.open(self.property_photo.path)
 
         if img.height > 500 or img.width > 500:
@@ -129,6 +122,7 @@ class Room(models.Model):
     class Meta:
         unique_together = ('room_Name', 'slug')
         verbose_name_plural = 'Rooms'
+        ordering = ['room_Price', 'created_at',]
 
     def __str__(self):
          return f'{self.room_Name}-{self.room_Type}'
@@ -136,7 +130,7 @@ class Room(models.Model):
 
     def get_absolute_url(self):
         #Redirects the form to photo uploads
-        return reverse('room-list')
+        return reverse("hotel-detail", args=[self.hotel.slug])
 
 
     def save(self):
@@ -167,22 +161,6 @@ def pre_save_room_receiver(sender, instance, *args, **kwargs):
         instance.slug = create_room_slug(instance)
 
 pre_save.connect(pre_save_room_receiver, sender=Room)
-
-
-# class Review(models.Model):
-#     """Stores the Hotel reviews and is used to query the reviews"""
-#     user = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
-#     hotel = models.ForeignKey(Hotels,on_delete=models.CASCADE)
-#     comment = models.CharField(max_length=255)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#     rating = models.IntegerField(default = 0)
-#
-#     class Meta:
-#         verbose_name_plural = 'Reviews'
-#
-#     def __str__(self):
-#          return self.comment
 
 
 class CartItems(models.Model):
@@ -295,8 +273,9 @@ class HotelPackages(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-    	verbose_name = 'Hotel Package'
-    	verbose_name_plural = 'Hotel Packages'
+        verbose_name = 'Hotel Package'
+        verbose_name_plural = 'Hotel Packages'
+        ordering = ['package_Price', 'created_at',]
 
     def __str__(self):
          return f'{self.package} in {self.hotel}'
@@ -366,6 +345,98 @@ class Slider(models.Model):
     class Meta:
         ordering = ['-start_Date', '-end_Date']
         verbose_name_plural = 'Sliders'
+
+
+class ConferenceRoom(models.Model):
+    """Creates conference room details"""
+
+    hotel = models.ForeignKey(Hotels,on_delete = models.CASCADE, null=True, blank=True,)
+    room_photo = models.ImageField(default='default.jpg', upload_to='confrenceroom_photos')
+    room_Name = models.CharField(max_length = 200)
+    room_details = models.TextField(null=True, blank=True,)
+    room_Capacity = models.PositiveIntegerField(default = 10)
+    room_Price= models.PositiveIntegerField(default = 2000)
+    room_discount = models.DecimalField(max_digits=1000, decimal_places=2, default=1.00)
+    slug = models.SlugField(unique=True)
+    published = models.BooleanField(default=False)
+    conference = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True,)
+    class Meta:
+        unique_together = ('room_Name', 'slug')
+        verbose_name_plural = 'Conference Rooms'
+        ordering = ('room_Price', 'created_at',)
+
+    def __str__(self):
+         return f'{self.room_Name}'
+
+
+    def get_absolute_url(self):
+        #Redirects the form to photo uploads
+        return reverse('conferenceroom-list')
+
+    def features_as_list(self):
+        return self.room_details.split('\n')
+
+
+    def save(self):
+        """Override default save method"""
+        super().save()
+
+        img = Image.open(self.room_photo.path)
+
+        if img.height > 600 or img.width > 450:
+            output_size = (600, 450)
+            img.thumbnail(output_size)
+            rgb_img =img.convert('RGB')
+            rgb_img.save(self.room_photo.path)
+
+def create_conferenceroom_slug(instance, new_slug=None):
+    slug = slugify(instance.room_Name)
+    if new_slug is not None:
+        slug = new_slug
+    qs = ConferenceRoom.objects.filter(slug=slug).order_by("-id")
+    exists = qs.exists()
+    if exists:
+        new_slug = f'{slug}-{qs.first().id}'
+        return create_conferenceroom_slug(instance, new_slug=new_slug)
+    return slug
+
+def pre_save_conferenceroom_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = create_conferenceroom_slug(instance)
+
+pre_save.connect(pre_save_conferenceroom_receiver, sender=ConferenceRoom)
+
+
+class CartConferenceItems(models.Model):
+    cart = models.ForeignKey('Cart', on_delete = models.CASCADE, null=True, blank=True)
+    rooms = models.ForeignKey(ConferenceRoom, on_delete = models.CASCADE, null=True, blank=True)#conference room
+    hotel_room = models.ForeignKey(Room, on_delete = models.CASCADE, null=True, blank=True)
+    guests = models.PositiveIntegerField(default = 1)
+    double_room = models.CharField(max_length=255, null=True, blank=True)
+    single_room = models.CharField(max_length=255, null=True, blank=True)
+    double_room_total = models.PositiveIntegerField(null=True, blank=True) #Number of rooms selected
+    single_room_total= models.PositiveIntegerField(null=True, blank=True)
+    single_room_price= models.DecimalField(max_digits=1000, decimal_places=2, default=0.00)
+    double_room_price= models.DecimalField(max_digits=1000, decimal_places=2, default=0.00)
+    total = models.DecimalField(max_digits=1000, decimal_places=2, default=0.00)
+    CheckIn = models.DateField(null=True, blank=True)
+    CheckOut = models.DateField(null=True, blank=True)
+    RoomCheckIn = models.DateField(null=True, blank=True)
+    RoomCheckOut = models.DateField(null=True, blank=True)
+    conference_duration = models.PositiveIntegerField(default=1)
+    nights = models.PositiveIntegerField(null=True, blank=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    timestamp =models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    def __str__(self):
+         return f'{self.rooms.room_Name}-{self.rooms.hotel.name}'
+
+    class Meta:
+        verbose_name_plural = 'Conference Cart Items'
+
 
 
     
