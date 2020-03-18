@@ -1,9 +1,9 @@
 {% extends "hotels/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container">
+
    <div class="booking">
-  <div class="jumbotron">
+  <div class="container">
 <h3>Edit {{ conference_room }}?</h5>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}

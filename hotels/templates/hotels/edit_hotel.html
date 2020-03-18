@@ -2,9 +2,10 @@
 {% load crispy_forms_tags %}
 {% block content %}
 {{ form.non_field_errors }}
-<div class="container">
+
 <div class="booking">
-  <div class="jumbotron">
+  <div class="container">
+  
 <h4 class="display-6">Update {{ hotel }}</h4>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}

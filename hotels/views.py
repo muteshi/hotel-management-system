@@ -61,9 +61,10 @@ def conference_hotels(request):
     rooms = Hotels.objects.all().annotate(min_price=Min('conferenceroom__room_Price'))
     lowest_prices = {}
     for i in Hotels.objects.all():
-        if room.objects.filter(hotel=i.id).exists():
-            price = ConferenceRoom.objects.filter(hotel=i.id)[0].room_Price
-            lowest_prices[i.name] = price
+        if ConferenceRoom.objects.filter(hotel=i.id).exists():
+            if ConferenceRoom.objects.filter(hotel=i.id).exists():
+                price = ConferenceRoom.objects.filter(hotel=i.id)[0].room_Price
+                lowest_prices[i.name] = price
 
     context = {
         'hotels': Hotels.objects.all(),

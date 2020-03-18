@@ -422,7 +422,11 @@
 										<div class="price">
 											<div class="float-right">
 												start from
-												<span class="text-secondary">Ksh{{ min.room_Price__min|intcomma }}</span>
+												{% for key, value in lowest_prices.items %} 
+                                    			{% if key == hotel.name %}
+												<span class="text-secondary">Ksh{{ value|intcomma }}</span>
+												{% endif %}
+												{% endfor %}
 												per night
 											</div>
 										</div>
