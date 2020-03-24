@@ -1,0 +1,401 @@
+{% extends "hotels/base.html" %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+{% block content %}
+
+
+<!-- start Main Wrapper -->
+<div class="main-wrapper scrollspy-container">
+
+<div class="page-title breadcrumb-wrapper">
+<div class="container">
+<nav aria-label="breadcrumb">
+<ol class="breadcrumb">
+<li class="breadcrumb-item"><a href="#">Home</a></li>
+<li class="breadcrumb-item"><a href="#">Library</a></li>
+<li class="breadcrumb-item active" aria-current="page">Data</li>
+</ol>
+</nav>
+</div>
+</div>
+
+<section class="page-wrapper bg-light-primary">
+
+<div class="container">
+
+<div class="row gap-20 gap-md-30 gap-xl-40">
+
+<div class="col-12 col-lg-4">
+
+<aside class="sidebar-wrapper filter-wrapper mb-10 mb-md-0">
+
+<div class="box-expand-lg">
+
+<div id="filterResultCallapseOnMobile" class="collapse box-collapse"> 
+
+<div class="wrapper-inner">
+	
+	<div class="sidebar-title bg-primary">
+		<div class="d-flex align-items-end">
+			<div>
+				<h4 class="text-white font-serif font400">Filter results</h4>
+			</div>
+			<div class="ml-auto">
+				<a href="#" class="filter-reset">Reset</a>
+			</div>
+		</div>
+	</div>
+	
+	<div class="sidebar-box">
+	
+		<div class="box-title"><h5>Hotel Name contain</h5></div>
+		<form method="get">
+		<div class="box-content">
+			<div class="input-group">
+				{% render_field hotels_filter.form.name class="form-control" %}
+				<div class="input-group-append">
+					<button class="btn btn-secondary" type="submit"><i class="dripicons-search"></i></button>
+				</div>
+			</div>
+		</div> </form>
+		
+	</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="featured-contact-01 mt-40 mb-30 d-none d-md-block">
+<h6>Need help on booking? Call us on</h6>
+<span class="phone-number"><i class="material-icons">phone</i> 0734805199</span>
+Call us now to get help
+</div>
+
+<div class=" d-none d-lg-block">
+
+<h6 class="text-uppercase letter-spacing-2 line-1 font500"><span>Why Book With Marvellous Ventures</span></h6>
+
+<ul class="list-icon-data-attr font-ionicons">
+<li data-content="&#xf383">Save money and time to enjoy your vacation!</li>
+<li data-content="&#xf383">We will connect you with best deals.</li>
+<li data-content="&#xf383">We understand langauge of hotels</li>
+</ul>
+
+</div>
+
+<div class="d-block d-lg-none">
+<button type="buttom" class="btn btn-toggle btn-outline-primary btn-block collapsed collapsed-disapear" data-toggle="collapse" data-target="#filterResultCallapseOnMobile">Show Filter</button>		
+</div>
+
+</aside>
+
+</div>
+
+<div class="col-12 col-lg-8">
+
+<div class="content-wrapper">
+
+<div class="d-lg-flex mb-30 mb-lg-0">
+<div>
+<h3 class="heading-title"><span>{% if search_text  %} Hotels <span class="text-lowercase">in</span> </span> <span class="text-primary">{{ search_text }} {% else %} All hotels listed {% endif %}</span></h3>
+<p class="text-muted post-heading">{{paginator.count}} hotels found</p>
+</div>
+<div class="ml-auto">
+<button class="btn btn-secondary btn-wide btn-toggle collapsed btn-sm btn-change-search" data-toggle="collapse" data-target="#change-search"></button>
+</div>
+</div>
+
+<div id="change-search" class="collapse"> 
+
+	<!--Start search form -->
+<form method="GET" action="{% url 'search-hotels' %}">
+<div class="change-search-wrapper">
+
+<div class="row gap-10 gap-xl-20 align-items-end">
+
+	<div class="col-12 col-lg-6">
+			
+		<div class="form-group">
+			<label>Destination</label>
+			<div class="form-icon-left typeahead__container">
+				<span class="icon-font text-muted"><i class="bx bx-map"></i></span>
+				 <input class="js-typeahead-country_v1 form-control" name="search" type="search" 
+				 placeholder="Country or city" autocomplete="off" value = "{{ request.GET.search }}">
+			</div>
+		</div>
+	
+	</div>
+	
+	<div class="col-12 col-lg-6">
+			
+		<div id="airDatepickerRange-hotel" class="row gap-10 gap-xl-20">
+		
+			<div class="col-6">
+				
+				<div class="form-group"> 
+					<label>Check-in</label>
+					<div class="form-icon-left">
+						<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
+						<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy">
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="col-6">
+				
+				<div class="form-group"> 
+					<label>Check-out</label>
+					<div class="form-icon-left">
+						<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
+						<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy">
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+		
+	</div>
+	
+	<div class="col-12 col-sm-8 col-md-9">
+	
+		<div class="row gap-10 gap-xl-20">
+		
+			<div class="col-4 col-sm-4">
+			
+				<div class="form-group form-spin-group">
+					<label for="room-amount">Rooms</label>
+					<div class="form-icon-left">
+						<span class="icon-font text-muted"><i class="bx bx-home-alt"></i></span>
+						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="1" readonly />
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="col-4 col-sm-4 col-md-4">
+			
+				<div class="form-group form-spin-group">
+					<label for="adult-amount">Adults</label>
+					<div class="form-icon-left">
+						<span class="icon-font text-muted"><i class="bx bx-user"></i></span>
+						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
+					</div> 
+				</div>
+				
+			</div>
+			
+			<div class="col-4 col-sm-4">
+			
+				<div class="form-group form-spin-group">
+					<label for="child-amount">Children</label>
+					<div class="form-icon-left">
+						<span class="icon-font text-muted"><i class="bx bx-user"></i></span>
+						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	
+	</div>
+	
+	<div class="col-12 col-sm-4 col-md-3">
+		<div class="form-group">
+			<button class="btn btn-block btn-primary btn-form" type="submit">Search</button>
+		</div>
+	</div>
+	
+</div>
+
+</div></form>
+<!-- End search form -->
+</div>
+
+<div class="sorting-box mb-30">
+
+<div class="row align-items-center">
+
+<div class="col-12 col-md-9">
+	<div class="sort-by-wrapper mb-10 mb-md-0">
+		<label class="sorting-label block-xs">Sort by: </label> 
+		<div class="sorting-middle-holder">
+			<ul class="sort-by">
+				<li class="active up"><a href="#">Name <i class="fas fa-long-arrow-alt-down"></i></a></li>
+				<li><a href="#">Price</a></li>
+				<li><a href="#">Location</a></li>
+				<li><a href="#">Start Rating</a></li>
+				<li><a href="#">User Rating</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="col-12 col-md-3">
+	<div class="sort-by-wrapper float-left float-md-right">
+		<label class="sorting-label">View as: </label> 
+		<div class="sorting-middle-holder">
+			<a href="#" class="btn btn-sorting active"><i class="dripicons-checklist"></i></a>
+			<a href="#" class="btn btn-sorting"><i class="dripicons-view-thumb"></i></a>
+		</div>
+	</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="product-long-item-wrapper">
+	{% for hotel in hotels %}
+
+<div class="product-long-item">
+
+	<div class="row equal-height shrink-auto-md gap-15">
+	
+		<div class="col-12 col-shrink">
+		
+			<div class="image">
+				<img src="{{ hotel.property_photo.url }}" alt="{{ hotel.name }} photo" />
+			</div>
+		
+		</div>
+		
+		<div class="col-12 col-auto">
+		
+			<div class="col-inner d-flex flex-column">
+			
+				<div class="content-top">
+				
+					<div class="d-flex">
+					
+						<div>
+						
+							<div class="rating-item rating-sm rating-inline">
+								<div class="rating-icons">
+									<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
+								</div>
+								<p class="rating-text text-muted"><span class="bg-primary">6.0</span> <strong class="text-dark">Good</strong> <span class="font13">- 1,2547 reviews</span></p>
+							</div>
+							<h5><a href="#">{{ hotel.name }}</a></h5>
+							<p class="location"><i class="fas fa-map-marker-alt text-primary"></i> {{ hotel.address }}, {{ hotel.city}}, {{ hotel.country}}</p>
+							
+						</div>
+						
+						<div class="ml-auto">
+							<div class="price">
+								start from
+								{% for key, value in lowest_prices.items %} 
+                          {% if key == hotel.name %}
+                          
+							<span class="text-secondary">Ksh{{ value|intcomma }}</span>
+													
+                           {% endif %}
+                          {% endfor %}
+								per night
+							</div>
+						</div>
+					
+					</div>
+				
+				</div>
+				
+				<div class="content">
+					<p>{{ hotel.description|truncatewords:25 }}...</p>
+				</div>
+				
+				<div class="content-bottom mt-auto">
+					<div class="d-flex align-items-center">
+						<div>
+							<ul class="list-icon-absolute list-inline-block">
+								<li><span class="icon-font"><i class="fas fa-check-circle text-primary"></i> </span> Breakfast Included</li>
+								<li><span class="icon-font"><i class="fas fa-check-circle text-primary"></i></span> Free Wifi in Room</li>
+							</ul>
+						</div>
+						<div class="ml-auto">
+							<a href="{% url 'hotel-detail' hotel.slug %}" class="btn btn-primary btn-sm btn-wide">Details</a>
+						</div>
+					</div>
+				</div>
+			
+			</div>
+			
+		</div>
+	
+	</div>
+
+</div>
+{% endfor %}
+
+
+</div>
+
+{% if hotels.has_other_pages %}
+<div class="pager-wrappper mt-40">
+
+<div class="pager-innner">
+
+<div class="row align-items-center text-center text-md-left">
+
+<div class="col-12 col-md-5">
+	Showing page {{ hotels.number }} of {{paginator.num_pages}} pages of {{paginator.count}} hotels
+</div>
+
+<div class="col-12 col-md-7">
+	<nav class="float-lg-right mt-10 mt-md-0">
+		<ul class="pagination justify-content-center justify-content-lg-left">
+			{% if hotels.has_previous %}
+			<li>
+				<a href="?page=1{% if search_text %}&search={{search_text}} {% endif %}" aria-label="Previous">
+					<span aria-hidden="true">«</span>
+				</a>
+			</li>
+			{% endif %}
+			
+			{% for num in hotels.paginator.page_range %}
+			{% if hotels.number == num %}
+			<li class="active"><a href="?page={{num}}{% if search_text %}&search={{search_text}} {% endif %}">{{num}}</a></li>
+			{% elif num > hotels.number|add:'-3' and num < hotels.number|add:'3' %}
+
+			<li><a href="?page={{num}}{% if search_text %}&search={{search_text}} {% endif %}">{{num}}</a></li>
+			{% endif %}		
+			{% endfor %}
+
+			{% if hotels.has_next %}
+			<li>
+				<a href="?page={{ hotels.next_page_number }} {% if search_text %}&search={{search_text}} {% endif %}" aria-label="Next">
+					<span aria-hidden="true">»</span>
+				</a>
+			</li> {% endif %}
+		</ul>
+	</nav>
+</div>
+
+</div>
+	
+	</div>
+
+</div>
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>		
+<!-- end Main Wrapper -->
+
+
+
+{% endblock content %}
+

@@ -1,0 +1,135 @@
+{% extends "hotels/base.html" %}
+{% load static %}
+{% block content %}
+{% load humanize %}
+<div class="main-wrapper scrollspy-container">
+
+<div class="page-title breadcrumb-wrapper">
+<div class="container">
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'bookings-home' %}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Hotels</li>
+  </ol>
+</nav>
+</div>
+</div>
+
+<section class="page-wrapper bg-light-primary">
+
+<div class="container">
+	<h3 class="heading-title"><span>{{ page_obj.paginator.count  }} Hotels <span class="text-lowercase">in</span> </span> <span class="text-primary">{{ hotel_by_city.city }}, {{ hotel_by_city.country }}</span></h3>
+
+  <div class="row equal-height cols-1 cols-md-2 cols-lg-3 gap-10 gap-lg-20 gap-xl-30">
+              {% for hotel in hotels %}
+							<div class="col">
+
+								<div class="product-grid-item">
+
+									<a href="{% url 'hotel-detail' hotel.slug %}">
+
+										<div class="image">
+											<img src="{{ hotel.property_photo.url }}" alt="Image">
+										</div>
+
+										<div class="content clearfix">
+
+											<div class="rating-item rating-sm">
+												<div class="rating-icons">
+													<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
+												</div>
+												<p class="rating-text text-muted"><span class="bg-primary">6.0</span> <strong class="text-dark">Good</strong> <span class="font13">- 1,2547 reviews</span></p>
+											</div>
+
+											<div class="short-info">
+
+												<h5>{{ hotel.name }}</h5>
+												<p class="location"><i class="fas fa-map-marker-alt text-primary"></i>
+                          {{ hotel.address }}, {{ hotel.city}}, {{ hotel.country}}
+                        </p>
+
+											</div>
+
+											<div class="price">
+												<div class="float-right">
+													start from
+                          {% for key, value in lowest_prices.items %} 
+                          {% if key == hotel.name %}
+                          
+													<span class="text-secondary">Ksh{{ value|intcomma }}</span>
+													
+                           {% endif %}
+                          {% endfor %}
+													per night
+												</div>
+											</div>
+
+										</div>
+
+									</a>
+
+								</div>
+
+							</div>
+
+            {% endfor %}
+
+						</div>
+{% if is_paginated %}
+<div class="pager-wrappper mt-40">
+
+<div class="pager-innner">
+
+<div class="row align-items-center text-center text-md-left">
+
+<div class="col-12 col-md-5">
+	Showing page {{ page_obj.number }} of {{paginator.num_pages}} pages of {{paginator.count}} hotels
+</div>
+
+<div class="col-12 col-md-7">
+	<nav class="float-lg-right mt-10 mt-md-0">
+		<ul class="pagination justify-content-center justify-content-lg-left">
+			{% if page_obj.has_previous %}
+			<li>
+				<a href="?page=1" aria-label="Previous">
+					<span aria-hidden="true">«</span>
+				</a>
+			</li>
+			{% endif %}
+			
+			{% for num in page_obj.paginator.page_range %}
+			{% if page_obj.number == num %}
+			<li class="active"><a href="?page={{num}}">{{num}}</a></li>
+			{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+			
+			<li><a href="?page={{num}}">{{num}}</a></li>
+			{% endif %}		
+			{% endfor %}
+
+			{% if page_obj.has_next %}
+			<li>
+				<a href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+					<span aria-hidden="true">»</span>
+				</a>
+			</li> {% endif %}
+		</ul>
+	</nav>
+</div>
+
+</div>
+	
+	</div>
+
+</div>
+{% endif %}
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+{% endblock content %}
