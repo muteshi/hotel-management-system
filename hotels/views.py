@@ -1,7 +1,8 @@
 import datetime
 from django.utils import timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from django.shortcuts import render, redirect, HttpResponseRedirect, Http404
+from django.shortcuts import render, redirect, HttpResponseRedirect, Http404, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Hotels, Room, Packages, Itinirery, HotelPackages, CartPackageItems, Slider, ConferenceRoom, CartConferenceItems
 from django.http import JsonResponse
@@ -19,7 +20,8 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 
-from django.db.models import Min
+from django.db.models import Min, Q
+from .filters import HotelFilter, PackagesFilter
 
 
 from .models import Photo, Cart, CartItems
@@ -28,53 +30,113 @@ from reservations.models import Reservation
 
 def home(request):
 
-    context = {
-        'min': HotelPackages.objects.all().aggregate(Min('package_Price')),
-        'sliders': Slider.objects.all()
-    }
-    return render(request, 'hotels/home.html', context)
+	hotels = Hotels.objects.filter(featured=True)
+	packages = Packages.objects.filter(featured=True)
+	conference_hotels = Hotels.objects.filter(Q(has_conference=True) & Q(featured=True))
+
+	p_lowest_prices = {}
+	for i in packages:
+		if HotelPackages.objects.filter(package=i.id).exists():
+			price =HotelPackages.objects.filter(package=i.id)[0].package_Price
+			p_lowest_prices[i.title] = price
+
+	c_lowest_prices = {}
+	for i in conference_hotels:
+		if ConferenceRoom.objects.filter(hotel=i.id).exists():
+			price = ConferenceRoom.objects.filter(hotel=i.id)[0].room_Price
+			c_lowest_prices[i.name] = price
+
+
+
+	lowest_prices = {}
+	for i in hotels:
+		if Room.objects.filter(hotel=i.id).exists():
+			price = Room.objects.filter(hotel=i.id)[0].room_Price
+			lowest_prices[i.name] = price
+
+	context = {
+			 'min': HotelPackages.objects.all().aggregate(Min('package_Price')),
+			 'sliders': Slider.objects.all(), 'hotels':hotels, 
+			 'lowest_prices':lowest_prices,
+			 'p_lowest_prices':p_lowest_prices,
+			 'c_lowest_prices':c_lowest_prices,
+			 'conference_hotels': conference_hotels,
+			 'packages': packages,
+			 'time':HotelPackages.objects.all().aggregate(Min('duration')),
+			 'title': 'Hotels, Safaris, Meetings, Events and cheap vacation packages'
+			 }
+	return render(request, 'hotels/home.html', context)
 
 
 def company(request):
     return render(request, 'hotels/company.html', {'title': 'About'})
 
-def hotels(request):
-    """Display all hotels"""
 
-    lowest_prices = {}
-    for i in Hotels.objects.all():
-        price = Room.objects.filter(hotel=i.id)[0].room_Price
-        lowest_prices[i.name] = price
-
-
-    context = {
-        'hotels': Hotels.objects.all(),
-        'lowest_prices': lowest_prices,
-        'title': 'Bed & Breakfast, Hotels, Accomodation and more..'
-        
-    }
-    return render(request, 'hotels/hotels.html', context)
 
 def conference_hotels(request):
-    """Display all hotels"""
-
+    """Display all conference venues"""
+    hotels = Hotels.objects.filter(has_conference=True)
+    hotels_filter = HotelFilter(request.GET, queryset=hotels)
+    page = request.GET.get('page')
+    paginator = Paginator(hotels_filter.qs, 3)
+    
+    try:
+    	hotel = paginator.page(page)
+    except PageNotAnInteger:
+    	hotel = paginator.page(1)
+    except EmptyPage:
+    	hotel = paginator.page(paginator.num_pages)
     rooms = Hotels.objects.all().annotate(min_price=Min('conferenceroom__room_Price'))
     lowest_prices = {}
     for i in Hotels.objects.all():
         if ConferenceRoom.objects.filter(hotel=i.id).exists():
-            if ConferenceRoom.objects.filter(hotel=i.id).exists():
-                price = ConferenceRoom.objects.filter(hotel=i.id)[0].room_Price
-                lowest_prices[i.name] = price
+        	price = ConferenceRoom.objects.filter(hotel=i.id)[0].room_Price
+        	lowest_prices[i.name] = price
 
     context = {
-        'hotels': Hotels.objects.all(),
+        'hotels_filter': hotels_filter,
         'min':ConferenceRoom.objects.all().aggregate(Min('room_Price')),
         'lowest_prices': lowest_prices,
-
+        'hotels':hotel,
+        'paginator': paginator,
+        'title':'Meetings, Team Building, Conference rooms, Events and more..'
 
         
     }
     return render(request, 'hotels/conference_hotels.html', context)
+
+
+def package_main_list(request):
+    """Display all packages according to the chosen criteria"""
+
+    packages = Packages.objects.all()
+    packages_filter = PackagesFilter(request.GET, queryset=packages)
+    paginator = Paginator(packages_filter.qs, 9)
+    page = request.GET.get('page')
+    try:
+    	packages = paginator.page(page)
+    except PageNotAnInteger:
+    	packages = paginator.page(1)
+    except EmptyPage:
+    	packages = paginator.page(paginator.num_pages)
+
+
+    lowest_prices = {}
+    for i in Packages.objects.all():
+        if HotelPackages.objects.filter(package=i.id).exists():
+            price = HotelPackages.objects.filter(package=i.id)[0].package_Price
+            lowest_prices[i.title] = price
+
+    context = {
+        'packages': packages,
+        'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
+        'time':HotelPackages.objects.all().aggregate(Min('duration')),
+        'lowest_prices': lowest_prices,
+        'paginator':paginator,
+        'packages_filter': packages_filter,
+        'title': 'Honeymoon deals, Easter offers, Coast deals and more..'
+    }
+    return render(request, 'hotels/packages.html', context)
 
 
 def single(request, slug):
@@ -87,29 +149,214 @@ def single(request, slug):
 
 
 class HotelsListView(ListView):
-    """List select all hotels on the frontpage"""
+    """Displays all hotels on /hotels page"""
     model = Hotels
     template_name = 'hotels/hotels.html'
     context_object_name = 'hotels'
-    ordering = ['-date_posted']
-    paginate_by = 1
+    ordering = ['-created_at']
+    paginate_by = 9
 
-def search_hotels(request):
-    if request.method == 'POST':
-        search_text = request.POST['search_text']
+    def get_context_data(self, *args, **kwargs):
+        context = super(HotelsListView, self).get_context_data(*args, **kwargs)
+        hotels = Hotels.objects.all()
+        hotels_filter = HotelFilter(self.request.GET, queryset=hotels)
+        page = self.request.GET.get('page')
+        paginator = Paginator(hotels_filter.qs, self.paginate_by)
+        
+
+        
+
+        try:
+        	hotel = paginator.page(page)
+        except PageNotAnInteger:
+        	hotel = paginator.page(1)
+        except EmptyPage:
+        	hotel = paginator.page(paginator.num_pages)
+
+        context['hotels'] = hotel
+        context['hotels_filter'] = hotels_filter
+        context['paginator'] = paginator
+        context['title'] = 'Cheapest hotels in Kenya and East Africa'
+
+        lowest_prices = {}
+        for i in Hotels.objects.all():
+            if Room.objects.filter(hotel=i.id).exists():
+                price = Room.objects.filter(hotel=i.id)[0].room_Price
+                lowest_prices[i.name] = price
+
+        context['min'] = Room.objects.all().aggregate(Min('room_Price'))
+
+        context['lowest_prices'] = lowest_prices
+
+        return context
+
+class CityHotelsListView(ListView):
+    """Displays hotels in a specific town/city"""
+    model = Hotels
+    template_name = 'hotels/hotels_by_city.html'
+    context_object_name = 'hotels'
+    ordering = ['-created_at']
+    paginate_by = 9
+
+    def get_queryset(self):
+    	hotel_by_city = get_object_or_404 (Hotels, slug=self.kwargs.get('slug'))
+    	return Hotels.objects.filter(city=hotel_by_city.city).order_by('-created_at')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(HotelsListView, self).get_context_data(*args, **kwargs)
+        hotels = Hotels.objects.all()
+        paginator = Paginator(hotels, self.paginate_by)
+
+        page = self.request.GET.get('page')
+
+        try:
+        	hotel = paginator.page(page)
+        except PageNotAnInteger:
+        	hotel = paginator.page(1)
+        except EmptyPage:
+        	hotel = paginator.page(paginator.num_pages)
+
+        context['hotels'] = hotel
+
+        lowest_prices = {}
+        for i in Hotels.objects.all():
+            if Room.objects.filter(hotel=i.id).exists():
+                price = Room.objects.filter(hotel=i.id)[0].room_Price
+                lowest_prices[i.name] = price
+
+        context['min'] = Room.objects.all().aggregate(Min('room_Price'))
+        context['lowest_prices'] = lowest_prices
+        context['hotels_by_city'] = hotels_by_city
+
+        return context
+
+
+
+def search(request): #Accomodation search
+    try:
+        search_text = request.GET.get('search')
+    except:
+        search_text = None
+
+   
+    if search_text:
+    	results = Hotels.objects.filter(Q(city__icontains=search_text))
+    	hotels_filter = HotelFilter(request.GET, queryset=results)
 
     else:
-        search_text = ''
+    	results = Hotels.objects.all()
+    	hotels_filter = HotelFilter(request.GET, queryset=results)
 
-    # search_text = {
-    #         'name__contains':'search_text',
-    #         'address__contains':'search_text',
-    #         'city__contains':'search_text',
-    # }
+    page = request.GET.get('page', 1)
+    paginator = Paginator(hotels_filter.qs, 3)
+    template = 'hotels/search_results.html'
+    try:
+    	hotels = paginator.page(page)
+    except PageNotAnInteger:
+    	hotels = paginator.page(1)
+    except EmptyPage:
+    	hotels = paginator.page(paginator.num_pages)
+    lowest_prices = {}
+    for i in Hotels.objects.all():
+    	if Room.objects.filter(hotel=i.id).exists():
+            price = Room.objects.filter(hotel=i.id)[0].room_Price
+            lowest_prices[i.name] = price
+    context = {
+    	'hotels': hotels,
+    	'hotels_filter':hotels_filter,
+    	'lowest_prices': lowest_prices,
+    	'search_text': search_text,
+    	'paginator': paginator,
+    	'title':f'Search results for {search_text}' 
+    }
 
-    hotels = Hotels.objects.filter(city__contains=search_text).order_by('name')
+	
+    return render(request, template, context)
 
-    return render(request, 'hotels/ajax_search.html', {'hotels': hotels})
+
+def search_conference_venues(request): # Search meeting venues
+    try:
+        search_text = request.GET.get('search')
+    except:
+        search_text = None
+
+   
+    if search_text:
+    	results = Hotels.objects.filter(Q(city__icontains=search_text) & Q(has_conference=True))
+    	hotels_filter = HotelFilter(request.GET, queryset=results)
+
+    else:
+    	results = Hotels.objects.filter(has_conference=True)
+    	hotels_filter = HotelFilter(request.GET, queryset=results)
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(hotels_filter.qs, 3)
+    template = 'hotels/search_conference_venues.html'
+    try:
+    	hotels = paginator.page(page)
+    except PageNotAnInteger:
+    	hotels = paginator.page(1)
+    except EmptyPage:
+    	hotels = paginator.page(paginator.num_pages)
+    lowest_prices = {}
+    for i in Hotels.objects.all():
+    	if ConferenceRoom.objects.filter(hotel=i.id).exists():
+            price = ConferenceRoom.objects.filter(hotel=i.id)[0].room_Price
+            lowest_prices[i.name] = price
+    context = {
+    	'hotels': hotels,
+    	'hotels_filter':hotels_filter,
+    	'lowest_prices': lowest_prices,
+    	'search_text': search_text,
+    	'paginator': paginator,
+    	'title':f'Search results for {search_text}' 
+    }
+
+	
+    return render(request, template, context)
+
+
+def search_packages(request): # Search packages
+    try:
+        search_text = request.GET.get('search')
+    except:
+        search_text = None
+
+   
+    if search_text:
+    	results = Packages.objects.filter(Q(city__icontains=search_text))
+    	packages_filter = PackagesFilter(request.GET, queryset=results)
+
+    else:
+    	results = Packages.objects.all()
+    	packages_filter = PackagesFilter(request.GET, queryset=results)
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(packages_filter.qs, 9)
+    template = 'hotels/search_packages.html'
+    try:
+    	packages = paginator.page(page)
+    except PageNotAnInteger:
+    	packages = paginator.page(1)
+    except EmptyPage:
+    	packages = paginator.page(paginator.num_pages)
+    lowest_prices = {}
+    for i in Packages.objects.all():
+    	if HotelPackages.objects.filter(package=i.id).exists():
+            price = HotelPackages.objects.filter(hotel=i.id)[0].package_Price
+            lowest_prices[i.title] = price
+    context = {
+    	'packages': packages,
+    	'packages_filter':packages_filter,
+    	'lowest_prices': lowest_prices,
+    	'search_text': search_text,
+    	'paginator': paginator,
+    	'title':f'Search results for {search_text}' 
+    }
+
+	
+    return render(request, template, context)
+
 
 
 
@@ -144,6 +391,7 @@ class HotelsDetailView(DetailView):
         context['hotels'] = Hotels.objects.all()
         context['min'] = Room.objects.all().aggregate(Min('room_Price'))
         context['lowest_prices'] = lowest_prices
+        context['title'] = self.get_object().name
 
         return context
 
@@ -164,6 +412,7 @@ class ConferenceHotelsDetailView(DetailView):
         context['hotels'] = Hotels.objects.all()
         context['min'] = ConferenceRoom.objects.all().aggregate(Min('room_Price'))
         context['lowest_prices'] = lowest_prices
+        context['title'] = self.get_object().name
 
         return context
 
@@ -182,6 +431,7 @@ class PackagesDetailView(DetailView):
 
         context['packages'] = Packages.objects.all()
         context['lowest_prices'] = lowest_prices
+        context['title'] = self.get_object().name
         return context
 
 
@@ -466,7 +716,7 @@ def view(request):
         context = {"cart": cart}
     else:
         empty_message = "You are yet to make any reservation"
-        context = {"empty": True, "empty_message": empty_message}
+        context = {"empty": True, "empty_message": empty_message, "title":"Room Reservation"}
 
     template = "hotels/booking.html"
     return render(request, template, context)
@@ -490,7 +740,7 @@ def package_view(request):
         context = {"cart": cart}
     else:
         empty_message = "You are yet to make any reservation"
-        context = {"empty": True, "empty_message": empty_message}
+        context = {"empty": True, "empty_message": empty_message, "title":"Package Reservation"}
 
     template = "hotels/package_booking.html"
     return render(request, template, context)
@@ -544,7 +794,7 @@ def conference_view(request):
         context = {"cart":cart, "line_total":line_total, "s_room_total":s_room_total, "d_room_total":d_room_total}
     else:
         empty_message = "You are yet to make any conference room reservation"
-        context = {"empty": True, "empty_message": empty_message}
+        context = {"empty": True, "empty_message": empty_message, "title":"Meeting Room Reservation"}
 
     template = "hotels/conference-booking.html"
     return render(request, template, context)
@@ -683,24 +933,6 @@ def package_list(request):
     return render(request, 'hotels/package_list.html', context)
 
 
-def package_main_list(request):
-    """Display all packages according to the chosen criteria"""
-
-    lowest_prices = {}
-    for i in Packages.objects.all():
-        if HotelPackages.objects.filter(package=i.id).exists():
-            price = HotelPackages.objects.filter(package=i.id)[0].package_Price
-            lowest_prices[i.title] = price
-
-    context = {
-        'packages': Packages.objects.all(),
-        'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
-        'time':HotelPackages.objects.all().aggregate(Min('duration')),
-        'lowest_prices': lowest_prices,
-    }
-    return render(request, 'hotels/packages.html', context)
-
-
 
 def package_honeymoon_list(request):
     """Display all packages according to the chosen criteria"""
@@ -716,6 +948,7 @@ def package_honeymoon_list(request):
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
         'time':HotelPackages.objects.all().aggregate(Min('duration')),
         'lowest_prices': lowest_prices,
+        "title":"Honeymoon Packages"
     }
     return render(request, 'hotels/package_honeymoon_list.html', context)
 
@@ -729,11 +962,13 @@ def package_easter_list(request):
             price = HotelPackages.objects.filter(package=i.id)[0].package_Price
             lowest_prices[i.title] = price
 
+
     context = {
         'packages': packages,
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
         'time':HotelPackages.objects.all().aggregate(Min('duration')),
         'lowest_prices': lowest_prices,
+        "title":"Easter Packages"
     }
     return render(request, 'hotels/package_easter_list.html', context)
 
@@ -753,6 +988,7 @@ def package_christmas_list(request):
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
         'time':HotelPackages.objects.all().aggregate(Min('duration')),
         'lowest_prices': lowest_prices,
+        "title":"Christmas Packages"
     }
     return render(request, 'hotels/package_christmas_list.html', context)
 
@@ -770,6 +1006,7 @@ def package_coast_list(request):
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
         'time':HotelPackages.objects.all().aggregate(Min('duration')),
         'lowest_prices': lowest_prices,
+        "title":"Coast Packages"
     }
     return render(request, 'hotels/package_coast_list.html', context)
 
@@ -787,6 +1024,7 @@ def package_selfdrive_list(request):
         'min':HotelPackages.objects.all().aggregate(Min('package_Price')),
         'time':HotelPackages.objects.all().aggregate(Min('duration')),
         'lowest_prices': lowest_prices,
+        "title":"Weekend Gateways Packages"
     }
     return render(request, 'hotels/package_selfdrive_list.html', context)
 

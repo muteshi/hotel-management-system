@@ -55,8 +55,9 @@
 								<li>
 									<a class="active" data-toggle="tab" href="#formSearchMain-01">Accommodation</a>
 								</li>
+								
 								<li>
-									<a data-toggle="tab" href="#formSearchMain-02">Flights</a>
+									<a data-toggle="tab" href="#formSearchMain-03">Flights</a>
 								</li>
 							</ul>
 						</nav>
@@ -65,166 +66,172 @@
 
 				</div>
 
-				<div class="container">
+<div class="container">
 
-					<div class="tab-content">
+<div class="tab-content">
+	<!-- Accomodation search form-->
 
-						<div role="tabpanel" class="tab-pane active" id="formSearchMain-01">
+<div role="tabpanel" class="tab-pane active" id="formSearchMain-01">
 
-							<div class="tab-inner">
+<div class="tab-inner">
 
-								<div class="main-search-form-horizontal">
+<div class="main-search-form-horizontal">
 
-									<form method=”POST” action="{% url 'search' %}">
-                    {% csrf_token %}
-
-										<div class="form-inner">
-
-											<div class="row gap-5 align-items-center">
-
-												<div class="col-12 col-lg-4 col-xl-5">
-													<div class="form-single bg-change-focus-addclass">
-														<div class="typeahead__container">
-															<input class="js-typeahead-country_v1 form-control" name="search" type="search" placeholder="Where are you going?" id = "search" autocomplete="off">
-                               <ul id ="search-results">
-
-                               </ul>
-                            </div>
-													</div>
-												</div>
-
-												<div class="col-12 col-md-6 col-lg-3 col-xl-3">
-													<div id="airDatepickerRange-hotel" class="form-double d-flex bg-change-focus-addclass">
-														<div class="form-group">
-															<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" placeholder="Check-in">
-														</div>
-														<div class="form-group">
-															<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" placeholder="Check-out">
-														</div>
-													</div>
-												</div>
-
-												<div class="col-12 col-md-6 col-lg-4 col-xl-3">
-													<div class="form-tripple d-flex flex-row bg-change-focus-addclass">
-														<div class="form-group form-spin-group">
-															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Adult" readonly />
-														</div>
-														<div class="form-group form-spin-group">
-															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Child" readonly />
-														</div>
-														<div class="form-group form-spin-group">
-															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Infant" readonly />
-														</div>
-													</div>
-												</div>
-
-												<div class="col-12 col-lg-1">
-													<a href="#" class="btn btn-secondary btn-block btn-search"><i class="bx bx-search"></i></a>
-												</div>
-
-											</div>
-
-										</div>
-
-									</form>
-
-								</div>
-
-							</div>
-
-						</div>
-
-						<div role="tabpanel" class="tab-pane fade in" id="formSearchMain-02">
-
-							<div class="tab-inner menu-horizontal-content">
-
-								<div class="main-search-form-horizontal">
-
-									<form>
-
-										<div class="form-inner">
-
-											<div class="row gap-5 align-items-center">
-
-												<div class="col-sm-6 col-xl-3">
-													<div class="form-single bg-change-focus-addclass">
-														<div class="typeahead__container">
-															<input class="js-typeahead-country_v1 form-control" name="country_v1[query]" type="search" placeholder="From" autocomplete="off">
-														</div>
-													</div>
-												</div>
-
-												<div class="col-sm-6 col-xl-3">
-													<div class="form-single bg-change-focus-addclass">
-														<div class="typeahead__container">
-															<input class="js-typeahead-country_v1 form-control" name="country_v1[query]" type="search" placeholder="To" autocomplete="off">
-														</div>
-													</div>
-												</div>
-
-												<div class="col-sm-6 col-xl-2">
-													<div class="form-single bg-change-focus-addclass">
-														<div class="form-group">
-															<input type="text" class="form-control form-readonly-control air-datepicker" placeholder="Departure" data-date-format="dd mm yyyy" data-language="en" data-auto-close="true" readonly>
-														</div>
-													</div>
-												</div>
-
-												<div class="col-sm-6 col-lg-5 col-xl-3">
-													<div class="form-tripple d-flex flex-row bg-change-focus-addclass">
-														<div class="form-group form-spin-group">
-															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Adult" readonly />
-														</div>
-														<div class="form-group form-spin-group">
-															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Child" />
-														</div>
-														<div class="form-group form-spin-group">
-															<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Infant" />
-														</div>
-													</div>
-												</div>
-
-												<div class="col-12 col-lg-1  col-lg-1">
-													<a href="#" class="btn btn-secondary btn-block btn-search"><i class="bx bx-search"></i></a>
-												</div>
-
-											</div>
-
-										</div>
-
-										<div class="mt-20">
-
-											<div class="custom-control custom-radio  custom-control-inline">
-												<input type="radio" id="trainRadio221" name="customRadioInline" class="custom-control-input" checked >
-												<label class="custom-control-label" for="trainRadio221">One-way</label>
-											</div>
-
-											<div class="custom-control custom-radio  custom-control-inline">
-												<input type="radio" id="trainRadio222" name="customRadioInline" class="custom-control-input">
-												<label class="custom-control-label" for="trainRadio222">Return</label>
-											</div>
-
-											<div class="custom-control custom-radio  custom-control-inline">
-												<input type="radio" id="trainRadio223" name="customRadioInline" class="custom-control-input">
-												<label class="custom-control-label" for="trainRadio223">Multi cities</label>
-											</div>
-
-										</div>
-
-									</form>
-
-								</div>
-
-							</div>
-
-						</div>
+	<form method="GET" action="{% url 'search-hotels' %}">
 
 
+		<div class="form-inner">
+
+			<div class="row gap-5 align-items-center">
+
+				<div class="col-12 col-lg-4 col-xl-5">
+					<div class="form-single bg-change-focus-addclass">
+						<div class="typeahead__container">
+							<input class="js-typeahead-country_v1 form-control" name="search" type="search" placeholder="Where are you going?" id = "search" autocomplete="off">
+<ul id ="search-results" value = "{{ request.GET.search }}">
+
+</ul>
+</div>
 					</div>
+				</div>
+
+				<div class="col-12 col-md-6 col-lg-3 col-xl-3">
+					<div id="airDatepickerRange-hotel" class="form-double d-flex bg-change-focus-addclass">
+						<div class="form-group">
+							<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" placeholder="Check-in">
+						</div>
+						<div class="form-group">
+							<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" placeholder="Check-out">
+						</div>
+					</div>
+				</div>
+
+				<div class="col-12 col-md-6 col-lg-4 col-xl-3">
+					<div class="form-tripple d-flex flex-row bg-change-focus-addclass">
+						<div class="form-group form-spin-group">
+							<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Adult" readonly />
+						</div>
+						<div class="form-group form-spin-group">
+							<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Child" readonly />
+						</div>
+						<div class="form-group form-spin-group">
+							<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Infant" readonly />
+						</div>
+					</div>
+				</div>
+
+				<div class="col-12 col-lg-1">
+					<button type="submit" class="btn btn-secondary btn-block btn-search"><i class="bx bx-search"></i></button>
 
 				</div>
 
 			</div>
+
+		</div>
+
+	</form>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Flights search form -->
+
+<div role="tabpanel" class="tab-pane fade in" id="formSearchMain-03">
+
+<div class="tab-inner menu-horizontal-content">
+
+<div class="main-search-form-horizontal">
+
+	<form>
+
+		<div class="form-inner">
+
+			<div class="row gap-5 align-items-center">
+
+				<div class="col-sm-6 col-xl-3">
+					<div class="form-single bg-change-focus-addclass">
+						<div class="typeahead__container">
+							<input class="js-typeahead-country_v1 form-control" name="country_v1[query]" type="search" placeholder="From" autocomplete="off">
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-xl-3">
+					<div class="form-single bg-change-focus-addclass">
+						<div class="typeahead__container">
+							<input class="js-typeahead-country_v1 form-control" name="country_v1[query]" type="search" placeholder="To" autocomplete="off">
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-xl-2">
+					<div class="form-single bg-change-focus-addclass">
+						<div class="form-group">
+							<input type="text" class="form-control form-readonly-control air-datepicker" placeholder="Departure" data-date-format="dd mm yyyy" data-language="en" data-auto-close="true" readonly>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-lg-5 col-xl-3">
+					<div class="form-tripple d-flex flex-row bg-change-focus-addclass">
+						<div class="form-group form-spin-group">
+							<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Adult" readonly />
+						</div>
+						<div class="form-group form-spin-group">
+							<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Child" />
+						</div>
+						<div class="form-group form-spin-group">
+							<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Infant" />
+						</div>
+					</div>
+				</div>
+
+				<div class="col-12 col-lg-1  col-lg-1">
+					<a href="#" class="btn btn-secondary btn-block btn-search"><i class="bx bx-search"></i></a>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="mt-20">
+
+			<div class="custom-control custom-radio  custom-control-inline">
+				<input type="radio" id="trainRadio221" name="customRadioInline" class="custom-control-input" checked >
+				<label class="custom-control-label" for="trainRadio221">One-way</label>
+			</div>
+
+			<div class="custom-control custom-radio  custom-control-inline">
+				<input type="radio" id="trainRadio222" name="customRadioInline" class="custom-control-input">
+				<label class="custom-control-label" for="trainRadio222">Return</label>
+			</div>
+
+			<div class="custom-control custom-radio  custom-control-inline">
+				<input type="radio" id="trainRadio223" name="customRadioInline" class="custom-control-input">
+				<label class="custom-control-label" for="trainRadio223">Multi cities</label>
+			</div>
+
+		</div>
+
+	</form>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+			<!-- start Site Content -->
 
 
 
@@ -345,207 +352,249 @@
 						</div>
 
 					</div>
-					
 
-					<div class="mb-80"></div>
-
-					<div class="section-title text-center">
-
-						<h2>Our Top Destinations</h2>
-
-					</div>
-
-					<div class="row cols-2 cols-md-3 cols-lg-4 gap-10 gap-md-20">
-
-						<div class="col-6 col-lg-3">
-
-							<figure class="image-caption-01">
-
-								<a href="#">
-
-									<div class="image overlay-relative caption-relative">
-										<img src="{% static 'hotels/images/image-destination/01.jpg' %}" alt="image" />
-										<div class="overlay-holder opacity-2"></div>
-										<figcaption class="caption-holder">
-											<div class="caption-inner caption-middle text-center">
-												<h5>Kisumu</h5>
-												<span class="d-block">start from $543</span>
-											</div>
-										</figcaption>
-									</div>
-
-								</a>
-
-							</figure>
-
-						</div>
-
-						<div class="col-6 col-lg-3">
-
-							<figure class="image-caption-01">
-
-								<a href="#">
-
-									<div class="image overlay-relative caption-relative">
-										<img src="{% static 'hotels/images/image-destination/02.jpg' %}" alt="image" />
-										<div class="overlay-holder opacity-2"></div>
-										<figcaption class="caption-holder">
-											<div class="caption-inner caption-middle text-center">
-												<h5>Nairobi</h5>
-												<span class="d-block">start from $458</span>
-											</div>
-										</figcaption>
-									</div>
-
-								</a>
-
-							</figure>
-
-						</div>
-
-						<div class="col">
-
-							<figure class="image-caption-01">
-
-								<a href="#">
-
-									<div class="image overlay-relative caption-relative">
-										<img src="{% static 'hotels/images/image-destination/03.jpg' %}" alt="image" />
-										<div class="overlay-holder opacity-2"></div>
-										<figcaption class="caption-holder">
-											<div class="caption-inner caption-middle text-center">
-												<h5>Machakos</h5>
-												<span class="d-block">start from $825</span>
-											</div>
-										</figcaption>
-									</div>
-
-								</a>
-
-							</figure>
-
-						</div>
-
-						<div class="col">
-
-							<figure class="image-caption-01">
-
-								<a href="#">
-
-									<div class="image overlay-relative caption-relative">
-										<img src="{% static 'hotels/images/image-destination/04.jpg' %}" alt="image" />
-										<div class="overlay-holder opacity-2"></div>
-										<figcaption class="caption-holder">
-											<div class="caption-inner caption-middle text-center">
-												<h5>Nakuru</h5>
-												<span class="d-block">start from $354</span>
-											</div>
-										</figcaption>
-									</div>
-
-								</a>
-
-							</figure>
-
-						</div>
-
-						<div class="col">
-
-							<figure class="image-caption-01">
-
-								<a href="#">
-
-									<div class="image overlay-relative caption-relative">
-										<img src="{% static 'hotels/images/image-destination/05.jpg' %}" alt="image" />
-										<div class="overlay-holder opacity-2"></div>
-										<figcaption class="caption-holder">
-											<div class="caption-inner caption-middle text-center">
-												<h5>Naivasha</h5>
-												<span class="d-block">start from $543</span>
-											</div>
-										</figcaption>
-									</div>
-
-								</a>
-
-							</figure>
-
-						</div>
-
-						<div class="col">
-
-							<figure class="image-caption-01">
-
-								<a href="#">
-
-									<div class="image overlay-relative caption-relative">
-										<img src="{% static 'hotels/images/image-destination/06.jpg' %}" alt="image" />
-										<div class="overlay-holder opacity-2"></div>
-										<figcaption class="caption-holder">
-											<div class="caption-inner caption-middle text-center">
-												<h5>Mombasa</h5>
-												<span class="d-block">start from $417</span>
-											</div>
-										</figcaption>
-									</div>
-
-								</a>
-
-							</figure>
-
-						</div>
-
-						<div class="col">
-
-							<figure class="image-caption-01">
-
-								<a href="#">
-
-									<div class="image overlay-relative caption-relative">
-										<img src="{% static 'hotels/images/image-destination/07.jpg' %}" alt="image" />
-										<div class="overlay-holder opacity-2"></div>
-										<figcaption class="caption-holder">
-											<div class="caption-inner caption-middle text-center">
-												<h5>Kajiado</h5>
-												<span class="d-block">start from $745</span>
-											</div>
-										</figcaption>
-									</div>
-
-								</a>
-
-							</figure>
-
-						</div>
-
-						<div class="col">
-
-							<figure class="image-caption-01">
-
-								<a href="#">
-
-									<div class="image overlay-relative caption-relative">
-										<img src="{% static 'hotels/images/image-destination/08.jpg' %}" alt="image" />
-										<div class="overlay-holder opacity-2"></div>
-										<figcaption class="caption-holder">
-											<div class="caption-inner caption-middle text-center">
-												<h5>Malindi</h5>
-												<span class="d-block">start from $552</span>
-											</div>
-										</figcaption>
-									</div>
-
-								</a>
-
-							</figure>
-
-						</div>
-
-					</div>
 
 				</div>
 
 			</section>
+
+
+			<section class="pt-0 bg-light">
+
+<div class="container">
+
+<div class="menu-horizontal-wrapper-03 alt-z-index">
+
+<nav class="menu-horizontal-03">
+<ul class="nav">
+<li>
+<a class="active" data-toggle="tab" href="#MenuHorizon06_01">Hotels</a>
+</li>
+<li>
+<a data-toggle="tab" href="#MenuHorizon06_02">Meetings & Team Building</a>
+</li>
+<li>
+<a data-toggle="tab" href="#MenuHorizon06_03">Packages</a>
+</li>
+</ul>
+</nav>
+
+<div class="tab-content mt-90">
+
+<div role="tabpanel" class="tab-pane active" id="MenuHorizon06_01">
+
+<div class="tab-inner">
+
+<div class="row justify-content-center">
+
+<div class="col col-lg-8 col-xl-6">
+
+	<div class="section-title text-center">
+	
+		<h2>Our recommended hotels</h2>
+		<p class="text-muted">You will love your stay at these hotels!</p>
+
+	</div>
+
+</div>
+
+</div>
+
+<div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-md-20 gap-xl-30">
+
+{% for hotel in hotels %}
+<div class="col">
+<div class="product-grid-item">
+		<a href="{% url 'hotel-detail' hotel.slug %}">
+		<div class="image">
+				<img src="{{ hotel.property_photo.url }}" alt="{{ hotel.name }} photo">
+			</div>
+			<div class="content clearfix">
+			<div class="rating-item rating-sm">
+					<div class="rating-icons">
+						<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
+					</div>
+					<p class="rating-text text-muted"><span class="bg-primary">6.0</span> <strong class="text-dark">Good</strong> - 1,2547 reviews</p>
+				</div>
+			<div class="short-info">
+				<h5>{{ hotel.name }}</h5>
+					<p class="location"><i class="fas fa-map-marker-alt text-primary"></i> {{ hotel.address }}, {{ hotel.city}}, {{ hotel.country}}</p>
+					</div>
+				<div class="price">
+					<div class="float-right">
+						start from
+						{% for key, value in lowest_prices.items %} 
+                          {% if key == hotel.name %}
+                          <span class="text-secondary">Ksh{{ value|intcomma }}</span>
+						 {% endif %}
+                          {% endfor %}
+						per night
+					</div>
+				</div>
+			</div>
+			</a></div>
+	</div>	{% endfor %}
+
+</div>
+
+
+</div>
+
+</div>
+
+<div role="tabpanel" class="tab-pane fade in" id="MenuHorizon06_02">
+
+<div class="tab-inner">
+
+<div class="row justify-content-center">
+
+<div class="col col-lg-8 col-xl-6">
+
+	<div class="section-title text-center">
+	
+		<h2>Our recommended Meeting Venues</h2>
+		<p class="text-muted">You can get easily book Conference Rooms here!</p>
+
+	</div>
+
+</div>
+
+</div>
+
+<div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-md-20 gap-xl-30">
+
+{% for hotel in conference_hotels %}
+<div class="col">
+<div class="product-grid-item">
+		<a href="{% url 'conference-hotel-detail' hotel.slug %}">
+		<div class="image">
+				<img src="{{ hotel.property_photo.url }}" alt="{{ hotel.name }} photo">
+			</div>
+			<div class="content clearfix">
+			<div class="rating-item rating-sm">
+					<div class="rating-icons">
+						<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
+					</div>
+					<p class="rating-text text-muted"><span class="bg-primary">6.0</span> <strong class="text-dark">Good</strong> - 1,2547 reviews</p>
+				</div>
+			<div class="short-info">
+				<h5>{{ hotel.name }}</h5>
+					<p class="location"><i class="fas fa-map-marker-alt text-primary"></i> {{ hotel.address }}, {{ hotel.city}}, {{ hotel.country}}</p>
+					</div>
+				<div class="price">
+					<div class="float-right">
+						start from
+						{% for key, value in c_lowest_prices.items %} 
+                          {% if key == hotel.name %}
+                          <span class="text-secondary">Ksh{{ value|intcomma }}</span>
+						 {% endif %}
+                          {% endfor %}
+						per night
+					</div>
+				</div>
+			</div>
+			</a></div>
+	</div>	{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+<div role="tabpanel" class="tab-pane fade in" id="MenuHorizon06_03">
+
+<div class="tab-inner">
+
+<div class="row justify-content-center">
+
+<div class="col col-lg-8 col-xl-6">
+
+	<div class="section-title text-center">
+	
+		<h2>Our recommended Package</h2>
+		<p class="text-muted">Our bundles vacation packages are the best! </p>
+
+	</div>
+
+</div>
+
+</div>
+
+<div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-md-20 gap-xl-30">
+
+{% for package in packages %}
+	<div class="col">
+	
+		<div class="product-grid-item">
+				
+			<a href="{% url 'package-detail' package.slug %}">
+			
+				<div class="image">
+					<img src="{{ package.cover_photo.url }}" alt="{{ package.title }}">
+				</div>
+				
+				<div class="content pt-10 clearfix">
+
+					<div class="short-info mr-0 mb-15">
+					
+						<p class="location mb-0"><i class="fas fa-map-marker-alt text-primary"></i>{{ package.city }}, {{ package.country }}</p>
+						<h5 class="mt-5">{{ package.title }}</h5>
+
+					</div>
+					
+					<p><i class="far fa-clock"></i> Duration: <strong>{{ time.duration__min }} nights</strong></p>
+					<div class="rating-item rating-sm mt-3">
+						<div class="rating-icons">
+							<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
+						</div>
+						<p class="rating-text text-muted font13">(1,2547 reviews)</p>
+					</div>
+					
+					<div class="price">
+						
+						<div class="float-right">
+							
+							start from
+							{% for key, value in p_lowest_prices.items %} 
+                            {% if key == package.title %}
+							<span class="text-secondary">Ksh{{ value|intcomma }}</span>
+							{% endif %}
+							{% endfor %}
+							per person
+						</div>
+
+					</div>
+				
+				</div>
+				
+			</a>
+		
+		</div>
+		
+	</div>	
+	{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+
+
+
 
 			<div class="bg-image cta-promo-list" data-white-overlay="3"
 
@@ -685,3 +734,4 @@
 		</div>
 		<!-- end Main Wrapper -->
 {% endblock content %}
+

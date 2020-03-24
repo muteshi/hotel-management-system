@@ -29,6 +29,9 @@ class Hotels(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     description = models.TextField()
     slug = models.SlugField(unique=True)
+    active = models.BooleanField(default=True)
+    has_conference = models.BooleanField(default=False)
+    featured = models.BooleanField(default=False)
     property_photo = models.ImageField(default='default.jpg', upload_to='hotel_photos')
     star_rating = models.PositiveIntegerField()
     contact_person = models.ForeignKey(UserProfile, on_delete = models.CASCADE, null=True, blank=True,) #Owner of the hotel or person who created the hotel
@@ -36,7 +39,7 @@ class Hotels(models.Model):
     class Meta:
         unique_together = ('name', 'slug')
         verbose_name_plural = 'Hotels'
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
 
     def __str__(self):
@@ -113,11 +116,11 @@ class Room(models.Model):
     room_details = models.CharField(max_length = 500)
     room_Capacity = models.PositiveIntegerField(default = 0)
     slug = models.SlugField(unique=True)
-    # guest_numbers = models.IntegerField(default=0)
     room_Price= models.PositiveIntegerField(default = 0)
     total_Rooms = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True,)
     class Meta:
         unique_together = ('room_Name', 'slug')
@@ -225,6 +228,8 @@ class Packages(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     last_modified = models.DateTimeField(auto_now=True)
     cover_photo = models.ImageField(default='default.jpg', upload_to='package_photos')
+    active = models.BooleanField(default=True)
+    featured = models.BooleanField(default=False)
     description = models.TextField()
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True,)
     slug = models.SlugField(unique=True)
@@ -359,7 +364,6 @@ class ConferenceRoom(models.Model):
     room_discount = models.DecimalField(max_digits=1000, decimal_places=2, default=1.00)
     slug = models.SlugField(unique=True)
     published = models.BooleanField(default=False)
-    conference = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True,)

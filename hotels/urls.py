@@ -7,7 +7,8 @@ from .views import (HotelsListView, HotelsDetailView,
                     RoomListView, RoomUpdateView, RoomDeleteView,
                     PackagesCreateView,HotelPackagesCreateView,
                     ItinireryCreateView,PackagesDetailView,ConferenceHotelsDetailView,
-                    ConferenceRoomDeleteView, ConferenceRoomUpdateView
+                    ConferenceRoomDeleteView, ConferenceRoomUpdateView,
+                    CityHotelsListView
                     )
 
 urlpatterns = [
@@ -28,7 +29,8 @@ urlpatterns = [
     path('hotels/conferenceroom/<int:pk>/delete/', ConferenceRoomDeleteView.as_view(), name='conferenceroom-delete'),
     path('hotels/<int:pk>/delete/', HotelsDeleteView.as_view(), name='hotel-delete'),
     path('company/', views.company, name='bookings-company'),
-    path('hotels/', views.hotels, name='hotels-list'),
+    path('hotels/', HotelsListView.as_view(), name='hotels-list'),
+    path('hotels/<slug:slug>', CityHotelsListView.as_view(), name='city-hotels-list'),
     path('hotels/conference/', views.conference_hotels, name='conferencehotels-list'),
     path('packages/', views.package_main_list, name='packages-main-list'),
     path('hotels/rooms/', RoomListView.as_view(), name='room-list'),
@@ -51,5 +53,9 @@ urlpatterns = [
     url(r'^hotels/package/cart/remove/(?P<id>\d+)/$', views.remove_from_packagecart, name='remove-package-booking'),
     url(r'^hotels/conference/cart/remove/(?P<id>\d+)/$', views.remove_from_conferencecart, name='remove-conference-booking'),
     path('reservations/', views.reservations, name='user_reservations'),
-    path('hotels/search/', views.search_hotels, name='search'),
+    # path('hotels/search/', views.search_hotels, name='search'),
+    path('hotels/search_results/', views.search, name='search-hotels'),
+    path('hotels/conference/search_results/', views.search_conference_venues, name='search-conference-venues'),
+    path('hotels/packages/search_results/', views.search_packages, name='search-packages'),
+
 ]
