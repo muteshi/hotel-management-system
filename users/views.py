@@ -12,6 +12,7 @@ from users.tokens import account_activation_token
 
 
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
@@ -121,17 +122,18 @@ def profile(request):
     return render(request, 'users/profile.html', context)
 
 
-class UserProfileViewSet(viewsets.ModelViewSet):
-    """Handle creating and updating profiles"""
+class CreateUserView(generics.CreateAPIView):
+    """Handle creating new user in the system"""
 
     serializer_class = serializers.UserProfileSerializer
-    queryset = models.UserProfile.objects.all()
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.UpdateOwnProfile,)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name', 'email',)
+    # queryset = models.UserProfile.objects.all()
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (permissions.UpdateOwnProfile,)
+    # filter_backends = (filters.SearchFilter,)
+    # search_fields = ('name', 'email',)
 
 
-class UserLoginApiView(ObtainAuthToken):
+class CreateTokenView(ObtainAuthToken):
     """Handle creating user authentication tokens"""
+    serializer_class = serializers.AuthTokenSerializer
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES

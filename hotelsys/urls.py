@@ -28,7 +28,7 @@ urlpatterns = [
     path('accounts/password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='users/password_reset_complete.html'), name='password_reset_complete'),
     path('', include('hotels.urls')),
-    path('api/', include('users.urls')),
+    path('api/account/', include('users.urls')),
     # path('checkout/', views.check_out, name='checkout'),
     path('hotels/rooms/checkout/', views.new_booking, name='booking-checkout'),
     path('hotels/conferencerooms/checkout/', views.new_conference_booking,
