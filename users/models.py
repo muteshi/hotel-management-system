@@ -6,13 +6,13 @@ from PIL import Image
 class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
 
-    def create_user(self, email, name, password=None):
+    def create_user(self, email, name, password=None, **extra_fields):
         """Creates a new user profile"""
         if not email:
             raise ValueError('You must provide an email address')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, name=name)
+        user = self.model(email=email, name=name, **extra_fields)
 
         user.set_password(password)
         user.save(using=self.db)
@@ -31,7 +31,7 @@ class UserProfileManager(BaseUserManager):
 
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
-    """Database model for users in the system"""
+    """Custom user model that supports using email instead of username"""
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)  # full name of the user
     is_active = models.BooleanField(default=False)
