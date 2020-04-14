@@ -11,6 +11,21 @@ from django.template.loader import render_to_string
 from users.tokens import account_activation_token
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
+from rest_framework import filters
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated
+
+
+from users import models
+from users import permissions
+
+
 from users.models import UserProfile
 from django.contrib.auth import login
 from django.conf import settings
@@ -23,6 +38,8 @@ from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from users.tokens import account_activation_token
 
+from users import serializers
+
 
 def register(request):
     """Registration view"""
@@ -30,25 +47,27 @@ def register(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False 
+            user.is_active = False
             name = form.cleaned_data.get('name')
             email = form.cleaned_data.get('email')
             user.save()
 
-
-
             current_site = settings.SITE_URL
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token =  account_activation_token.make_token(user)
-            context = {"current_site": current_site,"name": name, 'uid':uid, 'token':token}
+            token = account_activation_token.make_token(user)
+            context = {"current_site": current_site,
+                       "name": name, 'uid': uid, 'token': token}
             subject = 'Activate Your Account at Marvellous Ventures'
-            message = render_to_string('users/account_activation_email.html', context)
+            message = render_to_string(
+                'users/account_activation_email.html', context)
             plain_message = strip_tags(message)
-            mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email], html_message=message)
-            messages.info(request, ('Account created successfully. Please go to your email to verify your account.'))
+            mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [
+                           email], html_message=message)
+            messages.info(
+                request, ('Account created successfully. Please go to your email to verify your account.'))
             return redirect('login')
         else:
-            print (form.errors)
+            print(form.errors)
     else:
         form = RegistrationForm()
     return render(request, 'users/register.html', {'form': form})
@@ -68,15 +87,13 @@ class ActivateAccount(View):
             user.profile.email_confirmed = True
             user.save()
             login(request, user)
-            messages.success(request, ('Your account have been confirmed. Finish creating your profile below'))
+            messages.success(
+                request, ('Your account have been confirmed. Finish creating your profile below'))
             return redirect('dashboard')
         else:
-            messages.error(request, ('The confirmation link was invalid, possibly because it has already expired.'))
+            messages.error(
+                request, ('The confirmation link was invalid, possibly because it has already expired.'))
             return redirect('register')
-
-
-
-
 
 
 @login_required
@@ -102,3 +119,14 @@ def profile(request):
     }
 
     return render(request, 'users/profile.html', context)
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handle creating and updating profiles"""
+
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnProfile,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'email',)

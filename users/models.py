@@ -1,15 +1,15 @@
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, User
 from PIL import Image
 
+
 class UserProfileManager(BaseUserManager):
-    """Manages user profiles"""
+    """Manager for user profiles"""
 
     def create_user(self, email, name, password=None):
         """Creates a new user profile"""
         if not email:
-            raise ValueError('User must have an email address!')
+            raise ValueError('You must provide an email address')
 
         email = self.normalize_email(email)
         user = self.model(email=email, name=name)
@@ -30,12 +30,10 @@ class UserProfileManager(BaseUserManager):
         return user
 
 
-
-
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     """Database model for users in the system"""
     email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)  # full name of the user
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
@@ -53,16 +51,17 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         return self.name
 
     def __str__(self):
-        """Returns string represenation of the user"""
+        """Returns string representation of the user"""
         return self.email
+
 
 class Profile(models.Model):
     """Creates users profile information"""
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
-    address = models.CharField(max_length  = 255)
-    city = models.CharField(max_length  = 255)
-    country = models.CharField(max_length  = 255)
+    address = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
     telephone_Number = models.CharField(max_length=12)
     email_confirmed = models.BooleanField(default=False)
 
@@ -78,5 +77,5 @@ class Profile(models.Model):
         if img.height > 300 or img.width > 300:
             output_size = (300, 300)
             img.thumbnail(output_size)
-            rgb_img =img.convert('RGB')
+            rgb_img = img.convert('RGB')
             rgb_img.save(self.image.path)
