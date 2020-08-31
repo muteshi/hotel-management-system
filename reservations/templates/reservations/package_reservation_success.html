@@ -1,77 +1,66 @@
-{% load humanize %}
-{% load static %}
+{% load humanize %} {% load static %}
 <!-- Bootstrap -->
 
 <!DOCTYPE html>
 <html>
-<head>
-	<title></title>
-	<style>
-table, td, th {  
-  border: 1px solid #ddd;
-  text-align: left;
-}
+  <head>
+    <title></title>
+    <style>
+      table,
+      td,
+      th {
+        border: 1px solid #ddd;
+        text-align: left;
+      }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
 
-th, td {
-  padding: 15px;
-}
-</style>
-</head>
-<body>
-	<h1>Marvellous Ventures Limited</h1>
-<h3>Hello {{ title }} {{ name }}</h3>
-<h4>Your Package booking  #{{ order_number }} details are as follows</h4>
-<table>
-	<tr>
-		<th>
-			Hotel:
-		</th>
-		<th>
-			{{items.hotel_package.hotel.name}}
-		</th>
-	</tr>
-	<tr>
-		<th>
-			Room:
-		</th>
-		<th>
-			Standard Room
-		</th>
-	</tr>
-	<tr>
-		<th>
-			CheckIn Date:
-		</th>
-		<th>
-			{{items.CheckIn}}
-		</th>
-	</tr>
-	<tr>
-		<th>
-			CheckOut Date:
-		</th>
-		<th>
-			{{items.CheckOut}}
-		</th>
-	</tr>
-	<tr>
-		<th>
-			Total:
-		</th>
-		<th>
-			Ksh{{ cart.total|intcomma }} (Ksh{{ items.hotel_package.package_Price|intcomma }}/pps x {{ items.quantity }} person(s))
-		</th>
-	</tr>
-
-</table>
-<h4>Welcome to {{items.hotel_package.hotel.name}} and may you enjoy your stay!</h4>
-
-
-</body>
+      th,
+      td {
+        padding: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Marvellous Ventures Limited</h1>
+    <h3>Hello {{ booking.guest_name }}</h3>
+    <h4>
+      Your Package booking #{{ booking.invoice_number }} details are as follows
+    </h4>
+    <table>
+      {% for item in items %}
+      <tr>
+        <th>Hotel:</th>
+        <th>{{item.hotel_package.hotel.name}}</th>
+      </tr>
+      <tr>
+        <th>Room:</th>
+        <th>Standard Room</th>
+      </tr>
+      <tr>
+        <th>CheckIn Date:</th>
+        <th>{{item.checkin}}</th>
+      </tr>
+      <tr>
+        <th>CheckOut Date:</th>
+        <th>{{item.checkout}}</th>
+      </tr>
+      <tr>
+        <th>Total:</th>
+        <th>
+          Ksh {{ booking.final_total|intcomma }} (Ksh
+          {{item.hotel_package.package_Price|intcomma }}/pps x
+          {{item.total_guests }} person(s)) (for {{item.stay_duration}} nights
+          stay)
+        </th>
+      </tr>
+      {% endfor %}
+    </table>
+    <h4>
+      Welcome to {{item.hotel_package.hotel.name}} and may you enjoy your stay!
+    </h4>
+  </body>
 </html>
-

@@ -17,11 +17,14 @@
                   <div class="row equal-height shrink-auto-md gap-15">
 
                     <div class="col-12 col-shrink">
-                       
+                        {% for photo in package.packagephoto_set.all %}
+                        {% if forloop.first %}
+                         
                       <div class="image height-auto">
-                        <img src="{{ package.cover_photo.url }}" alt="{{ package.title }} photo" />
+                        <img src="{{ photo.image.url }}" alt="{{ package.title }} photo" />
                       </div>
-                      
+                      {% endif %}
+                      {% endfor %}
 
                     </div>
 

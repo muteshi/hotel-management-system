@@ -1,190 +1,215 @@
-{% extends "hotels/base.html" %}
-{% load static %}
-{% load widget_tweaks %}
-{# {% load crispy_forms_tags %} #}
+{% extends "hotels/base.html" %} {% load static %} {% load widget_tweaks %} {#
+{% load crispy_forms_tags %} #} 
 {% block content %}
 <!-- start Main Wrapper -->
-		<div class="main-wrapper scrollspy-action">
+<div class="main-wrapper scrollspy-action">
+  <div class="page-title breadcrumb-wrapper">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item"><a href="#">Library</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Data</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
 
-			<div class="page-title breadcrumb-wrapper">
-				<div class="container">
-					<nav aria-label="breadcrumb">
-						<ol class="breadcrumb">
-							<li class="breadcrumb-item"><a href="#">Home</a></li>
-							<li class="breadcrumb-item"><a href="#">Library</a></li>
-							<li class="breadcrumb-item active" aria-current="page">Data</li>
-						</ol>
-					</nav>
-				</div>
-			</div>
+  <div class="page-wrapper">
+    <div class="container">
+      <div class="row gap-30 gap-lg-40">
+        <div class="col-12 col-md-4 col-lg-3">
+          <aside class="sidebar-wrapper">
+            <h5 class="font-serif font400">Welcome:</h5>
 
-			<div class="page-wrapper">
-				<div class="container">
+            <div class="dashboard-avatar mb-10 bg-light">
+              {% if user.profile.image %}
+              <div class="image">
+                <img src="{{ user.profile.image.url }}" alt="Image" />
+              </div>
+              {% else %}
+              <div class="image">
+                <img
+                  src="{% static '/hotels/images/default.jpg' %}"
+                  alt="Image"
+                />
+              </div>
+              {% endif %}
 
-					<div class="row gap-30 gap-lg-40">
+              <div class="content">
+                <h6>{{ user.name }}</h6>
 
-						<div class="col-12 col-md-4 col-lg-3">
+                <p class="mb-15">from {{ user.profile.city }}</p>
+                <p>
+                  <span class="font-italic">Last login:</span
+                  ><span class="d-block font700"
+                    >{{ user.last_login|time:"H:i" }}</span
+                  >
+                </p>
+              </div>
+            </div>
 
-							<aside class="sidebar-wrapper">
+            <nav>
+              <ul class="menu-vertical-01">
+                <li class="nav-item">
+                  <a href="#" class="nav-link"
+                    >Dashboard</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a href="#faq_section-02" class="nav-link active"
+                    >My profile</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a href="#faq_section-03" class="nav-link">My booking</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#faq_section-04" class="nav-link">My Wishlist</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#faq_section-05" class="nav-link">Logout</a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+        </div>
 
-								<h5 class="font-serif font400">Welcome:</h5>
+        <div class="col-12 col-md-8 col-lg-9">
+        
+          <div class="content-wrapper">
+            <h3 class="heading-title">My profile</h3>
 
-								<div class="dashboard-avatar mb-10 bg-light">
+            <div class="clear"></div>
+
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <div class="row gap-30">
+                <div class="col-6 col-sm-5 col-md-4 col-lg-4 order-lg-last">
+                  <div class="avatar-upload">
                     {% if user.profile.image %}
-									           <div class="image"><img src="{{ user.profile.image.url }}" alt="Image" /></div>
+
+                    <img
+                      class="profile-pic d-block"
+                      src="{{ user.profile.image.url }}"
+                      alt="avatar"
+                    />
                     {% else %}
-                            <div class="image"><img src="{% static '/hotels/images/default.jpg' %}" alt="Image" /></div>
-                  {% endif %}
+                    <img
+                      class="profile-pic d-block"
+                      <img
+                      src="{% static '/hotels/images/default.jpg' %}"
+                      alt="avatar"
+                    />
+                    {% endif %}
+                    <div class="upload-button text-secondary line-1">
+                      <div>
+                        <i class="fas fa-upload"></i>
+                        <span
+                          class="d-block font12 text-uppercase font700 mt-10"
+                          >Maximum file size:<br />250 mb</span
+                        >
+                      </div>
+                    </div>
+                    <input class="file-upload" type="file" accept="image/*" />
+                    <div class="labeling">
+                      <i class="fas fa-upload"></i> Change avatar
+                    </div>
+                  </div>
+                </div>
 
-									<div class="content">
-										<h6>{{ user.name }}</h6>
+                <div class="col-12 col-md-12 col-lg-8">
+                  <div class="row gap-20">
+                    <div class="col-12 col-sm-12">
+                      <div class="form-group mb-0">
+                        <label>Your Full Name</label>
+                        {{ u_form.name|add_class:'form-control form-bg-light' }}
+                      </div>
+                    </div>
 
-										  <p class="mb-15">from {{ user.profile.city }}</p>
-                    <p><span class="font-italic">Last login:</span><span class="d-block font700">{{ user.last_login|time:"H:i"  }}</span></p>
-									</div>
+                    <div class="col-12 col-sm-6">
+                      <div class="form-group mb-0">
+                        <label>Phone Number</label>
+                        {{ p_form.telephone_Number|add_class:'form-control form-bg-light' }}
+                      </div>
+                    </div>
 
-								</div>
+                    <div class="col-12 col-sm-6">
+                      <div class="form-group mb-0">
+                        <label>Address</label>
+                        {{p_form.address|add_class:'form-control form-bg-light'}}
+                      </div>
+                    </div>
 
-								<nav>
+                    <div class="col-12 col-sm-6">
+                      <div class="form-group mb-0">
+                        <label>City/town</label>
+                        {{ p_form.city|add_class:'form-control form-bg-light' }}
+                      </div>
+                    </div>
 
-									<ul class="menu-vertical-01">
-										<li class="nav-item"><a href="{% url 'room-create' %}" class="nav-link">Dashboard</a></li>
-										<li class="nav-item"><a href="#faq_section-02" class="nav-link active">My profile</a></li>
-										<li class="nav-item"><a href="#faq_section-03" class="nav-link">My booking</a></li>
-										<li class="nav-item"><a href="#faq_section-04" class="nav-link">My Wishlist</a></li>
-										<li class="nav-item"><a href="#faq_section-05" class="nav-link">Logout</a></li>
-									</ul>
+                    <div class="col-12 col-sm-6">
+                      <div class="form-group mb-0">
+                        <label>Country</label>
+                        {{ p_form.country|add_class:'form-control form-bg-light'}}
+                      </div>
+                    </div>
 
-								</nav>
-							</aside>
+                    <div class="col-12 col-sm-12">
+                      <div class="form-group mb-0">
+                        <label>Profile Photo</label>
+                        {{ p_form.image|add_class:'form-control form-bg-light'}}
+                      </div>
+                    </div>
+                  </div>
 
-						</div>
+                  <hr class="mt-40 mb-40" />
 
+                  <div class="mb-30"></div>
 
-						<div class="col-12 col-md-8 col-lg-9">
+                  <div
+                    class="row gap-10 mt-15 justify-content-center justify-content-md-start"
+                  >
+                    <div class="col-auto">
+                      <button type="submit" class="btn btn-primary btn-block">
+                        Update
+                      </button>
+                    </div>
+                    <div class="col-auto">
+                      <a href="#" class="btn btn-secondary">Cancel</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <h3 class="heading-title">Your Bookings</h3>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Hotel</th>
+                  <th scope="col">Date booked</th>
+                  <th scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for booking in bookings %}
 
-							<div class="ml-lg-auto text-left text-lg-right mt-20 mt-lg-0">
-								
-                <a href="{% url 'hotel-create' %}" class="anchor btn btn-primary btn-wide mt-5">Add Property</a>
-               
-
-							</div>
-
-							<div class="content-wrapper">
-
-								<h3 class="heading-title">My profile</h3>
-
-								<div class="clear"></div>
-
-								<form method="POST" enctype="multipart/form-data">
-                  {% csrf_token %}
-
-									<div class="row gap-30">
-
-										<div class="col-6 col-sm-5 col-md-4 col-lg-4 order-lg-last">
-
-											<div class="avatar-upload">
-                        {% if user.profile.image %}
-                            
-												            <img class="profile-pic d-block" src="{{ user.profile.image.url }}" alt="avatar" />
-                        {% else %}
-                                <img class="profile-pic d-block" <img src="{% static '/hotels/images/default.jpg' %}" alt="avatar" />
-                        {% endif %}
-												<div class="upload-button text-secondary line-1">
-													<div>
-													<i class="fas fa-upload"></i>
-													<span class="d-block font12 text-uppercase font700 mt-10">Maximum file size:<br/>250 mb</span>
-													</div>
-												</div>
-												<input class="file-upload" type="file" accept="image/*"/>
-												<div class="labeling">
-													<i class="fas fa-upload"></i> Change avatar
-												</div>
-											</div>
-
-										</div>
-
-
-
-										<div class="col-12 col-md-12 col-lg-8">
-
-											<div class="row gap-20">
-
-												<div class="col-12 col-sm-12">
-													<div class="form-group mb-0">
-														<label>Your Full Name</label>
-                            {{ u_form.name|add_class:'form-control form-bg-light' }}
-														
-													</div>
-												</div>
-
-                        <div class="col-12 col-sm-6">
-                          <div class="form-group mb-0">
-                            <label>Phone Number</label>
-                            {{ p_form.telephone_Number|add_class:'form-control form-bg-light' }}
-                    
-                          </div>
-                        </div>
-
-												<div class="col-12 col-sm-6">
-													<div class="form-group mb-0">
-														<label>Address</label>
-                            {{ p_form.address|add_class:'form-control form-bg-light' }}
-														
-													</div>
-												</div>
-
-
-												<div class="col-12 col-sm-6">
-													<div class="form-group mb-0">
-														<label>City/town</label>
-                            {{ p_form.city|add_class:'form-control form-bg-light' }}
-													</div>
-												</div>
-
-												<div class="col-12 col-sm-6">
-													<div class="form-group mb-0">
-														<label>Country</label>
-                            {{ p_form.country|add_class:'form-control form-bg-light' }}
-													</div>
-												</div>
-
-                        <div class="col-12 col-sm-12">
-													<div class="form-group mb-0">
-														<label>Profile Photo</label>
-                            {{ p_form.image|add_class:'form-control form-bg-light' }}
-													</div>
-												</div>
-
-											</div>
-
-											<hr class="mt-40 mb-40" />
-
-											
-
-											<div class="mb-30"></div>
-
-											<div class="row gap-10 mt-15 justify-content-center justify-content-md-start">
-												<div class="col-auto">
-													<button type="submit" class="btn btn-primary btn-block">Update</button>
-												</div>
-												<div class="col-auto">
-													<a href="#" class="btn btn-secondary">Cancel</a>
-												</div>
-											</div>
-
-										</div>
-
-									</div>
-
-								</form>
-
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-		</div>
-		<!-- end Main Wrapper -->
-    {% endblock content %}
+                <tr>
+                  <th scope="row">{{forloop.counter}}</th>
+                  <td>{{booking.hotel}}</td>
+                  <td>{{booking.created_at}}</td>
+                  <td>{{booking.final_total}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end Main Wrapper -->
+{% endblock content %}

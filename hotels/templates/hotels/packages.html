@@ -4,6 +4,8 @@
 {% load widget_tweaks %}
 {% load humanize %}
 
+<script type="text/javascript" defer  src="{% static 'hotels/js/packageBooking.js' %}"></script>
+
 <!-- start Main Wrapper -->
 <div class="main-wrapper scrollspy-container">
 
@@ -11,9 +13,8 @@
 <div class="container">
 <nav aria-label="breadcrumb">
 <ol class="breadcrumb">
-<li class="breadcrumb-item"><a href="#">Home</a></li>
-<li class="breadcrumb-item"><a href="#">Library</a></li>
-<li class="breadcrumb-item active" aria-current="page">Data</li>
+<li class="breadcrumb-item"><a href="{% url 'bookings-home'%}">Home</a></li>
+<li class="breadcrumb-item"><a href="#">Packages</a></li>
 </ol>
 </nav>
 </div>
@@ -138,31 +139,17 @@ bookings@marvellousventures.co.ke
 							<div class="col-inner">
 								<div class="row gap-2 gap-md-10 mb-15">
 						
-									<div class="col-12 col-sm-6">
-										<div class="form-group">
-											<label>When</label>
-											<div class="form-icon-left">
-												<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
-												<input type="text" class="form-control form-readonly-control air-datepicker" placeholder="Pick a month" data-min-view="months" data-view="months" data-date-format="MM yyyy" data-language="en" data-auto-close="true" readonly>
+									<div class="col-12 col-sm-12">
+										<div class="form-group"> 
+												<label>Check-in</label>
+												<div class="form-icon-left">
+													<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
+													<input  id="dateStart-hotel" class="form-control form-readonly-control" value = "{{ request.session.checkin }}" type='date' name='checkin' placeholder="dd/mm/yyyy">
+												</div>
 											</div>
-										</div>
 									</div>
 									
-									<div class="col-12 col-sm-6">
-										<div class="form-group">
-											<label>Type of tour</label>
-											<div class="form-icon-left">
-												<span class="icon-font text-muted"><span class="icon-inner"><i class="bx bx-calendar"></i></span></span>
-												<select  data-placeholder="Please select" class="chosen-no-search form-control" tabindex="2">
-													<option></option>
-													<option>Adventure</option>
-													<option>City tour</option>
-													<option>Honeymoon</option>
-													<option>Cultural</option>
-												</select>
-											</div>
-										</div>
-									</div>
+									
 									
 								</div>
 						
@@ -176,7 +163,7 @@ bookings@marvellousventures.co.ke
 								<label for="child-amount">No. of Guests</label>
 								<div class="form-icon-left">
 									<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
-									<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
+									<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Guests" name='guests' value="request.session.guests" readonly />
 								</div>
 							</div>
 							
@@ -211,9 +198,14 @@ bookings@marvellousventures.co.ke
 
 <div class="col-12 col-shrink">
 
-<div class="image">
-	<img src="{{ package.cover_photo.url }}" alt="{{ package.title }}" />
-</div>
+						{% for photo in package.packagephoto_set.all %}
+                        {% if forloop.first %}
+                         
+                      <div class="image height-auto">
+                        <img src="{{ photo.image.url }}" alt="{{ package.title }} photo" />
+                      </div>
+                      {% endif %}
+                      {% endfor %}
 
 </div>
 
@@ -227,12 +219,7 @@ bookings@marvellousventures.co.ke
 		
 			<div>
 			
-				<div class="rating-item rating-sm rating-inline">
-					<div class="rating-icons">
-						<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
-					</div>
-					<p class="rating-text text-muted"><span class="font13">- 1,2547 reviews</span></p>
-				</div>
+				
 				<h5><a href="{% url 'package-detail' package.slug %}">{{ package.title }}</a></h5>
 				<p class="location"><i class="fas fa-map-marker-alt text-primary"></i> {{ package.city }}, {{ package.country }}</p>
 				
@@ -261,7 +248,7 @@ bookings@marvellousventures.co.ke
 	<div class="content-bottom mt-auto">
 		<div class="d-flex align-items-center">
 			<div>
-				<p><i class="far fa-clock"></i> Duration: <strong>{{ time.duration__min }} nights</strong></p>
+				<p><i class="far fa-clock"></i> Duration: <strong> from {{ time.duration__min }} nights</strong></p>
 			</div>
 			<div class="ml-auto">
 				<a href="{% url 'package-detail' package.slug %}" class="btn btn-primary btn-sm btn-wide">Details</a>

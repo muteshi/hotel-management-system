@@ -8,9 +8,10 @@
 	<h1>Marvellous Ventures Limited</h1>
 <h3>Hello {{ name }}</h3>
 <h4>You have successfully registerd an account at {{ current_site }}</h4>
-    <h4>Please click on the link below to verify your account</h4>
+    <h4>Please <a href='{% url 'activate-account' uidb64=uid token=token %}'> verify account </a> or copy the link below to your browser to confirm your account </h4>
 
        <p>{{ current_site }}{% url 'activate-account' uidb64=uid token=token %}</p>
+    <h3> Marvellous Ventures Team </h3>
      
 </body>
 </html>

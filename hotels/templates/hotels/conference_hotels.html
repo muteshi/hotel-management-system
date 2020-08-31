@@ -127,7 +127,6 @@ bookings@marvellousventures.co.ke
 		</div>
 	
 	</div>
-	
 	<div class="col-12 col-lg-6">
 			
 		<div id="airDatepickerRange-hotel" class="row gap-10 gap-xl-20">
@@ -138,7 +137,7 @@ bookings@marvellousventures.co.ke
 					<label>Check-in</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
-						<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy">
+						<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" name='checkin' value='{{request.session.checkin}}' placeholder="dd/mm/yyyy">
 					</div>
 				</div>
 				
@@ -150,7 +149,7 @@ bookings@marvellousventures.co.ke
 					<label>Check-out</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
-						<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy">
+						<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" name='checkout' value='{{request.session.checkout}}'  placeholder="dd/mm/yyyy">
 					</div>
 				</div>
 				
@@ -171,7 +170,7 @@ bookings@marvellousventures.co.ke
 					<label for="room-amount">Rooms</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-home-alt"></i></span>
-						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="1" readonly />
+						<input type="text" class="form-control touch-spin-03 form-readonly-control" name='rooms' value='{{request.session.room}}' placeholder="rooms" value="1" readonly />
 					</div>
 				</div>
 				
@@ -183,7 +182,7 @@ bookings@marvellousventures.co.ke
 					<label for="adult-amount">Adults</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-user"></i></span>
-						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
+						<input type="text" class="form-control touch-spin-03 form-readonly-control" name='adult' value='{{request.session.adult}}' placeholder="Adults"  readonly />
 					</div> 
 				</div>
 				
@@ -195,7 +194,7 @@ bookings@marvellousventures.co.ke
 					<label for="child-amount">Children</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-user"></i></span>
-						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
+						<input type="text" class="form-control touch-spin-03 form-readonly-control" name='child' value='{{request.session.child}}' placeholder="Children" value="0" readonly />
 					</div>
 				</div>
 				
@@ -203,7 +202,6 @@ bookings@marvellousventures.co.ke
 		</div>
 	
 	</div>
-	
 	<div class="col-12 col-sm-4 col-md-3">
 		<div class="form-group">
 			<button class="btn btn-block btn-primary btn-form" type="submit">Search</button>
@@ -211,16 +209,11 @@ bookings@marvellousventures.co.ke
 	</div>
 	
 </div>
-
 </div></form>
 <!-- End search form -->
 </div>
 
-
-
 <div class="row equal-height cols-1 cols-md-2 cols-lg-3 gap-10 gap-lg-20">
-
-
 <!-- Start conference hotel listing -->
 
   {% for hotel in hotels %}
@@ -228,7 +221,7 @@ bookings@marvellousventures.co.ke
 
 	<div class="product-grid-item">
 
-		<a href="{% url 'hotel-detail' hotel.slug %}">
+		<a href="{% url 'conference-hotel-detail' hotel.slug %}">
 
 			<div class="image">
 				<img src="{{ hotel.property_photo.url }}" alt="{{ hotel.name }} photo">
@@ -236,12 +229,7 @@ bookings@marvellousventures.co.ke
 
 			<div class="content clearfix">
 
-				<div class="rating-item rating-sm">
-					<div class="rating-icons">
-						<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
-					</div>
-					<p class="rating-text text-muted"><span class="bg-primary">6.0</span> <strong class="text-dark">Good</strong> <span class="font13">- 1,2547 reviews</span></p>
-				</div>
+				
 
 				<div class="short-info">
 
@@ -275,25 +263,16 @@ bookings@marvellousventures.co.ke
 </div>
 
 {% endfor %}
-
-<!-- End conference listing -->
-			
-			
+<!-- End conference listing -->		
 </div>
-
-<!-- Start Pagination -->
-		
+<!-- Start Pagination -->	
 	{% if hotels.has_other_pages %}
 <div class="pager-wrappper mt-40">
-
 <div class="pager-innner">
-
 <div class="row align-items-center text-center text-md-left">
-
 <div class="col-12 col-md-5">
 	Showing page {{ hotels.number }} of {{paginator.num_pages}} pages of {{paginator.count}} hotels
 </div>
-
 <div class="col-12 col-md-7">
 	<nav class="float-lg-right mt-10 mt-md-0">
 		<ul class="pagination justify-content-center justify-content-lg-left">
@@ -304,7 +283,6 @@ bookings@marvellousventures.co.ke
 				</a>
 			</li>
 			{% endif %}
-			
 			{% for num in hotels.paginator.page_range %}
 			{% if hotels.number == num %}
 			<li class="active"><a href="?page={{num}}{% if search_text %}&search={{search_text}} {% endif %}">{{num}}</a></li>
@@ -313,7 +291,6 @@ bookings@marvellousventures.co.ke
 			<li><a href="?page={{num}}{% if search_text %}&search={{search_text}} {% endif %}">{{num}}</a></li>
 			{% endif %}		
 			{% endfor %}
-
 			{% if hotels.has_next %}
 			<li>
 				<a href="?page={{ hotels.next_page_number }} {% if search_text %}&search={{search_text}} {% endif %}" aria-label="Next">
@@ -323,30 +300,18 @@ bookings@marvellousventures.co.ke
 		</ul>
 	</nav>
 </div>
-
 </div>
-	
 	</div>
-
 </div>
 {% endif %}
-
-<!-- End Pagination -->
-	
-	</div>
-
+<!-- End Pagination -->	
 </div>
-
 </div>
-
 </div>
-
+</div>
 </section>
-
 </div>		
 <!-- end Main Wrapper -->
-
-
 {% endblock content %}
 
 

@@ -100,8 +100,8 @@ Call us now to get help
 
 <div class="d-lg-flex mb-30 mb-lg-0">
 <div>
-<h3 class="heading-title"><span>{% if search_text  %} Hotels <span class="text-lowercase">in</span> </span> <span class="text-primary">{{ search_text }} {% else %} All hotels listed {% endif %}</span></h3>
-<p class="text-muted post-heading">{{paginator.count}} hotels found</p>
+<h3 class="heading-title"><span>{% if search_text  %} Search results for <span class="text-lowercase"></span> </span> <span class="text-primary">{{ search_text }} {% else %} All hotels listed {% endif %}</span></h3>
+<p class="text-muted post-heading">{{paginator.count}} meeting venues found</p>
 </div>
 <div class="ml-auto">
 <button class="btn btn-secondary btn-wide btn-toggle collapsed btn-sm btn-change-search" data-toggle="collapse" data-target="#change-search"></button>
@@ -139,7 +139,7 @@ Call us now to get help
 					<label>Check-in</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
-						<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy">
+						<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" name='checkin' value='{{request.session.checkin}}' placeholder="dd/mm/yyyy">
 					</div>
 				</div>
 				
@@ -151,7 +151,7 @@ Call us now to get help
 					<label>Check-out</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
-						<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" placeholder="dd/mm/yyyy">
+						<input type="text" id="dateEnd-hotel" class="form-control form-readonly-control" name='checkout' value='{{request.session.checkout}}' placeholder="dd/mm/yyyy">
 					</div>
 				</div>
 				
@@ -172,7 +172,7 @@ Call us now to get help
 					<label for="room-amount">Rooms</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-home-alt"></i></span>
-						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="1" readonly />
+						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Rooms" name='room' value='{{request.session.room}}' readonly />
 					</div>
 				</div>
 				
@@ -184,7 +184,7 @@ Call us now to get help
 					<label for="adult-amount">Adults</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-user"></i></span>
-						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
+						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Adults" name='adult' value='{{request.session.adult}}' readonly />
 					</div> 
 				</div>
 				
@@ -196,7 +196,7 @@ Call us now to get help
 					<label for="child-amount">Children</label>
 					<div class="form-icon-left">
 						<span class="icon-font text-muted"><i class="bx bx-user"></i></span>
-						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="dd/mm/yyyy" value="0" readonly />
+						<input type="text" class="form-control touch-spin-03 form-readonly-control" placeholder="Children" name='child' value='{{request.session.child}}' readonly />
 					</div>
 				</div>
 				
@@ -275,12 +275,7 @@ Call us now to get help
 					
 						<div>
 						
-							<div class="rating-item rating-sm rating-inline">
-								<div class="rating-icons">
-									<input type="hidden" class="rating" data-filled="rating-icon fas fa-star rating-rated" data-empty="rating-icon far fa-star" data-fractions="2" data-readonly value="4.0"/>
-								</div>
-								<p class="rating-text text-muted"><span class="bg-primary">6.0</span> <strong class="text-dark">Good</strong> <span class="font13">- 1,2547 reviews</span></p>
-							</div>
+							
 							<h5><a href="#">{{ hotel.name }}</a></h5>
 							<p class="location"><i class="fas fa-map-marker-alt text-primary"></i> {{ hotel.address }}, {{ hotel.city}}, {{ hotel.country}}</p>
 							
@@ -296,7 +291,7 @@ Call us now to get help
 													
                            {% endif %}
                           {% endfor %}
-								per night
+								per person
 							</div>
 						</div>
 					

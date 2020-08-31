@@ -24,23 +24,24 @@ th, td {
 </head>
 <body>
 	<h1>Marvellous Ventures Limited</h1>
-<h3>Hello {{ title }} {{ name }}</h3>
-<h4>Your booking #{{ order_number }} details are as follows</h4>
+<h3>Hello {{ booking.name }}</h3>
+<h4>Your booking #{{ booking.invoice_number }} details are as follows</h4>
 <table>
 	<tr>
 		<th>
 			Hotel:
 		</th>
 		<th>
-			{{items.rooms.hotel}}
+			{{booking.hotel.name}}
 		</th>
 	</tr>
+	{% for item in items %}
 	<tr>
 		<th>
 			Room:
 		</th>
 		<th>
-			{{items.rooms}}
+			{{item.rooms}}
 		</th>
 	</tr>
 	<tr>
@@ -48,7 +49,7 @@ th, td {
 			CheckIn Date:
 		</th>
 		<th>
-			{{items.CheckIn}}
+			{{item.checkin}}
 		</th>
 	</tr>
 	<tr>
@@ -56,20 +57,49 @@ th, td {
 			CheckOut Date:
 		</th>
 		<th>
-			{{items.CheckOut}}
+			{{item.checkout}}
 		</th>
 	</tr>
+	<tr>
+		<th>
+			Room sub total:
+		</th>
+		<th>
+			Ksh{{item.sub_total|intcomma}} ({{ item.stay_duration }}
+			
+			{% if item.rooms.is_conference_room %}
+				day(s)
+				{% else %}
+				night(s)
+			{% endif %}
+			
+			 x {{ item.qty }}
+			  {% if item.rooms.is_conference_room %}
+				guest(s)
+				{% else %}
+				room(s)
+			{% endif %}
+			   x Ksh{{ item.rooms.room_Price|intcomma }}
+			    {% if item.rooms.is_conference_room %}
+				per person
+				{% else %}
+				per night
+			{% endif %}
+				)
+		</th>
+	</tr>
+	{% endfor %}
 	<tr>
 		<th>
 			Total:
 		</th>
 		<th>
-			Ksh{{ cart.total|intcomma }} ({{ items.stay_duration }} nights x {{ items.quantity }} room(s) x Ksh{{ items.rooms.room_Price|intcomma }} per night)
+			Ksh{{booking.final_total|intcomma }} 
 		</th>
 	</tr>
 
 </table>
-<h4>Welcome to {{items.rooms.hotel}} and may you enjoy your stay!</h4>
+<h4>Welcome to {{booking.hotel.name}} and may you enjoy your stay!</h4>
 
 
 </body>

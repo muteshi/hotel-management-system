@@ -1,0 +1,302 @@
+		{% extends "hotels/base.html" %}
+{% block content %}
+{% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+
+        <!-- start Main Wrapper -->
+		<div class="main-wrapper scrollspy-action">
+			
+			<div class="page-title breadcrumb-wrapper">
+				<div class="container">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="#">Home</a></li>
+							<li class="breadcrumb-item"><a href="#">Desinations</a></li>
+							<li class="breadcrumb-item"><a href="#">City</a></li>
+							<li class="breadcrumb-item"><a href="#">Result</a></li>
+							<li class="breadcrumb-item"><a href="#">Detail</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Payment</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+			
+			<div class="page-wrapper page-payment bg-light">
+
+				<div class="container">
+
+					<div class="row gap-30">
+						
+						<div class="col-12 col-lg-4 order-lg-last">
+						
+							<aside class="sticky-kit sidebar-wrapper">
+
+								
+								<div class="clear"></div>
+								
+								<div class="booking-selection-box">
+
+									<div class="content">
+									
+										<h5 class="font-serif font400">Hotel</h5>
+										<div class="checkoutTotal">
+										<div class="hotel-room-sm-item mb-30">
+											
+										</div>
+                                        <h5 class="font-serif font400">Price</h5>
+										
+                                        </div>
+										
+										
+									</div>
+									
+								</div>
+							
+							</aside>
+							
+						</div>
+						
+						<div class="col-12 col-lg-8">
+							
+							<div class="content-wrapper">
+
+								<div class="success-box">
+							
+									<div class="icon">
+										
+										<span><i class="ri ri-check-square"></i></span>
+										
+									</div>
+									
+									<div class="content">
+                    <h4>Great choice! You’re just 1 minute away from booking. </h4>
+                    <p>Fill in your details below to complete the booking. Once your booking is accepted, we will send you a confirmation email.</p>
+                  </div>
+									
+								</div>
+								
+								<div class="alert alert-warning pt-10 pb-10 mb-30" role="alert"><i class="fas fa-info-circle mr-5"></i>Returning customer? <a href="{% url 'login' %}" class="letter-spacing-0">Click here to login</a></div>
+								
+								<form class="payment-form-wrapper">
+								
+									<h3 class="heading-title"><span>Billing Information</span></h3>
+									<p class="post-heading">Fill in your details to complete your booking.</p>
+									
+									<div class="bg-white-shadow pt-25 ph-30">
+										<div class="row gap-20 mb-0">
+												
+											<div class="col-12 col-sm-6">
+												<div class="form-group">
+													<label>First name <span class="font12 text-danger">*</span></label>
+													<input type="text" id ='f_name' class="form-control form-bg-light" />
+													<i class="fas fa-check-circle"></i>
+													<i class="fas fa-exclamation-circle"></i>
+													<small>Error message</small>
+												</div>
+											</div>
+											
+											<div class="col-12 col-sm-6">
+												<div class="form-group">
+													<label>Last name <span class="font12 text-danger">*</span></label>
+													<input type="text" id='l_name' class="form-control form-bg-light" />
+													<i class="fas fa-check-circle"></i>
+													<i class="fas fa-exclamation-circle"></i>
+													<small>Error message</small>
+												</div>
+											</div>
+											
+											
+											
+											<div class="col-12 col-sm-6">
+												<div class="form-group">
+													<label>Mobile phone <span class="font12 text-danger">*</span></label>
+													<input type="text" id='m_phone' class="form-control form-bg-light" />
+													<i class="fas fa-check-circle"></i>
+													<i class="fas fa-exclamation-circle"></i>
+													<small>Error message</small>
+												</div>
+											</div>
+											
+											<div class="col-12 col-sm-6">
+												<div class="form-group">
+													<label>Email <span class="font12 text-danger">*</span></label>
+													<input type="email" id='email' class="form-control form-bg-light" />
+													<i class="fas fa-check-circle"></i>
+													<i class="fas fa-exclamation-circle"></i>
+													<small>Error message</small>
+												</div>
+											</div>
+											
+										</div>
+										
+									</div>
+								
+									<div class="mb-20"></div>
+									
+									<div class="create-account">
+									
+										<div class="custom-control custom-checkbox">
+											<input type="checkbox" class="custom-control-input" id="createAccountCheckBox">
+											<label class="custom-control-label" for="createAccountCheckBox">Create an account?</label>
+											
+											<div class="form-create-show bg-box-border-primary pt-25 ph-30 mt-15">
+												<div class="row gap-20 mb-0">
+													
+													<div class="col-12 col-sm-12 col-md-6">
+														<div class="form-group">
+															<label>Password</label>
+															<input type="password" id='password1' class="form-control" />
+															<i class="fas fa-check-circle"></i>
+													<i class="fas fa-exclamation-circle"></i>
+													<small>Error message</small>
+														</div>
+													</div>
+													<div class="col-12 col-sm-12 col-md-6">
+														<div class="form-group">
+															<label>Confirm password</label>
+															<input type="password" id='password2' class="form-control" />
+															<i class="fas fa-check-circle"></i>
+													<i class="fas fa-exclamation-circle"></i>
+													<small>Error message</small>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+                                    
+									<div class="mb-40"></div>
+									
+									<h3 class="heading-title"><span>Special Requests</span></h3>
+									<p class="post-heading">If you have any request type them below. Kindly note they're not guaranteed</p>
+									
+									<div class="bg-white-shadow pt-25 ph-30">
+									
+										
+										<div class="row gap-20 mb-0">
+                                        <div class="col-12">
+											<div class="form-group mb-0">
+												<label for="form_message">Message</label>
+												<textarea id="form_message" name="message" class="form-control" rows="6" ></textarea>
+												<div class="help-block with-errors text-danger"></div>
+											</div>
+										</div>
+											
+											
+											
+										</div>
+									
+										
+										
+									</div>
+
+								
+									
+								
+									<div class="mb-40"></div>
+									
+									<h3 class="heading-title"><span>Payment</span></h3>
+									<p class="post-heading">Choose payment option from choices below.</p>
+									
+									<div class="bg-white-shadow pt-25 pb-30 ph-30">
+										
+										<h6>Do you have a coupon?</h6>
+										
+										<div class="row">
+											<div class="col-12 col-sm-9 col-md-7">
+												<div class="input-group">
+													<input type="email" class="form-control form-bg-light" placeholder="Coupon code">
+													<div class="input-group-append">
+														<button class="btn btn-secondary" disabled type="button">Apply code</button>
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="clear mb-20"></div>
+										
+										<h6>Please select your payment method</h6>
+										
+										<div class="payment-option-box">
+
+											<div class="payment-option-item">
+											
+												<div class="custom-control custom-radio">
+												
+													<input type="radio" id="paymentOptionCreditBar" name="paymentOption" class="custom-control-input" checked  />
+													<label class="custom-control-label" for="paymentOptionCreditBar">Pay on checkin</label>
+													
+												</div>
+
+											</div>
+											
+											<div class="payment-option-item">
+
+												<div class="custom-control custom-radio">
+													<input type="radio" id="paymentOptionPaypal" name="paymentOption" class="custom-control-input">
+													<label class="custom-control-label" for="paymentOptionPaypal">Paypal</label>
+													
+													<div class="payment-desc">
+														<p>Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
+														<a href="#" class="btn btn-primary" disabled>Proceed to paypal</a>
+													</div>
+													
+												</div>
+												
+											</div>
+										</div>
+										
+									</div>
+									
+									<div class="mb-40"></div>
+									
+									
+									<button type='submit' id='complete-booking'  class="btn btn-primary mt-20">Complete booking <i class="fa fa-long-arrow-right"></i></button>
+									
+								</form>
+								
+								<div class="row shrink-auto-md gap-30 mt-40">
+								
+									<div class="col-12 col-shrink">
+										<div class="featured-contact-01">
+											<h6>Need help? Call us on</h6>
+											<span class="phone-number"><i class="material-icons">phone</i> 0734805199</span>
+											bookings@marvellousventures.co.ke
+										</div>
+									</div>
+									
+									<div class="col-12 col-auto">
+									
+										<h6 class="text-uppercase letter-spacing-2 line-1 font500"><span>Why Book With Marvellous Ventures</span></h6>
+								
+										<ul class="list-icon-data-attr font-ionicons">
+											<li data-content="&#xf383">Save money and time to enjoy your vacation.</li>
+											<li data-content="&#xf383">We will connect you with best deals.</li>
+											<li data-content="&#xf383">We understand langauge of hotels.</li>
+										</ul>
+										
+									</div>
+								
+								</div>
+								
+							</div>
+							
+						</div>
+
+					</div>
+				
+					<div class="fullwidth-horizon-sticky border-0">&#032;</div> <!-- is used to stop the above stick menu -->
+
+				</div>
+				
+			</div>
+			
+		</div>	
+		<script type="text/javascript" defer  src="{% static 'hotels/js/packageBooking.js' %}"></script>
+	
+		<!-- end Main Wrapper -->
+        {% endblock content%}

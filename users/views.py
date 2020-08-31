@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.db.models import Q
 from django.urls import reverse_lazy
 from users.forms import RegistrationForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
@@ -9,9 +10,11 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.template.loader import render_to_string
 from users.tokens import account_activation_token
+from rest_framework.mixins import UpdateModelMixin
 
 
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,13 +24,23 @@ from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import RetrieveAPIView, ListAPIView, DestroyAPIView, GenericAPIView, RetrieveUpdateAPIView
+from hotels.api.permissions import IsOwnerOrReadOnly,  IsAdminOrOwner, IsAdmin
+from .serializers import (
+    CustomTokenObtainPairSerializer,
+    UserDetailsSerializer,
+    ProfileSerializer,
+    UserTypesSerializers
+)
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 from users import models
+from reservations.models import Booking
 from users import permissions
 
 
-from users.models import UserProfile
+from users.models import UserProfile, Profile, UserTypes
 from django.contrib.auth import login
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -40,6 +53,7 @@ from django.utils.http import urlsafe_base64_decode
 from users.tokens import account_activation_token
 
 from users import serializers
+from rest_framework_jwt import views as jwt_views
 
 
 def register(request):
@@ -49,9 +63,14 @@ def register(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
+            user.is_staff = True
             name = form.cleaned_data.get('name')
             email = form.cleaned_data.get('email')
             user.save()
+            profile = Profile.objects.filter(user=user)[0]
+            usertype = UserTypes.objects.filter(name='Company')[0]
+            profile.user_type = usertype
+            profile.save()
 
             current_site = settings.SITE_URL
             uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -66,7 +85,7 @@ def register(request):
                            email], html_message=message)
             messages.info(
                 request, ('Account created successfully. Please go to your email to verify your account.'))
-            return redirect('login')
+            return redirect('bookings-home')
         else:
             print(form.errors)
     else:
@@ -77,6 +96,7 @@ def register(request):
 class ActivateAccount(View):
 
     def get(self, request, uidb64, token, *args, **kwargs):
+        current_site = settings.SITE_URL
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
             user = UserProfile.objects.get(pk=uid)
@@ -87,10 +107,10 @@ class ActivateAccount(View):
             user.is_active = True
             user.profile.email_confirmed = True
             user.save()
-            login(request, user)
+            # login(request, user)
             messages.success(
-                request, ('Your account have been confirmed. Finish creating your profile below'))
-            return redirect('dashboard')
+                request, ('Your account has been confirmed. You can login the form below'))
+            return redirect(current_site+'/dashboard')
         else:
             messages.error(
                 request, ('The confirmation link was invalid, possibly because it has already expired.'))
@@ -114,26 +134,114 @@ def profile(request):
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
+    bookings = Booking.objects.filter(user=request.user)
+
     context = {
+        'bookings': bookings,
         'u_form': u_form,
         'p_form': p_form
+
     }
 
     return render(request, 'users/profile.html', context)
 
 
+class UserProfileListAPIView(ListAPIView):
+    """Displays list of users"""
+
+    serializer_class = serializers.ProfileDetailsSerializer
+    permission_classes = ()
+
+    def get_queryset(self, *args, **kwargs):
+        if (self.request.user) and (self.request.user.is_superuser):
+            print(self.request.user)
+            profiles = models.UserProfile.objects.all()
+        else:
+            profiles = models.UserProfile.objects.filter(
+                Q(parent=self.request.user.id))
+
+        return profiles
+
+
+class UserProfileDetailsAPIView(RetrieveAPIView):
+    """Displays details of  a specific user"""
+    queryset = models.UserProfile.objects.all()
+    serializer_class = serializers.ProfileDetailsSerializer
+    permission_classes = ()
+
+
+class UserTypesListAPIView(ListAPIView):
+    """Displays types of users"""
+    queryset = models.UserTypes.objects.all()
+    serializer_class = serializers.UserTypesSerializers
+    permission_classes = ()
+
+
+class UserUpdateAPIView(RetrieveUpdateAPIView):
+    """Updates details of a user"""
+    queryset = models.UserProfile.objects.all()
+    serializer_class = serializers.UserProfileSerializer
+    permission_classes = ()
+
+
+class ProfileUpdateAPIView(RetrieveUpdateAPIView):
+    """Updates details of a user profile"""
+    queryset = models.Profile.objects.all()
+    serializer_class = serializers.ProfileUpdateSerializer
+    permission_classes = ()
+
+
 class CreateUserView(generics.CreateAPIView):
     """Handle creating new user in the system"""
 
+    serializer_class = serializers.ProfileSerializer
+    queryset = models.Profile.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class UserPartialUpdateView(GenericAPIView, UpdateModelMixin):
+    '''
+    You just need to provide the field which is to be modified.
+    '''
+    queryset = models.UserProfile.objects.all()
+    serializer_class = serializers.ActivateSerializer
+
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def perform_update(self, serializers):
+        serializers.save()
+
+
+class UserDeleteAPIView(DestroyAPIView):
+    """Deletes a user object"""
+    queryset = UserProfile.objects.all()
     serializer_class = serializers.UserProfileSerializer
-    # queryset = models.UserProfile.objects.all()
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (permissions.UpdateOwnProfile,)
-    # filter_backends = (filters.SearchFilter,)
-    # search_fields = ('name', 'email',)
+    permission_classes = (IsAdminOrOwner,)
 
 
 class CreateTokenView(ObtainAuthToken):
     """Handle creating user authentication tokens"""
     serializer_class = serializers.AuthTokenSerializer
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+
+class LogoutAndBlacklistRefreshTokenForUserView(APIView):
+    permission_classes = ()
+    authentication_classes = ()
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    # Replace the serializer with your custom
+    serializer_class = serializers.CustomTokenObtainPairSerializer

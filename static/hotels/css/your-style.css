@@ -1,14 +1,47 @@
-
-
 /*------------------------------------------------------------------
 * Project:        Travel Material 
 * Author:         Crenoveative 
 * URL:            http://crenoveative.com or https://themeforest.net/user/crenoveative/portfolio 
 * Created:        20/05/2019 
 -------------------------------------------------------------------*/
+.form-group.success input {
+    border-color: #2ecc71;
+}
 
+.form-group.error input {
+    border-color: #e74c3c;
+}
 
-/** 
- * Add your style here 
- */ 
+.form-group input:focus {
+    outline: 0;
+    border-color: #777;
+}
 
+.form-group i {
+    visibility: hidden;
+    position: absolute;
+    top: 40px;
+    right: 10px;
+}
+
+.form-group.success i.fa-check-circle {
+    color: #2ecc71;
+    visibility: visible;
+}
+
+.form-group.error i.fa-exclamation-circle {
+    color: #e74c3c;
+    visibility: visible;
+}
+
+.form-group small {
+    color: #e74c3c;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    visibility: hidden;
+}
+
+.form-group.error small {
+    visibility: visible;
+}
