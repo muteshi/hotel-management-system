@@ -88,11 +88,10 @@ def conference_hotels(request):
         min_price=Min('room__room_Price'))
     lowest_prices = {}
     for i in Hotels.objects.filter(has_conference=True):
-        if Room.objects.filter(Q(hotel=i.id) and Q(
-                is_conference_room=True)).exists():
-            price = Room.objects.filter(Q(hotel=i.id) and Q(
-                is_conference_room=True))[0].room_Price
-            lowest_prices[i.name] = price
+        if Room.objects.filter(hotel=i.id).exists():
+            price = Room.objects.filter(hotel=i.id)
+            price = price.filter(is_conference_room=True)
+            lowest_prices[i.name] = price[0].room_Price
     tomorrow = (datetime.date.today() +
                 datetime.timedelta(days=1)).strftime("%m/%d/%Y")
     today = datetime.date.today().strftime("%m/%d/%Y")
@@ -590,8 +589,9 @@ class ConferenceHotelsDetailView(DetailView):
         lowest_prices = {}
         for i in Hotels.objects.all():
             if ConferenceRoom.objects.filter(hotel=i.id).exists():
-                price = ConferenceRoom.objects.filter(hotel=i.id)[0].room_Price
-                lowest_prices[i.name] = price
+                price = Room.objects.filter(hotel=i.id)
+                price = price.filter(is_conference_room=True)
+                lowest_prices[i.name] = price[0].room_Price
 
         context['hotels'] = Hotels.objects.all()
         context['min'] = Room.objects.filter(is_conference_room=True
