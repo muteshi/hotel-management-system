@@ -47,7 +47,7 @@
 							
 								{% for key, value in lowest_prices.items %} 
                                     {% if key == object.name %}
-									<div class="price">from <span>Ksh<span>{{ value|intcomma }}</span></span></div>
+									<div class="price">from <span>Ksh<span>{{ value|intcomma }} </span></span>per person</div>
 									{% endif %}
 									{% endfor %}
 								<a href="#detail-content-sticky-nav-02" class="anchor btn btn-primary btn-wide mt-5">See price and date</a>

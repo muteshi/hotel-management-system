@@ -95,6 +95,7 @@ def conference_hotels(request):
                 lowest_prices[i.name] = price[0].room_Price
             except:
                 pass
+
     tomorrow = (datetime.date.today() +
                 datetime.timedelta(days=1)).strftime("%m/%d/%Y")
     today = datetime.date.today().strftime("%m/%d/%Y")
@@ -599,14 +600,14 @@ class ConferenceHotelsDetailView(DetailView):
                         self).get_context_data(*args, **kwargs)
         lowest_prices = {}
         for i in Hotels.objects.all():
-            if ConferenceRoom.objects.filter(hotel=i.id).exists():
+            if Room.objects.filter(hotel=i.id).exists():
                 price = Room.objects.filter(hotel=i.id)
                 price = price.filter(is_conference_room=True)
                 try:
                     lowest_prices[i.name] = price[0].room_Price
                 except:
                     pass
-
+                
         context['hotels'] = Hotels.objects.all()
         context['min'] = Room.objects.filter(is_conference_room=True
                                              ).aggregate(Min('room_Price'))
