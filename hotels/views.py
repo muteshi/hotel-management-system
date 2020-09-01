@@ -89,7 +89,8 @@ def conference_hotels(request):
     lowest_prices = {}
     for i in Hotels.objects.filter(has_conference=True):
         if Room.objects.filter(hotel=i.id).exists():
-            price = Room.objects.filter(hotel=i.id)[0].room_Price
+            price = Room.objects.filter(Q(hotel=i.id) and Q(
+                is_conference_room=True))[0].room_Price
             lowest_prices[i.name] = price
     tomorrow = (datetime.date.today() +
                 datetime.timedelta(days=1)).strftime("%m/%d/%Y")
