@@ -211,7 +211,6 @@ class HotelsListView(ListView):
         lowest_prices = {}
         for i in Hotels.objects.all():
             if Room.objects.filter(hotel=i.id).exists():
-
                 price = Room.objects.filter(hotel=i.id)
                 price = price.filter(is_conference_room=False)
                 try:
@@ -508,8 +507,12 @@ class HotelsDetailView(DetailView):
         lowest_prices = {}
         for i in Hotels.objects.all():
             if Room.objects.filter(hotel=i.id).exists():
-                price = Room.objects.filter(hotel=i.id)[0].room_Price
-                lowest_prices[i.name] = price
+                price = Room.objects.filter(hotel=i.id)
+                price = price.filter(is_conference_room=False)
+                try:
+                    lowest_prices[i.name] = price[0].room_Price
+                except:
+                    pass
 
         context['hotels'] = Hotels.objects.all()
         context['min'] = Room.objects.all().aggregate(Min('room_Price'))
