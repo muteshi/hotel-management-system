@@ -31,7 +31,7 @@ from reservations.models import Reservation
 def home(request):
 
     hotels = Hotels.objects.filter(featured=True)
-    hotels = hotels.objects.filter(has_conference=False)
+    hotels = hotels.filter(has_conference=False)
     packages = Packages.objects.filter(featured=True)
     conference_hotels = Hotels.objects.filter(
         Q(has_conference=True) & Q(featured=True))
