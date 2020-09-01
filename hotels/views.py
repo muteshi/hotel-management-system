@@ -45,11 +45,10 @@ def home(request):
     c_lowest_prices = {}
     for i in conference_hotels:
         if Room.objects.filter(hotel=i.id).exists():
-            c_lowest_prices[i.name] = price
             price = Room.objects.filter(hotel=i.id)
             price = price.filter(is_conference_room=True)
             try:
-                lowest_prices[i.name] = price[0].room_Price
+                c_lowest_prices[i.name] = price[0].room_Price
             except:
                 pass
 
