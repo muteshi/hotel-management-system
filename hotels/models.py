@@ -216,7 +216,7 @@ class Room(models.Model):
         ordering = ['room_Price', 'updated_at', ]
 
     def __str__(self):
-        return f'{self.room_Name}-{self.hotel.name}'
+        return f'{self.room_type}({self.room_Name})-{self.hotel.name}'
 
     def get_absolute_url(self):
         # Redirects the form to photo uploads
