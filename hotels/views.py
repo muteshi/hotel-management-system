@@ -31,6 +31,7 @@ from reservations.models import Reservation
 def home(request):
 
     hotels = Hotels.objects.filter(featured=True)
+    hotels = hotels.objects.filter(has_conference=False)
     packages = Packages.objects.filter(featured=True)
     conference_hotels = Hotels.objects.filter(
         Q(has_conference=True) & Q(featured=True))
@@ -43,7 +44,7 @@ def home(request):
 
     c_lowest_prices = {}
     for i in conference_hotels:
-        if ConferenceRoom.objects.filter(hotel=i.id).exists():
+        if Room.objects.filter(hotel=i.id).exists():
             c_lowest_prices[i.name] = price
             price = Room.objects.filter(hotel=i.id)
             price = price.filter(is_conference_room=True)
