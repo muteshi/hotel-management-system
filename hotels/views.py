@@ -91,13 +91,14 @@ def conference_hotels(request):
         if Room.objects.filter(hotel=i.id).exists():
             price = Room.objects.filter(hotel=i.id)[0].room_Price
             lowest_prices[i.name] = price
-    tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
-    today = str(datetime.date.today())
+    tomorrow = (datetime.date.today() +
+                datetime.timedelta(days=1)).strftime("%m/%d/%Y")
+    today = datetime.date.today().strftime("%m/%d/%Y")
     checkin = request.session['checkin'] if (
         'checkin' in request.session and request.session['checkin'] != None) else today
-    checkin = datetime.datetime.strptime(checkin, "%Y-%m-%d")
+    checkin = datetime.datetime.strptime(checkin, "%m/%d/%Y")
     checkout = request.session['checkout'] if 'checkout' in request.session else tomorrow
-    checkout = datetime.datetime.strptime(checkout, "%Y-%m-%d")
+    checkout = datetime.datetime.strptime(checkout, "%m/%d/%Y")
     timedeltaSum = checkout-checkin
     StayDuration = 1 if timedeltaSum.days == 0 else timedeltaSum.days
 
