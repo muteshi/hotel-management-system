@@ -88,7 +88,8 @@ def conference_hotels(request):
         min_price=Min('room__room_Price'))
     lowest_prices = {}
     for i in Hotels.objects.filter(has_conference=True):
-        if Room.objects.filter(hotel=i.id).exists():
+        if Room.objects.filter(Q(hotel=i.id) and Q(
+                is_conference_room=True)).exists():
             price = Room.objects.filter(Q(hotel=i.id) and Q(
                 is_conference_room=True))[0].room_Price
             lowest_prices[i.name] = price
