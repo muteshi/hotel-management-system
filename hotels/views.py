@@ -278,8 +278,12 @@ class ApartmentListView(ListView):
         lowest_prices = {}
         for i in Hotels.objects.filter(is_apartment=True):
             if Room.objects.filter(hotel=i.id).exists():
-                price = Room.objects.filter(hotel=i.id)[0].room_Price
-                lowest_prices[i.name] = price
+                price = Room.objects.filter(hotel=i.id)
+                price = price.filter(is_apartment=True)
+                try:
+                    lowest_prices[i.name] = price[0].room_Price
+                except:
+                    pass
 
         context['min'] = Room.objects.filter(
             is_apartment=True).aggregate(Min('room_Price'))
@@ -353,7 +357,7 @@ def search(request):  # Accomodation search
 
     if search_text:
         results = Hotels.objects.filter(Q(city__icontains=search_text) | Q(
-            name__icontains=search_text) | Q(country__icontains=search_text))
+            name__icontains=search_text) | Q(country__icontains=search_text) | Q(address__icontains=search_text))
         hotels_filter = HotelFilter(request.GET, queryset=results)
 
     else:
@@ -372,8 +376,12 @@ def search(request):  # Accomodation search
     lowest_prices = {}
     for i in Hotels.objects.all():
         if Room.objects.filter(hotel=i.id).exists():
-            price = Room.objects.filter(hotel=i.id)[0].room_Price
-            lowest_prices[i.name] = price
+            price = Room.objects.filter(hotel=i.id)
+            price = price.filter(is_conference_room=False)
+            try:
+                lowest_prices[i.name] = price[0].room_Price
+            except:
+                pass
     hotel_count = Hotels.objects.all().count()
     conference_count = Hotels.objects.filter(has_conference=True).count()
     apartment_count = Hotels.objects.filter(is_apartment=True).count()
@@ -531,12 +539,12 @@ class HotelsDetailView(DetailView):
         tomorrow = (datetime.date.today() +
                     datetime.timedelta(days=1)).strftime("%m/%d/%Y")
         today = datetime.date.today().strftime("%m/%d/%Y")
-        checkin = self.request.GET.get(
+        checkin = self.request.session.get('checkin')if 'checkin' in self.request.session else self.request.GET.get(
             'checkin') if self.request.GET else today
         self.request.session['checkin'] = checkin
         context['checkin'] = datetime.datetime.strptime(
             checkin, "%m/%d/%Y")
-        checkout = self.request.GET.get(
+        checkout = self.request.session.get('checkout')if 'checkout' in self.request.session else self.request.GET.get(
             'checkout') if self.request.GET else tomorrow
         self.request.session['checkout'] = checkout
         context['checkout'] = datetime.datetime.strptime(
@@ -562,9 +570,12 @@ class ApartmentDetailView(DetailView):
         lowest_prices = {}
         for i in Hotels.objects.filter(is_apartment=True):
             if Room.objects.filter(Q(is_apartment=True) & Q(hotel=i.id)).exists():
-                price = Room.objects.filter(Q(is_apartment=True) & Q(hotel=i.id))[
-                    0].room_Price
-                lowest_prices[i.name] = price
+                price = Room.objects.filter(hotel=i.id)
+                price = price.filter(is_apartment=True)
+                try:
+                    lowest_prices[i.name] = price[0].room_Price
+                except:
+                    pass
 
         context['hotels'] = Hotels.objects.filter(is_apartment=True)
         context['min'] = Room.objects.filter(
@@ -575,14 +586,14 @@ class ApartmentDetailView(DetailView):
                     datetime.timedelta(days=1)).strftime("%m/%d/%Y")
         today = datetime.date.today().strftime("%m/%d/%Y")
 
-        checkin = self.request.GET.get(
+        checkin = self.request.session.get('checkin')if 'checkin' in self.request.session else self.request.GET.get(
             'checkin') if self.request.GET else today
-        print(checkin)
+
         self.request.session['checkin'] = checkin
-        print(checkin)
+
         context['checkin'] = datetime.datetime.strptime(
             checkin, "%m/%d/%Y")
-        checkout = self.request.GET.get(
+        checkout = self.request.session.get('checkout')if 'checkout' in self.request.session else self.request.GET.get(
             'checkout') if self.request.GET else tomorrow
         self.request.session['checkout'] = checkout
         context['checkout'] = datetime.datetime.strptime(

@@ -394,7 +394,7 @@
 											<div class="col-12 col-sm-4 col-md-4 col-xl-3">
 												<div class="form-group">
 													<label class="d-block text-secondary font-italic line-12 font700 letter-spacing-1 mb-5"><i class="material-icons">thumb_up</i> Best Price Guaranteed</label>
-													<button class="btn btn-block btn-primary btn-form">Search</button>
+													<button class="btn btn-block btn-primary btn-form">Change</button>
 												</div>
 											</div>
 											
@@ -465,7 +465,7 @@
 														<div class="col-12 col-sm-8 col-md-8">
 															<div class="content">
 																<h5><a href="#" id='room-name{{forloop.counter}}'>{{ item.room_Name }} {{ item.room_Type }}</a></h5>
-																<p><span class="font700">Room with view</span>, 43 square metres, 1 double bed </p>
+													
 																<p class="max-man">Max guests : {{ item.max_adults }} </p>
 													
 																<p class="price"><span class="number text-secondary"><small>Ksh</small>{{ item.room_Price|intcomma }}</span> per night</p>
@@ -483,12 +483,7 @@
 															{% widthratio StayDuration 1 item.room_Price as roomTotal%}
 															{% if StayDuration %}<p class="line13 mt-5 mb-15"><span class="block text-danger font600 text-uppercase"> Ksh {{roomTotal|intcomma}} for {{StayDuration}} nights</span></p>{% endif %}
 															 
-															<ul class="list-icon-data-attr font-awesome list-block-md">
-																<li data-content="&#xf00c">Breakfast Included</li>
-																<li data-content="&#xf00c">Free Internet in Room</li>
-																<li data-content="&#xf00c">Free Parking</li>
-																<li data-content="&#xf00c">No Booking Fee</li>
-															</ul>
+															
 															
 														</div>
 														
