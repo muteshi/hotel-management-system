@@ -20,11 +20,14 @@ from .views import (
     ConferenceHotelsDetailView,
     ConferenceRoomDeleteView,
     ConferenceRoomUpdateView,
-    CityHotelsListView
+    CityHotelsListView,
+    FrontendAppView
 )
 
 urlpatterns = [
     path('', views.home, name='bookings-home'),
+
+    path('dashboard/', FrontendAppView.as_view()),
 
     path('hotels/<slug:slug>', HotelsDetailView.as_view(), name='hotel-detail'),
 

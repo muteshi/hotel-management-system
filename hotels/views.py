@@ -1,6 +1,9 @@
+import os
 import datetime
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponse
+import logging
 
 from django.shortcuts import render, redirect, HttpResponseRedirect, Http404, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -26,6 +29,29 @@ from .filters import HotelFilter, PackagesFilter
 
 from .models import Photo, Cart, CartItems
 from reservations.models import Reservation
+
+
+class FrontendAppView(View):
+    """
+    Serves the compiled frontend entry point (only works if you have run `yarn
+    run build`).
+    """
+
+    def get(self, request):
+        print(os.path.join(settings.REACT_APP_DIR, 'build', 'index.html'))
+        try:
+            with open(os.path.join(settings.REACT_APP_DIR, 'build', 'index.html')) as f:
+                return HttpResponse(f.read())
+        except FileNotFoundError:
+            logging.exception('Production build of app not found')
+        return HttpResponse(
+            """
+                This URL is only used when you have built the production
+                version of the app. Visit http://localhost:3000/ instead, or
+                run `yarn run build` to test the production version.
+                """,
+            status=501,
+        )
 
 
 def home(request):
