@@ -158,7 +158,9 @@ class BookingsCreateSerializer(ModelSerializer):
             booking.items.create(**item_data)
         bookingData = Booking.objects.get(id=booking.id)
         bookingItems = booking.items.all()
-        context = {"items": bookingItems, 'booking': bookingData}
+        guests = booking.special_requests
+        guests = guests.split('\n')
+        context = {"items": bookingItems, 'booking': bookingData, 'guests':guests}
         room_reservation_template = "reservations/room_reservation_success.html"
         package_reservation_template = "reservations/package_reservation_success.html"
         message = render_to_string(

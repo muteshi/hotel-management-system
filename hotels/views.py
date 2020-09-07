@@ -1,57 +1,18 @@
-import os
+
 import datetime
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse
-import logging
 
 from django.shortcuts import render, redirect, HttpResponseRedirect, Http404, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Hotels, Room, Packages, Itinirery, HotelPackages, CartPackageItems, Slider, ConferenceRoom, CartConferenceItems
+from .models import Hotels, Room, Packages, Itinirery, HotelPackages, Slider
 from django.http import JsonResponse
 from django.views import View
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
-from django.template.loader import render_to_string
-from django.core.mail import send_mail
-from django.utils.html import strip_tags
-from django.core import mail
-from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
-from .forms import RoomForm, PhotoForm, PackageForm, HotelPackagesForm, ItinireryForm, ConferenceRoomForm, HotelsForm
-from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.decorators import login_required
 
 from django.db.models import Min, Q
 from .filters import HotelFilter, PackagesFilter
-
-
-from .models import Photo, Cart, CartItems
-from reservations.models import Reservation
-
-
-class FrontendAppView(View):
-    """
-    Serves the compiled frontend entry point (only works if you have run `yarn
-    run build`).
-    """
-
-    def get(self, request):
-        print(os.path.join(settings.REACT_APP_DIR, 'build', 'index.html'))
-        try:
-            with open(os.path.join(settings.REACT_APP_DIR, 'build', 'index.html')) as f:
-                return HttpResponse(f.read())
-        except FileNotFoundError:
-            logging.exception('Production build of app not found')
-        return HttpResponse(
-            """
-                This URL is only used when you have built the production
-                version of the app. Visit http://localhost:3000/ instead, or
-                run `yarn run build` to test the production version.
-                """,
-            status=501,
-        )
 
 
 def home(request):
@@ -319,51 +280,15 @@ class ApartmentListView(ListView):
         return context
 
 
-class CityHotelsListView(ListView):
-    """Displays hotels in a specific town/city"""
-    model = Hotels
-    template_name = 'hotels/hotels_by_city.html'
-    context_object_name = 'hotels'
-    ordering = ['-created_at']
-    paginate_by = 9
-
-    def get_queryset(self):
-        hotel_by_city = get_object_or_404(Hotels, slug=self.kwargs.get('slug'))
-        return Hotels.objects.filter(city=hotel_by_city.city).order_by('-created_at')
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(HotelsListView, self).get_context_data(*args, **kwargs)
-        hotels = Hotels.objects.all()
-        paginator = Paginator(hotels, self.paginate_by)
-
-        page = self.request.GET.get('page')
-
-        try:
-            hotel = paginator.page(page)
-        except PageNotAnInteger:
-            hotel = paginator.page(1)
-        except EmptyPage:
-            hotel = paginator.page(paginator.num_pages)
-
-        context['hotels'] = hotel
-
-        lowest_prices = {}
-        for i in Hotels.objects.all():
-            if Room.objects.filter(hotel=i.id).exists():
-                price = Room.objects.filter(hotel=i.id)[0].room_Price
-                lowest_prices[i.name] = price
-
-        context['min'] = Room.objects.all().aggregate(Min('room_Price'))
-        context['lowest_prices'] = lowest_prices
-        context['hotels_by_city'] = hotels_by_city
-
-        return context
-
-
 def search(request):  # Accomodation search
-    checkin = request.GET.get('checkin')
+    tomorrow = (datetime.date.today() +
+                datetime.timedelta(days=1)).strftime("%m/%d/%Y")
+    today = datetime.date.today().strftime("%m/%d/%Y")
+    checkin = request.session.get('checkin')if 'checkin' in request.session else request.GET.get(
+        'checkin') if request.GET else today
     request.session['checkin'] = checkin
-    checkout = request.GET.get('checkout')
+    checkout = request.session.get('checkout')if 'checkout' in request.session else request.GET.get(
+        'checkout') if request.GET else today
     request.session['checkout'] = checkout
     adult = request.GET.get('adult')
     request.session['adult'] = adult
@@ -428,9 +353,14 @@ def search(request):  # Accomodation search
 
 
 def search_conference_venues(request):  # Search meeting venues
-    checkin = request.GET.get('checkin')
+    tomorrow = (datetime.date.today() +
+                datetime.timedelta(days=1)).strftime("%m/%d/%Y")
+    today = datetime.date.today().strftime("%m/%d/%Y")
+    checkin = request.session.get('checkin')if 'checkin' in request.session else request.GET.get(
+        'checkin') if request.GET else today
     request.session['checkin'] = checkin
-    checkout = request.GET.get('checkout')
+    checkout = request.session.get('checkout')if 'checkout' in request.session else request.GET.get(
+        'checkout') if request.GET else today
     request.session['checkout'] = checkout
     adult = request.GET.get('adult')
     request.session['adult'] = adult
@@ -482,7 +412,11 @@ def search_conference_venues(request):  # Search meeting venues
 
 
 def search_packages(request):  # Search packages
-    checkin = request.GET.get('checkin')
+    tomorrow = (datetime.date.today() +
+                datetime.timedelta(days=1)).strftime("%m/%d/%Y")
+    today = datetime.date.today().strftime("%m/%d/%Y")
+    checkin = request.session.get('checkin')if 'checkin' in request.session else request.GET.get(
+        'checkin') if request.GET else today
     request.session['checkin'] = checkin
     guests = request.GET.get('guests')
     request.session['guests'] = guests
@@ -525,20 +459,6 @@ def search_packages(request):  # Search packages
     }
 
     return render(request, template, context)
-
-
-class RoomListView(LoginRequiredMixin, ListView):
-    """List select all rooms"""
-    model = Room
-    template_name = 'hotels/room_list.html'
-    context_object_name = 'rooms'
-    # ordering = ['-date_posted']
-    # paginate_by = 1
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Room.objects.filter(user=user)
-        return queryset
 
 
 class HotelsDetailView(DetailView):
@@ -611,12 +531,9 @@ class ApartmentDetailView(DetailView):
         tomorrow = (datetime.date.today() +
                     datetime.timedelta(days=1)).strftime("%m/%d/%Y")
         today = datetime.date.today().strftime("%m/%d/%Y")
-
         checkin = self.request.session.get('checkin')if 'checkin' in self.request.session else self.request.GET.get(
             'checkin') if self.request.GET else today
-
         self.request.session['checkin'] = checkin
-
         context['checkin'] = datetime.datetime.strptime(
             checkin, "%m/%d/%Y")
         checkout = self.request.session.get('checkout')if 'checkout' in self.request.session else self.request.GET.get(
@@ -715,482 +632,6 @@ class PackagesDetailView(DetailView):
             pass
 
         return context
-
-
-class HotelsCreateView(LoginRequiredMixin, CreateView):
-    """Creates hotels form"""
-    model = Hotels
-    form_class = HotelsForm
-
-    def form_valid(self, form):
-        hotel = form.save(commit=False)
-        hotel.contact_person = self.request.user
-        hotel.save()
-        # messages.success(self.request, f'You have successfully created {self.hotel.name}!')
-        # Send email on Successfull property creation
-        property_url = "%s/%s" % (settings.SITE_URL,
-                                  reverse("hotel-detail", args=[hotel.slug]))
-        context = {"property_url": property_url,
-                   "user":  hotel.contact_person.name, }
-        message = render_to_string(
-            "hotels/property_register_success.html", context)
-        plain_message = strip_tags(message)
-        subject = f"Registration details for {hotel.name}"
-        mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [
-                       hotel.contact_person.email], html_message=message)
-
-        return super().form_valid(form)
-
-
-class HotelsUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """Update all details of the hotel"""
-    model = Hotels
-    template_name = "hotels/edit_hotel.html"
-    context_object_name = 'hotel'
-    fields = [
-        'name',
-        'name',
-        'address',
-        'city',
-        'country',
-        'mobile_number',
-        'description',
-        'star_rating',
-        'property_photo',
-    ]
-
-    def form_valid(self, form):
-        hotel = form.save(commit=False)
-        hotel.last_modified = timezone.now()
-        hotel.contact_person = self.request.user
-        hotel.save()
-        return redirect("hotel-detail", hotel.slug)
-
-    def test_func(self):
-        hotel = self.get_object()
-        if self.request.user == hotel.contact_person:
-            return True
-        return False
-
-
-class RoomUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """Update all details of the hotel"""
-    model = Room
-    template_name = "hotels/edit_room.html"
-    context_object_name = 'room'
-    fields = ('room_type', 'room_Name', 'max_adults', 'room_Price',
-              'total_Rooms', 'room_details', 'room_photo',)
-
-    def form_valid(self, form):
-        room = form.save(commit=False)
-        room.last_modified = timezone.now()
-        room.user = self.request.user
-        room.save()
-        return redirect("hotel-detail", room.hotel.slug)
-
-    def test_func(self):
-        room = self.get_object()
-        if self.request.user == room.user:
-            return True
-        return False
-
-
-class ConferenceRoomUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """Update all details of the conference room"""
-    model = ConferenceRoom
-    fields = ('room_Name', 'room_Capacity', 'room_Price',
-              'room_discount', 'room_photo', 'room_details',)
-    template_name = "hotels/edit_conferenceroom.html"
-    success_message = "%(room_Name)s was updated successfully"
-    context_object_name = 'conference_room'
-
-    def form_valid(self, form):
-        room = form.save(commit=False)
-        room.last_modified = timezone.now()
-        room.user = self.request.user
-        room.save()
-        return redirect("conference-hotel-detail", room.hotel.slug)
-
-    def test_func(self):
-        room = self.get_object()
-        if self.request.user == room.user:
-            return True
-        return False
-
-
-class HotelsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    """Deletes a hotel"""
-    model = Hotels
-    success_url = '/hotels/'
-
-    def test_func(self):
-        hotel = self.get_object()
-        if self.request.user == hotel.contact_person:
-            return True
-        return False
-
-
-class RoomDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    """Deletes a room"""
-    model = Room
-
-    def test_func(self):
-        room = self.get_object()
-        if self.request.user == room.user:
-            return True
-        return False
-
-    def get_context_data(self, **kwargs):
-        context = super(RoomDeleteView, self).get_context_data(**kwargs)
-        context[next] = self.request.POST.get('previous_page')
-        return context
-
-    def get_success_url(self):
-        redirect_to = self.request.POST.get('previous_page')
-        return redirect_to
-
-
-@login_required
-def new_room(request):
-    if request.method == 'POST':
-        form = RoomForm(request.user,
-                        request.POST,
-                        request.FILES
-                        )
-        if form.is_valid():
-            room = form.save(commit=False)
-            room.user = request.user
-            room.save()
-            room_Name = form.cleaned_data.get('room_Name')
-            room_type = form.cleaned_data.get('room_type')
-            messages.success(
-                request, f'You have successfully created {room_Name}-{room_type} room!')
-
-            return redirect("hotel-detail", room.hotel.slug)
-    else:
-        form = RoomForm(request.user)
-
-    return render(request, 'hotels/room_form.html', {'form': form})
-
-
-@login_required
-def new_conferenceroom(request):
-    if request.method == 'POST':
-        cform = ConferenceRoomForm(request.user,
-                                   request.POST,
-                                   request.FILES
-                                   )
-        if cform.is_valid():
-            room = cform.save(commit=False)
-            room.user = request.user
-            room.conference = True
-            room.save()
-
-            return redirect("conference-hotel-detail", room.hotel.slug)
-    else:
-        cform = ConferenceRoomForm(request.user)
-
-    return render(request, 'hotels/conferenceroom_form.html', {'cform': cform})
-
-
-class ConferenceRoomDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    """Deletes a room"""
-    model = ConferenceRoom
-
-    def test_func(self):
-        room = self.get_object()
-        if self.request.user == room.user:
-            return True
-        return False
-
-    def get_context_data(self, **kwargs):
-        context = super(ConferenceRoomDeleteView,
-                        self).get_context_data(**kwargs)
-        context[next] = self.request.POST.get('previous_page')
-        return context
-
-    def get_success_url(self):
-        redirect_to = self.request.POST.get('previous_page')
-        return redirect_to
-
-
-class PhotoUploadView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        photos_list = Photo.objects.all()
-        return render(self.request, 'hotels/uploads.html', {'photos': photos_list})
-
-    def post(self, request, pk):
-        """Handles photo uploads and assign them to the correct user and hotel"""
-        form = PhotoForm(self.request.POST,
-                         self.request.FILES, self.request.user)
-        if form.is_valid():
-            photo = form.save(commit=False)
-            try:
-                hotel = Hotels.objects.get(
-                    contact_person=self.request.user, id=self.kwargs.get('pk'))
-            except Hotels.DoesNotExist:
-                raise Http404
-            photo.hotel = hotel
-            photo.save()
-            data = {'is_valid': True, 'name': photo.file.name,
-                    'url': photo.file.url}
-        else:
-            data = {'is_valid': False}
-        return JsonResponse(data)
-
-
-def clear_database(request):
-    for photo in Photo.objects.all():
-        photo.file.delete()
-        photo.delete()
-    return redirect(request.POST.get('next'))
-
-
-def bookRoom(request):
-
-    FirstDate = request.session['checkin']
-    SecDate = request.session['checkout']
-    # #
-    Checkin = datetime.datetime.strptime(FirstDate, "%Y-%m-%d").date()
-    Checkout = datetime.datetime.strptime(SecDate, "%Y-%m-%d").date()
-    timedeltaSum = Checkout - Checkin
-    #
-    StayDuration = timedeltaSum.days
-    #
-    Hotel = Hotels.objects.get(id=hotelid)
-    theRoom = Room.objects.get(id=roomid)
-    #
-    price = theRoom.room_Price
-    TotalCost = StayDuration * price
-
-    context = {'checkin': Checkin, 'checkout': Checkout, 'stayduration': StayDuration, 'hotel': Hotel, 'room': theRoom, 'price': price,
-               'totalcost': TotalCost}
-    return render(request, 'hotels_detail', context)
-
-
-def reservations(request):
-
-    template = "hotels/reservations.html"
-    context = {}
-    return render(request, template, context)
-
-# room reservation
-
-
-def view(request):
-    try:
-        the_id = request.session['cart_id']
-        cart = Cart.objects.get(id=the_id)
-    except:
-        the_id = None
-    if the_id:
-        new_total = 0.00
-        for item in cart.cartitems_set.all():
-            line_total = float(item.rooms.room_Price) * \
-                item.quantity * item.stay_duration
-            new_total += line_total
-        request.session['items_total'] = cart.cartitems_set.count()
-        cart.total = new_total
-        cart.save()
-        context = {"cart": cart}
-    else:
-        empty_message = "You are yet to make any reservation"
-        context = {"empty": True, "empty_message": empty_message,
-                   "title": "Room Reservation"}
-
-    template = "hotels/booking.html"
-    return render(request, template, context)
-
-
-# package reservation
-def package_view(request):
-    try:
-        the_id = request.session['cart_id']
-        cart = Cart.objects.get(id=the_id)
-    except:
-        the_id = None
-    if the_id:
-        new_total = 0.00
-        for item in cart.cartpackageitems_set.all():
-            line_total = float(
-                item.hotel_package.package_Price) * item.quantity
-            new_total += line_total
-        request.session['items_total'] = cart.cartpackageitems_set.count()
-        cart.total = new_total
-        cart.save()
-        context = {"cart": cart}
-    else:
-        empty_message = "You are yet to make any reservation"
-        context = {"empty": True, "empty_message": empty_message,
-                   "title": "Package Reservation"}
-
-    template = "hotels/package_booking.html"
-    return render(request, template, context)
-
-# Conference room reservation
-
-
-def conference_view(request):
-    try:
-        the_id = request.session['cart_id']
-        cart = Cart.objects.get(id=the_id)
-    except:
-        the_id = None
-    if the_id:
-        new_total = 0.00
-        line_total = 0.00
-        s_room_total = 0.00
-        d_room_total = 0.00
-
-        for item in cart.cartconferenceitems_set.all():
-
-            line_total = float(item.rooms.room_Price) * \
-                item.guests * item.conference_duration
-            request.session['line_total'] = line_total
-
-            if item.single_room != None:
-                s_room_total = float(item.single_room_price) * item.nights * float(
-                    item.single_room_total) * float(100 - (item.rooms.room_discount))/100
-                request.session['s_room_total'] = s_room_total
-            else:
-                s_room_total = 0.00
-
-            if item.double_room != None:
-                d_room_total = float(item.double_room_price) * item.nights * float(
-                    item.double_room_total) * float(100 - (item.rooms.room_discount))/100
-                request.session['d_room_total'] = d_room_total
-
-            else:
-                d_room_total = 0.00
-
-            new_total = line_total + s_room_total + d_room_total
-            request.session['discount'] = int(item.rooms.room_discount)
-
-        request.session['items_total'] = cart.cartconferenceitems_set.count()
-
-        cart.total = new_total
-        cart.save()
-        context = {"cart": cart, "line_total": line_total,
-                   "s_room_total": s_room_total, "d_room_total": d_room_total}
-    else:
-        empty_message = "You are yet to make any conference room reservation"
-        context = {"empty": True, "empty_message": empty_message,
-                   "title": "Meeting Room Reservation"}
-
-    template = "hotels/conference-booking.html"
-    return render(request, template, context)
-
-
-def remove_from_cart(request, id):
-    try:
-        the_id = request.session['cart_id']
-        cart = Cart.objects.get(id=the_id)
-    except:
-        return HttpResponseRedirect(reverse("cart"))
-
-    cart_item = CartItems.objects.get(id=id)
-    # cart_item.delete()
-    cart_item.cart = None
-    cart_item.save()
-
-    return HttpResponseRedirect(reverse("cart"))
-
-
-# Remove from package cart
-
-def remove_from_packagecart(request, id):
-    try:
-        the_id = request.session['cart_id']
-        cart = Cart.objects.get(id=the_id)
-    except:
-        return HttpResponseRedirect(reverse("package-cart"))
-
-    cart_package_item = CartPackageItems.objects.get(id=id)
-    # cart_item.delete()
-    cart_package_item.cart = None
-    cart_package_item.save()
-
-    return HttpResponseRedirect(reverse("package-cart"))
-
-
-def remove_from_conferencecart(request, id):
-    try:
-        the_id = request.session['cart_id']
-        cart = Cart.objects.get(id=the_id)
-    except:
-        return HttpResponseRedirect(reverse("conference-cart"))
-
-    cart_item = CartConferenceItems.objects.get(id=id)
-    # cart_item.delete()
-    cart_item.cart = None
-    cart_item.save()
-
-    return HttpResponseRedirect(reverse("conference-cart"))
-
-
-class PackagesCreateView(LoginRequiredMixin, CreateView):
-    """Creates hotels form"""
-    model = Packages
-
-    fields = ('title', 'package_type', 'city',
-              'country', 'description', 'cover_photo',)
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-
-        return super().form_valid(form)
-
-
-class HotelPackagesCreateView(LoginRequiredMixin, CreateView):
-    """Creates hotels form"""
-    model = HotelPackages
-
-    form_class = HotelPackagesForm
-
-    def form_valid(self, form):
-
-        hotel_package = form.save(commit=False)
-        try:
-            package = Packages.objects.get(
-                user=self.request.user, id=self.kwargs.get('pk'))
-
-        except Packages.DoesNotExist:
-            raise Http404
-        hotel_package.package = package
-        hotel_package.user = self.request.user
-        hotel_package.save()
-
-        return super().form_valid(form)
-
-
-class ItinireryCreateView(LoginRequiredMixin, CreateView):
-    """Creates hotels form"""
-    model = Itinirery
-
-    fields = ('title', 'description', 'package_photo', 'description',)
-
-    def form_valid(self, form):
-
-        itinirery = form.save(commit=False)
-        try:
-            pack = Packages.objects.get(
-                user=self.request.user, id=self.kwargs.get('pk'))
-        except Packages.DoesNotExist:
-            raise Http404
-        itinirery.package = pack
-        itinirery.user = self.request.user
-        itinirery.save()
-
-        return HttpResponseRedirect(reverse("package-list"))
-
-
-# class PackageListView(LoginRequiredMixin, ListView):
-#     """List select all rooms"""
-#     model = Packages
-#     template_name = 'hotels/package_list.html'
-#     context_object_name = 'packages'
-#     # ordering = ['-date_posted']
-#     # paginate_by = 1
 
 
 def package_list(request):

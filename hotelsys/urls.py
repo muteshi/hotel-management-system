@@ -32,24 +32,16 @@ urlpatterns = [
     path('api/', include('hotels.api.urls'), name='hotels-api'),
     path('api/', include('reservations.api.urls'), name='reservations-api'),
     # path('checkout/', views.check_out, name='checkout'),
-    path('hotels/rooms/checkout/', views.new_booking, name='booking-checkout'),
+
     path('hotels/hotel-room-checkout/',
          views.hotel_room_booking_checkout, name='hotel-room-checkout'),
     path('packages/hotel-package-checkout/',
          views.hotel_package_booking_checkout, name='hotel-package-checkout'),
-    path('hotels/conferencerooms/checkout/', views.new_conference_booking,
-         name='conference-booking-checkout'),
+
     path('hotels/booking/success/', views.booking_success, name='booking-success'),
     # path('hotels/package/checkout/', views.package_check_out, name='package-checkout'),
-    path('hotels/package/checkout/',
-         views.new_package_booking, name='package-checkout'),
-    url(r'^cart/(?P<slug>[\w-]+)/$',
-        views.add_to_cart, name='update-booking-2'),
-    url(r'^hotels/package/cart/(?P<id>[\w-]+)/$',
-        views.package_add_to_cart, name='package-booking'),
-    url(r'^hotels/conference/cart/(?P<slug>[\w-]+)/$',
-        views.conference_add_to_cart, name='conference-update-booking-2'),
-    path('hotels/bookings/<int:pk>/', views.check_out, name='single_order'),
+
+
 ]
 
 

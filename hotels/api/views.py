@@ -21,7 +21,7 @@ from hotels.models import (
     Photo,
     RoomPhoto,
     PackagePhoto,
-    ConferenceRoomPhoto,
+
 )
 from .serializers import (
     HotelAdminCreateSerializer,

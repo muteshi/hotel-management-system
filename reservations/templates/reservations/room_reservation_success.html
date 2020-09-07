@@ -99,6 +99,24 @@ th, td {
 	</tr>
 
 </table>
+{% for item in items %}
+{% if item.rooms.is_conference_room   %}
+<h2>Meeting Attendants</h2>
+
+<table style="width:100%">
+  <tr>
+    <th>Number</th>
+    <th>Name</th>
+  </tr>
+  {% for list in guests %}
+  <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ list }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endfor %}
 <h4>Welcome to {{booking.hotel.name}} and may you enjoy your stay!</h4>
 
 
