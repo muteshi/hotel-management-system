@@ -118,7 +118,6 @@ class BookingsCreateSerializer(ModelSerializer):
             account = data.pop('account', None)
             parent = account[2]['parent']
             owner = UserProfile.objects.filter(id=parent)[0]
-
             user = UserProfile.objects.create_user(
                 name=account[0]['name'],
                 email=account[1]['email'],
@@ -138,7 +137,7 @@ class BookingsCreateSerializer(ModelSerializer):
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = account_activation_token.make_token(user)
                 context = {"current_site": current_site,
-                        "name": user.name, 'uid': uid, 'token': token}
+                           "name": user.name, 'uid': uid, 'token': token}
                 subject = 'Activate Your Account at Marvellous Ventures'
                 message = render_to_string(
                     'users/account_activation_email.html', context)
@@ -147,7 +146,6 @@ class BookingsCreateSerializer(ModelSerializer):
                     user.email], html_message=message)
             except:
                 pass
-            
 
         return super(BookingsCreateSerializer, self).to_internal_value(data)
 
@@ -160,7 +158,8 @@ class BookingsCreateSerializer(ModelSerializer):
         bookingItems = booking.items.all()
         guests = booking.special_requests
         guests = guests.split('\n')
-        context = {"items": bookingItems, 'booking': bookingData, 'guests':guests}
+        context = {"items": bookingItems,
+                   'booking': bookingData, 'guests': guests}
         room_reservation_template = "reservations/room_reservation_success.html"
         package_reservation_template = "reservations/package_reservation_success.html"
         message = render_to_string(

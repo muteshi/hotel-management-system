@@ -17,7 +17,7 @@ class BookingAdmin(admin.ModelAdmin):
         model = Booking
 
 
-admin.site.register(Booking,  BookingAdmin)
+admin.site.register(Booking, BookingAdmin)
 
 admin.site.register(BookingSettings)
 
