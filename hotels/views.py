@@ -316,7 +316,7 @@ def search(request):  # Accomodation search
         hotels_filter = HotelFilter(request.GET, queryset=results)
 
     page = request.GET.get('page', 1)
-    paginator = Paginator(hotels_filter.qs, 3)
+    paginator = Paginator(hotels_filter.qs, 9)
     template = 'hotels/search_results.html'
     try:
         hotels = paginator.page(page)
@@ -385,7 +385,7 @@ def search_conference_venues(request):  # Search meeting venues
         hotels_filter = HotelFilter(request.GET, queryset=results)
 
     page = request.GET.get('page', 1)
-    paginator = Paginator(hotels_filter.qs, 3)
+    paginator = Paginator(hotels_filter.qs, 9)
     template = 'hotels/search_conference_venues.html'
     try:
         hotels = paginator.page(page)
