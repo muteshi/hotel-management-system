@@ -111,7 +111,6 @@ class BookingListAPIView(ListAPIView):
             bookings = Booking.objects.filter(user=self.request.user.id)
         else:
             bookings = Booking.objects.filter(email=self.request.user.email)
-        print(bookings)
         return bookings
 
 
