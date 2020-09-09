@@ -106,7 +106,8 @@ class BookingListAPIView(ListAPIView):
         print(self.request.user.is_superuser and self.request.user.is_staff)
         if (self.request.user.is_superuser and self.request.user.is_staff):
             bookings = Booking.objects.all()
-        if(self.request.user.is_staff):
+
+        if(self.request.user.is_staff and self.request.user.is_superuser == False):
             bookings = Booking.objects.filter(user=self.request.user.id)
         else:
             bookings = Booking.objects.filter(email=self.request.user.email)
