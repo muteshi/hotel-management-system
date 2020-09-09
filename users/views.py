@@ -109,8 +109,8 @@ class ActivateAccount(View):
             user.save()
             # login(request, user)
             messages.success(
-                request, ('Your account has been confirmed. You can login the form below'))
-            return redirect(current_site+'/dashboard')
+                request, ('Your account has been confirmed. You can login by clicking on the login button above'))
+            return redirect('bookings-home')
         else:
             messages.error(
                 request, ('The confirmation link was invalid, possibly because it has already expired.'))
@@ -154,11 +154,10 @@ class UserProfileListAPIView(ListAPIView):
 
     def get_queryset(self, *args, **kwargs):
         if (self.request.user) and (self.request.user.is_superuser):
-            print(self.request.user)
             profiles = models.UserProfile.objects.all()
         else:
             profiles = models.UserProfile.objects.filter(
-                Q(parent=self.request.user.id))
+                Q(parent=self.request.user.id) | Q(id=self.request.user.id))
 
         return profiles
 

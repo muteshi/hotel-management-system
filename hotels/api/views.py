@@ -177,7 +177,7 @@ class HotelsListAPIView(ListAPIView):
     permission_classes = ()
 
     def get_queryset(self, *args, **kwargs):
-        if (self.request.user) and (self.request.user.is_superuser):
+        if (self.request.user and self.request.user.is_superuser) or (self.request.user.is_staff == False):
             hotels = Hotels.objects.all()
         else:
             hotels = Hotels.objects.filter(

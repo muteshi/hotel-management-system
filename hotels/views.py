@@ -72,7 +72,7 @@ def conference_hotels(request):
     hotels = Hotels.objects.filter(has_conference=True)
     hotels_filter = HotelFilter(request.GET, queryset=hotels)
     page = request.GET.get('page')
-    paginator = Paginator(hotels_filter.qs, 3)
+    paginator = Paginator(hotels_filter.qs, 9)
 
     try:
         hotel = paginator.page(page)
