@@ -2,6 +2,7 @@
 import datetime
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from hitcount.views import HitCountDetailView
 
 from django.shortcuts import render, redirect, HttpResponseRedirect, Http404, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -461,9 +462,10 @@ def search_packages(request):  # Search packages
     return render(request, template, context)
 
 
-class HotelsDetailView(DetailView):
+class HotelsDetailView(HitCountDetailView):
     """List all details of the hotel"""
     model = Hotels
+    count_hit = True
 
     def get_context_data(self, *args, **kwargs):
         context = super(HotelsDetailView, self).get_context_data(
@@ -506,9 +508,10 @@ class HotelsDetailView(DetailView):
         return context
 
 
-class ApartmentDetailView(DetailView):
+class ApartmentDetailView(HitCountDetailView):
     """List all details of the apartment"""
     model = Hotels
+    count_hit = True
 
     def get_context_data(self, *args, **kwargs):
         context = super(ApartmentDetailView, self).get_context_data(
@@ -552,9 +555,10 @@ class ApartmentDetailView(DetailView):
         return context
 
 
-class ConferenceHotelsDetailView(DetailView):
+class ConferenceHotelsDetailView(HitCountDetailView):
     """List all details of the hotel"""
     model = Hotels
+    count_hit = True
     template_name = 'hotels/conference_hotel_details.html'
 
     def get_context_data(self, *args, **kwargs):
