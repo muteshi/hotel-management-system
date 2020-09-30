@@ -27,6 +27,7 @@ class HotelAdminCreateSerializer(ModelSerializer):
     slug = serializers.SlugField(required=False, read_only=True)
     photo_count = serializers.SerializerMethodField()
     room_count = serializers.SerializerMethodField()
+    hotel_hits = serializers.SerializerMethodField()
 
     class Meta:
         model = Hotels
@@ -70,6 +71,7 @@ class HotelAdminCreateSerializer(ModelSerializer):
             "checkout",
             "policies",
             'hotel_type_id',
+            'hotel_hits',
         )
 
     def get_room_count(self, obj):
@@ -81,6 +83,12 @@ class HotelAdminCreateSerializer(ModelSerializer):
     def create(self, validated_data):
         return Hotels.objects.create(**validated_data)
 
+    def get_hotel_hits(self, obj):
+        try:
+            return obj.hit_count.hits
+        except:
+            pass
+
 
 class HotelOwnerCreateSerializer(ModelSerializer):
     """
@@ -91,6 +99,7 @@ class HotelOwnerCreateSerializer(ModelSerializer):
     slug = serializers.SlugField(required=False, read_only=True)
     photo_count = serializers.SerializerMethodField()
     room_count = serializers.SerializerMethodField()
+    hotel_hits = serializers.SerializerMethodField()
 
     class Meta:
         model = Hotels
@@ -132,8 +141,15 @@ class HotelOwnerCreateSerializer(ModelSerializer):
             "checkout",
             "policies",
             'hotel_type_id',
+            'hotel_hits',
 
         )
+
+    def get_hotel_hits(self, obj):
+        try:
+            return obj.hit_count.hits
+        except:
+            pass
 
     def get_photo_count(self, obj):
         return obj.photo_set.all().count()
@@ -147,6 +163,7 @@ class HotelOwnerCreateSerializer(ModelSerializer):
 
 class HotelSerializers(ModelSerializer):
     slug = serializers.SlugField(required=False, read_only=True)
+    hotel_hits = serializers.SerializerMethodField()
 
     class Meta:
         model = Hotels
@@ -189,7 +206,15 @@ class HotelSerializers(ModelSerializer):
             "checkin",
             "checkout",
             "policies",
+            "policies",
+            "hotel_hits",
         )
+
+        def get_hotel_hits(self, obj):
+            try:
+                return obj.hit_count.hits
+            except:
+                pass
 
 
 class HotelTypesSerializers(serializers.ModelSerializer):
@@ -265,6 +290,7 @@ class HotelFacilitiesSerializers(ModelSerializer):
 class HotelDetailSerializer(serializers.ModelSerializer):
 
     hotel_type_name = serializers.SerializerMethodField()
+    hotel_hits = serializers.SerializerMethodField()
 
     class Meta:
         model = Hotels
@@ -307,11 +333,18 @@ class HotelDetailSerializer(serializers.ModelSerializer):
             "checkin",
             "checkout",
             "policies",
+            "hotel_hits",
         )
 
     def get_hotel_type_name(self, obj):
         try:
             return obj.hotel_type.name
+        except:
+            pass
+
+    def get_hotel_hits(self, obj):
+        try:
+            return obj.hit_count.hits
         except:
             pass
 

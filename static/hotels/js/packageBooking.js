@@ -408,7 +408,7 @@ class UI {
           mobile_Number: m_phoneValue,
           email: emailValue,
           company_name: company_nameValue,
-          hotel: parseInt(hotel_id),
+          package: parseInt(package_id),
           items: bookings,
           user: parseInt(user),
           final_total: parseInt(checkoutTotal),
@@ -422,10 +422,10 @@ class UI {
         }
 
         if (this.verifyFormInputs()) {
-          // this.disableBookingBtn();
+          this.disableBookingBtn();
           await this.addBooking(checkoutData);
-          // window.location.replace("/hotels/booking/success/");
-          // localStorage.clear();
+          window.location.replace("/hotels/booking/success/");
+          localStorage.clear();
         } else {
           alert("You have errors on the form. Please correct to proceed");
         }

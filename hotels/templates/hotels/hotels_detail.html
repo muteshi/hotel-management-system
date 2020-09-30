@@ -4,6 +4,7 @@
 {% load widget_tweaks %}
 {% load my_filters %}
 {% load humanize %}
+{% load hitcount_tags %}
 
 
 
@@ -32,7 +33,7 @@
 						<div class="d-flex flex-column flex-lg-row">
 						
 							<div>
-									<h2 id="detail-content-sticky-nav-00" class="name">{{ object.name }}</h2>
+									<h2 id="detail-content-sticky-nav-00" class="name">{{ object.name }} </h2>
 								
 								<div class="clear"></div>
 								<input type="hidden" class="address-info"  value="{{ object.address }}, {{ object.city}}, {{ object.country}}" readonly />
@@ -138,7 +139,7 @@
 												<label>Check-in</label>
 												<div class="form-icon-left">
 													<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
-													<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" value = "{{ request.session.checkin }}" type='checkin' name='checkin' placeholder="dd/mm/yyyy">
+													<input type="text" id="dateStart-hotel" class="form-control form-readonly-control" value = "{{ request.session.checkin|date:'Y-m-D' }}" type='checkin' name='checkin' placeholder="dd/mm/yyyy">
 												</div>
 											</div>
 											

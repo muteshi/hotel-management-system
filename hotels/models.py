@@ -1,14 +1,15 @@
 from datetime import date
-from django.db import models
-from django.utils import timezone
 import datetime
-from users.models import UserProfile
+from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.db.models.signals import pre_save
 from django.utils.text import slugify
-
-
 from PIL import Image
+from hitcount.models import HitCountMixin, HitCount
+from django.contrib.contenttypes.fields import GenericRelation
+
+from users.models import UserProfile
 
 
 class HotelTypes(models.Model):
@@ -21,7 +22,7 @@ class HotelTypes(models.Model):
         return f'{self.name}'
 
 
-class Hotels(models.Model):
+class Hotels(models.Model, HitCountMixin):
     # General Hotel details
 
     name = models.CharField(max_length=255, null=True,
@@ -74,6 +75,9 @@ class Hotels(models.Model):
     elevator = models.BooleanField(default=False)
     shuttle_bus_service = models.BooleanField(default=False)
     cards_accepted = models.BooleanField(default=False)
+
+    hit_count_generic = GenericRelation(HitCount, object_id_field='object_pk',
+                                        related_query_name='hit_count_generic_relation')
 
     class Meta:
         unique_together = ('name', 'slug')
