@@ -211,7 +211,7 @@ class HotelsListView(ListView):
             if Room.objects.filter(hotel=i.id).exists():
                 price = Room.objects.filter(hotel=i.id)
                 price = price.filter(is_conference_room=False)
-                price = price.filter(is_apartment=False)
+                # price = price.filter(is_apartment=False)
                 try:
                     lowest_prices[i.name] = price[0].room_Price
                 except:
