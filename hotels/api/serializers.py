@@ -210,11 +210,11 @@ class HotelSerializers(ModelSerializer):
             "hotel_hits",
         )
 
-        def get_hotel_hits(self, obj):
-            try:
-                return obj.hit_count.hits
-            except:
-                pass
+    def get_hotel_hits(self, obj):
+        try:
+            return obj.hit_count.hits
+        except:
+            pass
 
 
 class HotelTypesSerializers(serializers.ModelSerializer):

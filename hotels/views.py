@@ -177,7 +177,7 @@ class HotelsListView(ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(HotelsListView, self).get_context_data(*args, **kwargs)
-        hotels = Hotels.objects.all()
+        hotels = Hotels.objects.filter(is_apartment=False)
         hotels_filter = HotelFilter(self.request.GET, queryset=hotels)
         page = self.request.GET.get('page')
         paginator = Paginator(hotels_filter.qs, self.paginate_by)
@@ -211,6 +211,7 @@ class HotelsListView(ListView):
             if Room.objects.filter(hotel=i.id).exists():
                 price = Room.objects.filter(hotel=i.id)
                 price = price.filter(is_conference_room=False)
+                price = price.filter(is_apartment=False)
                 try:
                     lowest_prices[i.name] = price[0].room_Price
                 except:

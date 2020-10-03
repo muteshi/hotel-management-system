@@ -11,9 +11,8 @@
 <div class="container">
 <nav aria-label="breadcrumb">
 <ol class="breadcrumb">
-	<li class="breadcrumb-item"><a href="#">Home</a></li>
-	<li class="breadcrumb-item"><a href="#">Library</a></li>
-	<li class="breadcrumb-item active" aria-current="page">Data</li>
+	<li class="breadcrumb-item"><a href="{% url 'bookings-home' %}">Home</a></li>
+	<li class="breadcrumb-item active" aria-current="page">Accomodation</li>
 </ol>
 </nav>
 </div>
@@ -231,7 +230,7 @@ bookings@marvellousventures.co.ke
 		<a href="{% url 'hotel-detail' hotel.slug %}">
 
 			<div class="image">
-				<img src="{{ hotel.property_photo.url }}" alt="{{ hotel.name }} photo">
+				<img src="{{ hotel.property_photo.url }}" alt="{{ hotel.name }} - Marvellous Ventures">
 			</div>
 
 			<div class="content clearfix">
