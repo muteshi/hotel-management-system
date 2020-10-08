@@ -63,7 +63,7 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            
+
             ''' Begin reCAPTCHA validation '''
             recaptcha_response = request.POST.get('g-recaptcha-response')
             url = 'https://www.google.com/recaptcha/api/siteverify'
@@ -76,8 +76,7 @@ def register(request):
             response = urllib.request.urlopen(req)
             result = json.loads(response.read().decode())
             ''' End reCAPTCHA validation '''
-            
-            
+
             user = form.save(commit=False)
             user.is_active = False
             user.is_staff = True
@@ -209,10 +208,20 @@ class ProfileUpdateAPIView(RetrieveUpdateAPIView):
 
 
 class CreateUserView(generics.CreateAPIView):
-    """Handle creating new user in the system"""
+    """Handle creating new user in the system from web"""
 
     serializer_class = serializers.ProfileSerializer
     queryset = models.Profile.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class CreateUserFromMobileView(generics.CreateAPIView):
+    """Handle creating new user in the system from mobile"""
+
+    serializer_class = serializers.UserProfileSerializer
+    # queryset = models.Profile.objects.all()
 
     def perform_create(self, serializer):
         serializer.save()

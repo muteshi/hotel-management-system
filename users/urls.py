@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 from users import views
 from .views import (
+    CreateUserFromMobileView,
     LogoutAndBlacklistRefreshTokenForUserView,
     CustomTokenObtainPairView,
     UserProfileListAPIView,
@@ -24,6 +25,8 @@ app_name = 'user'
 urlpatterns = [
     # path('', include(router.urls)),
     path('create/', views.CreateUserView.as_view(), name="user-create"),
+    path('create-user-from-mobile/',
+         views.CreateUserFromMobileView.as_view(), name="user-from-mobile-create"),
     path('token/', views.CustomTokenObtainPairView.as_view(),
          name='token_obtain_pair'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(),
