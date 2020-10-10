@@ -101,13 +101,13 @@ class HotelAdminCreateSerializer(ModelSerializer):
                 if Room.objects.filter(hotel=i.id).exists():
                     price = Room.objects.filter(hotel=i.id)
                     price = price.filter(is_conference_room=False)
-                    lowest_prices[i.name] = price[0].room_Price
+                    lowest_prices[i.name] = price[0]
         except:
             pass
 
-        for name, price in lowest_prices.items():
+        for name, room in lowest_prices.items():
             if name == obj.name:
-                return f'{price:,}'
+                return [f'{room.room_Price:,}', room.max_adults, room.room_Name]
 
 
 class HotelOwnerCreateSerializer(ModelSerializer):
