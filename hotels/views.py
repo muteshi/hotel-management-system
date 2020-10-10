@@ -338,7 +338,6 @@ def search(request):  # Accomodation search
     hotel_count = Hotels.objects.all().count()
     conference_count = Hotels.objects.filter(has_conference=True).count()
     apartment_count = Hotels.objects.filter(is_apartment=True).count()
-    print(apartment_count)
     context = {
         'hotels': hotels,
         'hotel_count': hotel_count,

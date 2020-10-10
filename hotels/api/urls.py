@@ -45,7 +45,8 @@ from .views import (
     PhotoUploadView,
     PhotoListAPIView,
     RoomPhotoUploadView,
-    RoomPhotoListAPIView
+    RoomPhotoListAPIView,
+    HotelsAPIView
 )
 
 # router = routers.DefaultRouter()
@@ -62,6 +63,8 @@ urlpatterns = [
     path('hotel/new/', HotelCreateAPIView.as_view(), name='api-hotel-create'),
 
     path('hotel/', HotelsListAPIView.as_view(), name='api-hotels-list'),
+
+    path('mobile-hotel/', HotelsAPIView.as_view(), name='api-hotel-mobile-list'),
 
     path('conference-hotel/', ConferenceHotelsListAPIView.as_view(),
          name='api-chotels-list'),

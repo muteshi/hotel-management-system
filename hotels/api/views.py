@@ -168,6 +168,7 @@ class HotelDeleteAPIView(DestroyAPIView):
 
 
 class HotelsListAPIView(ListAPIView):
+    """Returns hotels for specific web user"""
 
     def get_serializer_class(self):
         if self.request.user.is_superuser:
@@ -184,6 +185,13 @@ class HotelsListAPIView(ListAPIView):
                 Q(contact_person=self.request.user.id))
 
         return hotels
+
+
+class HotelsAPIView(ListAPIView):
+    """Displays all hotels on the mobile device"""
+    queryset = Hotels.objects.all()
+    serializer_class = HotelAdminCreateSerializer
+    permission_classes = (permissions.AllowAny,)
 
 
 class ConferenceHotelsListAPIView(ListAPIView):

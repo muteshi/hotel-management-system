@@ -28,6 +28,7 @@ class HotelAdminCreateSerializer(ModelSerializer):
     photo_count = serializers.SerializerMethodField()
     room_count = serializers.SerializerMethodField()
     hotel_hits = serializers.SerializerMethodField()
+    hotel_lowest_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Hotels
@@ -72,6 +73,7 @@ class HotelAdminCreateSerializer(ModelSerializer):
             "policies",
             'hotel_type_id',
             'hotel_hits',
+            'hotel_lowest_price',
         )
 
     def get_room_count(self, obj):
@@ -88,6 +90,24 @@ class HotelAdminCreateSerializer(ModelSerializer):
             return obj.hit_count.hits
         except:
             pass
+
+    def get_hotel_lowest_price(self, obj):
+        """
+        Return the lowest room price of a hotel object
+        """
+        lowest_prices = {}
+        try:
+            for i in Hotels.objects.all():
+                if Room.objects.filter(hotel=i.id).exists():
+                    price = Room.objects.filter(hotel=i.id)
+                    price = price.filter(is_conference_room=False)
+                    lowest_prices[i.name] = price[0].room_Price
+        except:
+            pass
+
+        for name, price in lowest_prices.items():
+            if name == obj.name:
+                return price
 
 
 class HotelOwnerCreateSerializer(ModelSerializer):
