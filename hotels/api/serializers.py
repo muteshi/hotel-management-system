@@ -107,7 +107,7 @@ class HotelAdminCreateSerializer(ModelSerializer):
 
         for name, price in lowest_prices.items():
             if name == obj.name:
-                return price
+                return f'{price:,}'
 
 
 class HotelOwnerCreateSerializer(ModelSerializer):
