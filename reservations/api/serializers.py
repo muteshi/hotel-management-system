@@ -111,6 +111,7 @@ class BookingsCreateSerializer(ModelSerializer):
             'mobile_Number',
             'email',
             'special_requests',
+            'invoice_number',
         )
 
     def to_internal_value(self, data):
