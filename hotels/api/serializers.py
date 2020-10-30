@@ -29,6 +29,8 @@ class HotelAdminCreateSerializer(ModelSerializer):
     room_count = serializers.SerializerMethodField()
     hotel_hits = serializers.SerializerMethodField()
     hotel_lowest_price = serializers.SerializerMethodField()
+    conference_lowest_price = serializers.SerializerMethodField()
+    apartment_lowest_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Hotels
@@ -74,6 +76,8 @@ class HotelAdminCreateSerializer(ModelSerializer):
             'hotel_type_id',
             'hotel_hits',
             'hotel_lowest_price',
+            'conference_lowest_price',
+            'apartment_lowest_price',
         )
 
     def get_room_count(self, obj):
@@ -101,6 +105,42 @@ class HotelAdminCreateSerializer(ModelSerializer):
                 if Room.objects.filter(hotel=i.id).exists():
                     price = Room.objects.filter(hotel=i.id)
                     price = price.filter(is_conference_room=False)
+                    lowest_prices[i.name] = price[0]
+        except:
+            pass
+
+        for name, room in lowest_prices.items():
+            if name == obj.name:
+                return [f'{room.room_Price:,}', room.max_adults, room.room_Name]
+
+    def get_conference_lowest_price(self, obj):
+        """
+        Return the lowest conference room price of a hotel object
+        """
+        lowest_prices = {}
+        try:
+            for i in Hotels.objects.all():
+                if Room.objects.filter(hotel=i.id).exists():
+                    price = Room.objects.filter(hotel=i.id)
+                    price = price.filter(is_conference_room=True)
+                    lowest_prices[i.name] = price[0]
+        except:
+            pass
+
+        for name, room in lowest_prices.items():
+            if name == obj.name:
+                return [f'{room.room_Price:,}', room.max_adults, room.room_Name]
+
+    def get_apartment_lowest_price(self, obj):
+        """
+        Return the lowest apartment room price of a hotel object
+        """
+        lowest_prices = {}
+        try:
+            for i in Hotels.objects.all():
+                if Room.objects.filter(hotel=i.id).exists():
+                    price = Room.objects.filter(hotel=i.id)
+                    price = price.filter(is_apartment=True)
                     lowest_prices[i.name] = price[0]
         except:
             pass
