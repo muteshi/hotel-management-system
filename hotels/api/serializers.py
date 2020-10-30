@@ -119,7 +119,7 @@ class HotelAdminCreateSerializer(ModelSerializer):
         """
         lowest_prices = {}
         try:
-            for i in Hotels.objects.all():
+            for i in  Hotels.objects.filter(has_conference=True):
                 if Room.objects.filter(hotel=i.id).exists():
                     price = Room.objects.filter(hotel=i.id)
                     price = price.filter(is_conference_room=True)
@@ -137,7 +137,7 @@ class HotelAdminCreateSerializer(ModelSerializer):
         """
         lowest_prices = {}
         try:
-            for i in Hotels.objects.all():
+            for i in Hotels.objects.filter(is_apartment=True):
                 if Room.objects.filter(hotel=i.id).exists():
                     price = Room.objects.filter(hotel=i.id)
                     price = price.filter(is_apartment=True)
