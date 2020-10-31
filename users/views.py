@@ -6,7 +6,6 @@ from django.urls import reverse_lazy
 from users.forms import RegistrationForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -191,6 +190,25 @@ class UserTypesListAPIView(ListAPIView):
     queryset = models.UserTypes.objects.all()
     serializer_class = serializers.UserTypesSerializers
     permission_classes = ()
+
+
+class UserExistsView(APIView):
+
+    """Checks if user exists or not"""
+
+    def get(self, request, *args, **kwargs):
+        # use this if username is being sent as a query parameter
+
+        username = self.request.GET['email']
+
+        try:
+            # retrieve the user using username
+            user = models.UserProfile.objects.get(email=username)
+        except models.UserProfile.DoesNotExist:
+            # return false as user does not exist
+            return Response(data={'message': False})
+        else:
+            return Response(data={'message': True})  # Otherwise, return True
 
 
 class UserUpdateAPIView(RetrieveUpdateAPIView):
