@@ -206,9 +206,9 @@ class UserExistsView(APIView):
             user = models.UserProfile.objects.get(email=username)
         except models.UserProfile.DoesNotExist:
             # return false as user does not exist
-            return Response(data={'message': False})
+            return Response(data=[{'message': False}])
         else:
-            return Response(data={'message': True})  # Otherwise, return True
+            return Response(data=[{'message': True}])  # Otherwise, return True
 
 
 class UserUpdateAPIView(RetrieveUpdateAPIView):
