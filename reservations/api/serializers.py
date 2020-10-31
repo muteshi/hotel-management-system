@@ -201,6 +201,7 @@ class BookingDetailsSerializer(ModelSerializer):
     final_total = serializers.DecimalField(
         max_digits=10000, decimal_places=2, localize=True)
     hotel_name = serializers.SerializerMethodField()
+    hotel_photo = serializers.SerializerMethodField()
     created_at = serializers.DateTimeField(
         format="%b %d, %Y", required=False, read_only=True)
 
@@ -230,6 +231,7 @@ class BookingDetailsSerializer(ModelSerializer):
             'user',
             'guest_name',
             'hotel_name',
+            'hotel_photo',
             'special_requests',
         )
 
@@ -248,6 +250,11 @@ class BookingDetailsSerializer(ModelSerializer):
     def get_hotel_name(self, obj):
         try:
             return obj.hotel.name
+        except:
+            pass
+    def get_hotel_photo(self, obj):
+        try:
+            return obj.hotel.property_photo.url
         except:
             pass
 
