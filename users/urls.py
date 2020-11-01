@@ -25,13 +25,13 @@ app_name = 'user'
 urlpatterns = [
     # path('', include(router.urls)),
     # path for google authentication
-    path('google/', views.GoogleView.as_view(), name='google'),
     path('create/', views.CreateUserView.as_view(), name="user-create"),
     path('create-user-from-mobile/',
          views.CreateUserFromMobileView.as_view(), name="user-from-mobile-create"),
     path('token/', views.CustomTokenObtainPairView.as_view(),
          name='token_obtain_pair'),
 
+    path('google/', views.GoogleView.as_view(), name='google'),
 
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(),
          name='token_refresh'),

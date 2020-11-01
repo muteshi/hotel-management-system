@@ -14,9 +14,9 @@ from .views import (
 )
 urlpatterns = urlpatterns = [
 
+    path('booking/', BookingListAPIView.as_view(), name='api-bookings-list'),
     path('booking/new/', BookingCreateAPIView.as_view(), name='api-booking-create'),
 
-    path('booking/', BookingListAPIView.as_view(), name='api-bookings-list'),
 
     path('booking/<int:pk>/', BookingDetailAPIView.as_view(),
          name='api-booking-details'),

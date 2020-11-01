@@ -98,12 +98,12 @@ class BookingDeleteAPIView(DestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class BookingListAPIView(APIView):
+class BookingListAPIView(ListAPIView):
     serializer_class = BookingDetailsSerializer
     permission_classes = ()
 
-    def get_queryset(self, request,*args, **kwargs):
-        print(self.request)
+    def get_queryset(self,  *args, **kwargs):
+
         if (self.request.user.is_superuser and self.request.user.is_staff):
             bookings = Booking.objects.all()
 
@@ -111,7 +111,7 @@ class BookingListAPIView(APIView):
             bookings = Booking.objects.filter(user=self.request.user.id)
         else:
             bookings = Booking.objects.filter(email=self.request.user.email)
-        return Response(bookings)
+        return bookings
 
 
 class PaymentOptionsListAPIView(ListAPIView):

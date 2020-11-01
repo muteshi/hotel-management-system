@@ -94,7 +94,7 @@ class GoogleView(APIView):
 
         # generate token without username & password
         token = RefreshToken.for_user(user)
-        print(user)
+      
         token['name'] = user.name
         token['email'] = user.email
         token['is_superuser'] = user.is_superuser
