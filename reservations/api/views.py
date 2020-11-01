@@ -103,15 +103,16 @@ class BookingListAPIView(ListAPIView):
     permission_classes = ()
 
     def get_queryset(self,  *args, **kwargs):
-        print(self.request.user.id)
 
         if (self.request.user.is_superuser and self.request.user.is_staff):
             bookings = Booking.objects.all()
 
         elif (self.request.user.is_staff and (self.request.user.is_superuser == False)):
             bookings = Booking.objects.filter(user=self.request.user.id)
-        else:
+        elif((self.request.user.is_staff == False) and (self.request.user.is_superuser == False) and (self.request.user.is_active == True)):
             bookings = Booking.objects.filter(email=self.request.user.email)
+        else:
+            bookings = []
         return bookings
 
 

@@ -86,6 +86,7 @@ class GoogleView(APIView):
         except models.UserProfile.DoesNotExist:
             user = models.UserProfile()
             user.email = data['email']
+            user.is_active = True
             # provider random default password
             user.password = make_password(
                 BaseUserManager().make_random_password())
@@ -94,7 +95,7 @@ class GoogleView(APIView):
 
         # generate token without username & password
         token = RefreshToken.for_user(user)
-      
+
         token['name'] = user.name
         token['email'] = user.email
         token['is_superuser'] = user.is_superuser
