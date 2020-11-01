@@ -64,12 +64,6 @@ from rest_framework.response import Response
 import requests
 
 
-class HelloView(APIView):
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
-        return Response(content)
-
-
 class GoogleView(APIView):
 
     def post(self, request):
@@ -100,6 +94,11 @@ class GoogleView(APIView):
 
         # generate token without username & password
         token = RefreshToken.for_user(user)
+        print(user)
+        token['name'] = user.name
+        token['email'] = user.email
+        token['is_superuser'] = user.is_superuser
+        token['is_staff'] = user.is_staff
         response = {}
         response['email'] = user.email
         response['access_token'] = str(token.access_token)
