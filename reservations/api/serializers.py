@@ -218,6 +218,7 @@ class BookingDetailsSerializer(ModelSerializer):
             'payment_option',
             'payment_option_name',
             'hotel',
+            'email',
             'package',
             'package_name',
             'commission_total',
@@ -252,6 +253,7 @@ class BookingDetailsSerializer(ModelSerializer):
             return obj.hotel.name
         except:
             pass
+
     def get_hotel_photo(self, obj):
         try:
             return obj.hotel.property_photo.url
