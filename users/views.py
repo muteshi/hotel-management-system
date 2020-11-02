@@ -93,7 +93,7 @@ class GoogleView(APIView):
             user.name = data['name']
             user.save()
 
-        # generate token without username & password
+        # generate token and add user information
         token = RefreshToken.for_user(user)
 
         token['name'] = user.name

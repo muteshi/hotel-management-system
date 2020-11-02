@@ -108,7 +108,8 @@ class BookingListAPIView(ListAPIView):
             bookings = Booking.objects.all()
 
         elif (self.request.user.is_staff and (self.request.user.is_superuser == False)):
-            bookings = Booking.objects.filter(user=self.request.user.id)
+            bookings = Booking.objects.filter(
+                Q(user=self.request.user.id) | Q(email=self.request.user.email))
         elif((self.request.user.is_staff == False) and (self.request.user.is_superuser == False) and (self.request.user.is_active == True)):
             bookings = Booking.objects.filter(email=self.request.user.email)
         else:
@@ -121,7 +122,6 @@ class PaymentOptionsListAPIView(ListAPIView):
     queryset = PaymentOptions.objects.all()
     serializer_class = PayemntOptionsSerializer
     permission_classes = (permissions.AllowAny,)
-
 
 class BookingStatusListAPIView(ListAPIView):
     """Displays list of booking status"""
