@@ -94,6 +94,7 @@ class Booking(models.Model):
 
     class Meta:
         verbose_name_plural = 'Bookings'
+        ordering = ('-created_at',)
 
     def __str__(self):
         return f'Reservation #{self.reservation_id}'
