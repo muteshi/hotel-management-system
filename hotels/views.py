@@ -67,6 +67,9 @@ def home(request):
 def company(request):
     return render(request, 'hotels/company.html', {'title': 'About'})
 
+def privacy(request):
+    return render(request, 'hotels/privacy.html', {'title': 'Privacy Policy'})
+
 
 def conference_hotels(request):
     """Display all conference venues"""

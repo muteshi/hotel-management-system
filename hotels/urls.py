@@ -28,6 +28,8 @@ urlpatterns = [
 
     path('company/', views.company, name='bookings-company'),
 
+    path('privacy/', views.privacy, name='privacy-policy'),
+
     path('hotels/', HotelsListView.as_view(), name='hotels-list'),
 
     path('apartments/', ApartmentListView.as_view(), name='apartments-list'),
