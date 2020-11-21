@@ -84,7 +84,7 @@ class UI {
         event.target.disabled = true;
         const hotel = Storage.getHotelPackageFromStorage(id);
 
-        var checkinDateDOM = document.getElementById("dateStart-general");
+        var checkinDateDOM = document.getElementById("dateStart-general" + id);
         var defaultCheckinDate = new Date(
           checkinDateDOM.defaultValue ? checkinDateDOM.defaultValue : new Date()
         );
