@@ -96,6 +96,11 @@ class UI {
           parseInt(document.getElementById("guestQty" + id).value) === 0
             ? 1
             : parseInt(document.getElementById("guestQty" + id).value);
+
+        const stayDuration = parseInt(
+          document.getElementsByName("stayduration")[0].value
+        );
+
         if (defaultCheckinDate !== currentCheckinDate) {
           var checkinDate = currentCheckinDate;
         } else {
@@ -104,12 +109,12 @@ class UI {
         checkinDate = moment(checkinDate).format("YYYY-MM-DD");
 
         const checkoutDate = moment(checkinDate, "YYYY-MM-DD").add(
-          hotel.duration,
+          stayDuration,
           "days"
         );
 
         let bookingRoomItem = {
-          stay_duration: hotel.duration,
+          stay_duration: stayDuration,
           checkin: checkinDate,
           checkout: moment(new Date(checkoutDate)).format("YYYY-MM-DD"),
           total_guests: guestQuantity,
@@ -284,12 +289,6 @@ class UI {
       this.setSuccessMsgFor(m_phone);
       var verified = true;
     }
-
-    // if (company_nameValue === "") {
-    //   this.setErrorMsgFor(company_name, "Company name should not be empty");
-    // } else {
-    //   this.setSuccessMsgFor(company_name);
-    // }
 
     if (emailValue === "") {
       this.setErrorMsgFor(email, "Email cannot be blank");

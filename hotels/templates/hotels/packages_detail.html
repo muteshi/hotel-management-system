@@ -279,11 +279,13 @@
 															<label>Check-in</label>
 															<div class="form-icon-left">
 																<span class="icon-font text-muted"><i class="bx bx-calendar"></i></span>
-																<input type="text" id="dateStart-general" class="form-control form-readonly-control" placeholder="dd/mm/yyyy" value='{{request.session.checkin}}' required>
+																<input type="text" id="dateStart-general" class="form-control form-readonly-control" placeholder="dd/mm/yyyy" value="{{request.session.checkin}}" required>
 															</div>
-															<span class="number text-secondary">
-																		{{item.duration}} night stay from check-in</span>
+															
 														</div>
+														<label>Stay duration</label>
+														<input type="text" class="form-control touch-spin-03 form-readonly-control"
+															value="1" name="stayduration" readonly />
 															<input type="text" id="dateEnd-general" class="form-control form-readonly-control" hidden>
 														
 													</div>
@@ -295,9 +297,9 @@
 																<label class="line12 font13 spacing-05 mt-5 mb-10 block">Guests</label>
 																<div class="form-icon-left">
 																	<span class="icon-font"><i class="dripicons-user text-muted"></i></span>
-																	<form id='bookingQty{{forloop.counter}} '>
+																	<form id="bookingQty{{forloop.counter}}">
 																	<input type="text" class="form-control touch-spin-03 form-readonly-control" id='guestQty{{item.id}}' name ='roomQty'value="1" data-id={{item.id}} readonly />
-																	<input type="hidden" class="stayduration" name="stayduration" value="{{ item.duration }}" readonly />
+																	<!-- <input type="hidden" class="stayduration" name="stayduration" value="{{ item.duration }}" readonly /> -->
 																</form>
 																</div>
 															</div>
