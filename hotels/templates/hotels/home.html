@@ -234,131 +234,6 @@
 			<!-- start Site Content -->
 
 
-
-			<section>
-
-				<div class="container">
-                  
-					<div class="section-title text-center">
-
-						<h2>Today’s most popular deals</h2>
-
-					</div>
-
-					<div class="row equal-height cols-2 cols-md-2 cols-lg-4 gap-10 gap-md-20 gap-xl-30">
-
-						<div class="col">
-
-							<figure class="featured-image-grid-item with-highlight">
-								<div class="image">
-									<img src="{% static 'hotels/images/image-regular/01.jpg' %}"alt="image"/>
-								</div>
-								<figcaption class="content">
-									<div class="d-flex justify-content-between align-items-center">
-										<div>
-											<span class="item-highlight text-secondary">
-												Save up to<span>35%</span>
-											</span>
-										</div>
-										<div>
-											<span class="item-expire">5 days left</span>
-										</div>
-									</div>
-									<h5 class="mb-0">Weekend Self Drives</h5>
-									<p>Book now and save</p>
-									<span class="act-as-btn text-secondary">Book Now <i class="material-icons">arrow_forward</i></span>
-								</figcaption>
-								<a href="{% url 'package_selfdrive_list' %}" class="position-absolute-href"></a>
-							</figure>
-
-						</div>
-
-						<div class="col">
-
-							<figure class="featured-image-grid-item with-highlight">
-								<div class="image">
-									<img src="{% static 'hotels/images/image-regular/02.jpg' %}"alt="image"/>
-								</div>
-								<figcaption class="content">
-									<div class="d-flex justify-content-between align-items-center">
-										<div>
-											<span class="item-highlight text-secondary">
-												Save up to<span>25%</span>
-											</span>
-										</div>
-										<div>
-											<span class="item-expire">Expire tomorrow</span>
-										</div>
-									</div>
-									<h5 class="mb-0">Coast Flash Sale</h5>
-									<p>save 35% on selected hotels</p>
-									<span class="act-as-btn text-secondary">Book Now <i class="material-icons">arrow_forward</i></span>
-								</figcaption>
-								<a href="{% url 'package_coast_list' %}" class="position-absolute-href"></a>
-							</figure>
-
-						</div>
-
-						<div class="col">
-
-							<figure class="featured-image-grid-item with-highlight">
-								<div class="image">
-									<img src="{% static 'hotels/images/image-regular/03.jpg' %}"alt="image"/>
-								</div>
-								<figcaption class="content">
-									<div class="d-flex justify-content-between align-items-center">
-										<div>
-											<span class="item-highlight text-secondary">
-												Save up to<span>25%</span>
-											</span>
-										</div>
-										<div>
-											<span class="item-expire">Only 3 days</span>
-										</div>
-									</div>
-									<h5 class="mb-0">Easter Deals</h5>
-									<p>Book now and save</p>
-									<span class="act-as-btn text-secondary">Book Now <i class="material-icons">arrow_forward</i></span>
-								</figcaption>
-								<a href="{% url 'package_easter_list' %}" class="position-absolute-href"></a>
-							</figure>
-
-						</div>
-
-						<div class="col">
-
-							<figure class="featured-image-grid-item with-highlight">
-								<div class="image">
-									<img src="{% static 'hotels/images/image-regular/04.jpg' %}"alt="image"/>
-								</div>
-								<figcaption class="content">
-									<div class="d-flex justify-content-between align-items-center">
-										<div>
-											<span class="item-highlight text-secondary">
-												Save up to<span>40%</span>
-											</span>
-										</div>
-										<div>
-											<span class="item-expire">Only 3 days</span>
-										</div>
-									</div>
-									<h5 class="mb-0">Hotel deals every day</h5>
-									<p>Get 40% off featured hotels</p>
-									<span class="act-as-btn text-secondary">Book Now <i class="material-icons">arrow_forward</i></span>
-								</figcaption>
-								<a href="{% url 'hotels-list' %}" class="position-absolute-href"></a>
-							</figure>
-
-						</div>
-
-					</div>
-
-
-				</div>
-
-			</section>
-
-
 			<section class="pt-0 bg-light">
 
 <div class="container">
@@ -523,7 +398,7 @@
 				{% for photo in package.packagephoto_set.all %}
 				 {% if forloop.first %}
 				<div>
-					<div class="img-responsive"><img src="{{ photo.image.url }} " alt="{{ package.title }}" /></div>
+					<div class="img-responsive"><img src="{{ photo.image.url }} " alt="{{ package.title|truncatewords:3 }}" /></div>
 				</div>
 				{% endif %}
 				{% endfor %}
