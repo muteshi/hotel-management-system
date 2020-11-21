@@ -98,7 +98,7 @@ class UI {
             : parseInt(document.getElementById("guestQty" + id).value);
 
         const stayDuration = parseInt(
-          document.getElementsByName("stayduration")[0].value
+          document.getElementById("stayduration" + id).value
         );
 
         if (defaultCheckinDate !== currentCheckinDate) {
