@@ -231,10 +231,6 @@
 										
 										</div>
 										 {% for item in object.hotelpackages_set.all %}
-										 
-										
-											 
-										 
 											 
 										<div class="room-item">
 										
@@ -252,7 +248,7 @@
 														<div class="col-12 col-sm-8 col-md-8">
 															<div class="content">
 																<h5><a href="{% url 'hotel-detail' item.hotel.slug %}" id='room-name{{forloop.counter}}'>{{ item.hotel.name }} </a></h5>
-																<p><span class="font700">{{ item.hotelpackages.meal_Plans }}
+																<p><span class="font700">{{ item.meal_Plans }}
 																	</span></p>
 																	<p><span class="font700">Validity:</span>
 																	 {% if item.is_past_due %}<span class="number text-secondary">
