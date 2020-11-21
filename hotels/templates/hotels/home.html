@@ -234,7 +234,7 @@
 			<!-- start Site Content -->
 
 
-			<section class="pt-200 bg-light">
+			<section class="pt-250 bg-light">
 
 <div class="container">
 
@@ -398,7 +398,7 @@
 				{% for photo in package.packagephoto_set.all %}
 				 {% if forloop.first %}
 				<div>
-					<div class="img-responsive"><img src="{{ photo.image.url }} " alt="{{ package.title|truncatewords:3 }}" /></div>
+					<div class="img-responsive"><img src="{{ photo.image.url }} " alt="{{ package.title }}" /></div>
 				</div>
 				{% endif %}
 				{% endfor %}
@@ -410,7 +410,7 @@
 					<div class="short-info mr-0 mb-15">
 					
 						<p class="location mb-0"><i class="fas fa-map-marker-alt text-primary"></i>{{ package.city }}, {{ package.country }}</p>
-						<h5 class="mt-5">{{ package.title }}</h5>
+						<h5 class="mt-5">{{ package.title|truncatewords:3 }}</h5>
 
 					</div>
 					
