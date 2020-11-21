@@ -125,7 +125,7 @@ class UI {
           user: parseInt(hotel.hotel_user),
           name: hotel.package_name,
           sub_total: hotel.package_Price * guestQuantity,
-          package: parseInt(hotel.hotel),
+          package: parseInt(hotel.package),
           hotelAddress,
         };
         //add room item to booking items
@@ -150,7 +150,7 @@ class UI {
   setBookingValues(bookings) {
     let tempTotal = 0;
     bookings.map((item) => {
-      tempTotal += item.package_Price * item.total_guests;
+      tempTotal += item.package_Price * item.total_guests * item.stay_duration;
       user = item.user;
       package_id = item.package;
     });
@@ -171,7 +171,7 @@ class UI {
         <span class="amount"> ${item.total_guests} persons
     x ${item.package_Price} </span>
         <span class="price">Ksh ${this.formatNumber(
-          item.package_Price * item.total_guests
+          item.package_Price * item.total_guests * item.stay_duration
         )} </span>
     </div>
     <a href="javascript:void(0)" class="remove" data-id=${
