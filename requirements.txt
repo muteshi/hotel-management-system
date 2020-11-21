@@ -11,7 +11,7 @@ djangorestframework==3.11.0
 djangorestframework-jwt==1.11.0
 djangorestframework-simplejwt==4.4.0
 hashids==1.2.0
-Pillow==7.0.0
+Pillow==7.1.0
 pkg-resources==0.0.0
 pycodestyle==2.5.0
 PyJWT==1.7.1
