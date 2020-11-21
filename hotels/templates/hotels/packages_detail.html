@@ -252,8 +252,8 @@
 														<div class="col-12 col-sm-8 col-md-8">
 															<div class="content">
 																<h5><a href="{% url 'hotel-detail' item.hotel.slug %}" id='room-name{{forloop.counter}}'>{{ item.hotel.name }} </a></h5>
-																<p><span class="font700">{{ item.hotel.address }},
-																	{{ item.hotel.city }}</span></p>
+																<p><span class="font700">{{ item.hotelpackages.meal_Plans }}
+																	</span></p>
 																	<p><span class="font700">Validity:</span>
 																	 {% if item.is_past_due %}<span class="number text-secondary">
 																		Offer Expired!</span>
