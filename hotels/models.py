@@ -1,11 +1,9 @@
 from datetime import date
-import datetime
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models.signals import pre_save
 from django.utils.text import slugify
-from PIL import Image
 from hitcount.models import HitCountMixin, HitCount
 from django.contrib.contenttypes.fields import GenericRelation
 

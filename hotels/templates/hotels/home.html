@@ -519,10 +519,16 @@
 		<div class="product-grid-item">
 				
 			<a href="{% url 'package-detail' package.slug %}">
-			
-				<div class="image">
-					<img src="{{ package.cover_photo.url }}" alt="{{ package.title }}">
+
+				{% for photo in package.packagephoto_set.all %}
+				 {% if forloop.first %}
+				<div>
+					<div class="img-responsive"><img src="{{ photo.image.url }} " alt="{{ package.title }}" /></div>
 				</div>
+				{% endif %}
+				{% endfor %}
+			
+				
 				
 				<div class="content pt-10 clearfix">
 
