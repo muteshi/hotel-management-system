@@ -402,7 +402,7 @@
 
 <div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-md-20 gap-xl-30">
 
-{% for hotel in hotels %}
+{% for hotel in hotels|slice:":6"  %}
 <div class="col">
 <div class="product-grid-item">
 		<a href="{% url 'hotel-detail' hotel.slug %}">
@@ -458,7 +458,7 @@
 
 <div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-md-20 gap-xl-30">
 
-{% for hotel in conference_hotels %}
+{% for hotel in conference_hotels|slice:":6" %}
 <div class="col">
 <div class="product-grid-item">
 		<a href="{% url 'conference-hotel-detail' hotel.slug %}">
@@ -513,7 +513,7 @@
 
 <div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-md-20 gap-xl-30">
 
-{% for package in packages %}
+{% for package in packages|slice:":6"  %}
 	<div class="col">
 	
 		<div class="product-grid-item">
