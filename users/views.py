@@ -2,11 +2,9 @@ import json
 import urllib
 from django.shortcuts import render, redirect
 from django.db.models import Q
-from django.urls import reverse_lazy
 from users.forms import RegistrationForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.template.loader import render_to_string
@@ -18,42 +16,27 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
-from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import RetrieveAPIView, ListAPIView, DestroyAPIView, GenericAPIView, RetrieveUpdateAPIView
-from hotels.api.permissions import IsOwnerOrReadOnly,  IsAdminOrOwner, IsAdmin
-from .serializers import (
-    CustomTokenObtainPairSerializer,
-    UserDetailsSerializer,
-    ProfileSerializer,
-    UserTypesSerializers
-)
+from hotels.api.permissions import IsAdminOrOwner
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 from users import models
 from reservations.models import Booking
-from users import permissions
 
 
 from users.models import UserProfile, Profile, UserTypes
-from django.contrib.auth import login
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.core import mail
 from django.views import View
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from users.tokens import account_activation_token
-
 from users import serializers
-from rest_framework_jwt import views as jwt_views
 
 
 from django.contrib.auth.base_user import BaseUserManager

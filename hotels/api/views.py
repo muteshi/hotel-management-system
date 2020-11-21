@@ -2,7 +2,6 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
     CreateAPIView,
-    UpdateAPIView,
     DestroyAPIView,
     RetrieveUpdateAPIView,
     GenericAPIView,
@@ -49,12 +48,11 @@ from rest_framework.views import APIView
 from django.http import JsonResponse
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.mixins import UpdateModelMixin
-from rest_framework import status, permissions, serializers, viewsets
-from rest_framework.permissions import BasePermission
+from rest_framework import status, permissions
 from django.db.models import Q
 from rest_framework.response import Response
-from django.http import HttpResponse, Http404
-from .permissions import IsOwnerOrReadOnly,  IsAdminOrOwner, IsAdmin
+from django.http import Http404
+from .permissions import IsAdminOrOwner, IsAdmin
 from .helper import (
     modify_input_for_multiple_files,
     modify_input_for_multiple_room_files,
