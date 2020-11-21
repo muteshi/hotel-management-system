@@ -124,7 +124,7 @@ class UI {
           package_Price: hotel.package_Price,
           user: parseInt(hotel.hotel_user),
           name: hotel.package_name,
-          sub_total: hotel.package_Price * guestQuantity,
+          sub_total: hotel.package_Price * guestQuantity * stayDuration,
           package: parseInt(hotel.package),
           hotelAddress,
         };
