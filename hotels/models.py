@@ -301,6 +301,13 @@ class Packages(models.Model):
     def get_absolute_url(self):
         return reverse('package-hotel-create', kwargs={'pk': self.pk})
 
+    @property
+    def get_package_type_name(self):
+        try:
+            return self.package_type.name
+        except:
+            pass
+
 
 def create_package_slug(instance, new_slug=None):
     slug = slugify(instance.title)

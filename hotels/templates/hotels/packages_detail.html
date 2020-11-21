@@ -526,7 +526,7 @@
 
 					<div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-lg-20 gap-xl-30">
 						{% for package in packages|slice:":3"  %}
-						{% if package.city == object.city %}
+						{% if package.package_type == object.package_type %}
 						
 						<div class="col">
 							<div class="product-grid-item">
@@ -539,6 +539,7 @@
 									</div>
 									{% endif %}
                                    {% endfor %}
+                                  
 
 									<div class="content clearfix">
 
