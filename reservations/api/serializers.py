@@ -39,7 +39,9 @@ class PayemntOptionsSerializer(ModelSerializer):
 
 class BookingItemSerializer(ModelSerializer):
     room_Name = serializers.SerializerMethodField()
+    hotel_name = serializers.SerializerMethodField()
     room_Price = serializers.SerializerMethodField()
+    meal_plan = serializers.SerializerMethodField()
     package_Price = serializers.SerializerMethodField()
     is_conference_room = serializers.SerializerMethodField()
     sub_total = serializers.DecimalField(
@@ -52,7 +54,9 @@ class BookingItemSerializer(ModelSerializer):
             'id',
             'qty',
             'room_Name',
+            'hotel_name',
             'hotel_package',
+            'meal_plan',
             'name',
             'room_Price',
             'package_Price',
@@ -67,6 +71,18 @@ class BookingItemSerializer(ModelSerializer):
     def get_room_Name(self, obj):
         try:
             return obj.rooms.room_Name
+        except:
+            pass
+
+    def get_hotel_name(self, obj):
+        try:
+            return obj.hotel_package.hotel.name
+        except:
+            pass
+
+    def get_meal_plan(self, obj):
+        try:
+            return obj.hotel_package.meal_Plans
         except:
             pass
 
@@ -142,7 +158,6 @@ class BookingsCreateSerializer(ModelSerializer):
                 subject = 'Activate Your Account at Marvellous Ventures'
                 message = render_to_string(
                     'users/account_activation_email.html', context)
-                plain_message = strip_tags(message)
                 mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [
                     user.email], html_message=message)
             except:
@@ -165,7 +180,6 @@ class BookingsCreateSerializer(ModelSerializer):
         package_reservation_template = "reservations/package_reservation_success.html"
         message = render_to_string(
             package_reservation_template if booking.package else room_reservation_template, context)
-        plain_message = strip_tags(message)
         subject = f"Your booking details for {booking.package.title if booking.package else booking.hotel.name}"
         mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [
             booking.email], html_message=message)

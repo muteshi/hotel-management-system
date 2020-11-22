@@ -1,16 +1,14 @@
 import random
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from reservations.utils import id_generator
-from hotels.api.permissions import IsOwnerOrReadOnly,  IsAdminOrOwner, IsAdmin
+from hotels.api.permissions import IsAdminOrOwner
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
     CreateAPIView,
-    UpdateAPIView,
     DestroyAPIView,
     RetrieveUpdateAPIView,
-    GenericAPIView,
-    ListCreateAPIView,
+
 )
 from reservations.models import (
     Booking,
@@ -30,12 +28,7 @@ from .serializers import (
     BookingSettingsSerializer,
 )
 
-from rest_framework.views import APIView
-from django.http import JsonResponse
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.mixins import UpdateModelMixin
-from rest_framework import status, permissions, serializers, viewsets
-from rest_framework.permissions import BasePermission
+from rest_framework import status, permissions
 from django.db.models import Q
 from rest_framework.response import Response
 
@@ -122,6 +115,7 @@ class PaymentOptionsListAPIView(ListAPIView):
     queryset = PaymentOptions.objects.all()
     serializer_class = PayemntOptionsSerializer
     permission_classes = (permissions.AllowAny,)
+
 
 class BookingStatusListAPIView(ListAPIView):
     """Displays list of booking status"""
