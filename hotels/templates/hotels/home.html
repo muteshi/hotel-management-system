@@ -243,20 +243,105 @@
 <nav class="menu-horizontal-03">
 <ul class="nav">
 <li>
-<a class="active" data-toggle="tab" href="#MenuHorizon06_01">Hotels</a>
+<a class="active" data-toggle="tab" href="#MenuHorizon06_01">Packages</a>
 </li>
 <li>
-<a data-toggle="tab" href="#MenuHorizon06_02">Meetings & Team Building</a>
+<a data-toggle="tab" href="#MenuHorizon06_02">Hotels</a>
 </li>
 <li>
-<a data-toggle="tab" href="#MenuHorizon06_03">Packages</a>
+<a data-toggle="tab" href="#MenuHorizon06_03">Meetings & Team Building</a>
 </li>
 </ul>
 </nav>
 
 <div class="tab-content mt-90">
 
-<div role="tabpanel" class="tab-pane active" id="MenuHorizon06_01">
+
+<div role="tabpanel" class="tab-pane fade in" id="MenuHorizon06_01">
+
+	<div class="tab-inner">
+
+		<div class="row justify-content-center">
+
+			<div class="col col-lg-8 col-xl-6">
+
+				<div class="section-title text-center">
+
+					<h2>Our recommended Package</h2>
+					<p class="text-muted">Our bundles vacation packages are the best! </p>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-md-20 gap-xl-30">
+
+			{% for package in packages|slice:":6"  %}
+			<div class="col">
+
+				<div class="product-grid-item">
+
+					<a href="{% url 'package-detail' package.slug %}">
+
+						{% for photo in package.packagephoto_set.all %}
+						{% if forloop.first %}
+						<div>
+							<div class="img-responsive"><img src="{{ photo.image.url }} " alt="{{ package.title }}" />
+							</div>
+						</div>
+						{% endif %}
+						{% endfor %}
+
+
+
+						<div class="content pt-10 clearfix">
+
+							<div class="short-info mr-0 mb-15">
+
+								<p class="location mb-0"><i
+										class="fas fa-map-marker-alt text-primary"></i>{{ package.city }},
+									{{ package.country }}</p>
+								<h5 class="mt-5">{{ package.title|truncatewords:3 }}</h5>
+
+							</div>
+
+							<p><i class="far fa-clock"></i> Duration: <strong>{{ time.duration__min }} nights</strong>
+							</p>
+
+
+							<div class="price">
+
+								<div class="float-right">
+
+									start from
+									{% for key, value in p_lowest_prices.items %}
+									{% if key == package.title %}
+									<span class="text-secondary">Ksh{{ value|intcomma }}</span>
+									{% endif %}
+									{% endfor %}
+									per person
+								</div>
+
+							</div>
+
+						</div>
+
+					</a>
+
+				</div>
+
+			</div>
+			{% endfor %}
+
+		</div>
+
+	</div>
+
+</div>
+
+<div role="tabpanel" class="tab-pane active" id="MenuHorizon06_02">
 
 <div class="tab-inner">
 
@@ -312,7 +397,7 @@
 
 </div>
 
-<div role="tabpanel" class="tab-pane fade in" id="MenuHorizon06_02">
+<div role="tabpanel" class="tab-pane fade in" id="MenuHorizon06_03">
 
 <div class="tab-inner">
 
@@ -367,85 +452,7 @@
 
 </div>
 
-<div role="tabpanel" class="tab-pane fade in" id="MenuHorizon06_03">
 
-<div class="tab-inner">
-
-<div class="row justify-content-center">
-
-<div class="col col-lg-8 col-xl-6">
-
-	<div class="section-title text-center">
-	
-		<h2>Our recommended Package</h2>
-		<p class="text-muted">Our bundles vacation packages are the best! </p>
-
-	</div>
-
-</div>
-
-</div>
-
-<div class="row equal-height cols-1 cols-sm-2 cols-lg-3 gap-10 gap-md-20 gap-xl-30">
-
-{% for package in packages|slice:":6"  %}
-	<div class="col">
-	
-		<div class="product-grid-item">
-				
-			<a href="{% url 'package-detail' package.slug %}">
-
-				{% for photo in package.packagephoto_set.all %}
-				 {% if forloop.first %}
-				<div>
-					<div class="img-responsive"><img src="{{ photo.image.url }} " alt="{{ package.title }}" /></div>
-				</div>
-				{% endif %}
-				{% endfor %}
-			
-				
-				
-				<div class="content pt-10 clearfix">
-
-					<div class="short-info mr-0 mb-15">
-					
-						<p class="location mb-0"><i class="fas fa-map-marker-alt text-primary"></i>{{ package.city }}, {{ package.country }}</p>
-						<h5 class="mt-5">{{ package.title|truncatewords:3 }}</h5>
-
-					</div>
-					
-					<p><i class="far fa-clock"></i> Duration: <strong>{{ time.duration__min }} nights</strong></p>
-					
-					
-					<div class="price">
-						
-						<div class="float-right">
-							
-							start from
-							{% for key, value in p_lowest_prices.items %} 
-                            {% if key == package.title %}
-							<span class="text-secondary">Ksh{{ value|intcomma }}</span>
-							{% endif %}
-							{% endfor %}
-							per person
-						</div>
-
-					</div>
-				
-				</div>
-				
-			</a>
-		
-		</div>
-		
-	</div>	
-	{% endfor %}
-
-</div>
-
-</div>
-
-</div>
 
 
 </div>
