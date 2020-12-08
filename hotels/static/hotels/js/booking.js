@@ -323,12 +323,6 @@ class UI {
       var verified = true;
     }
 
-    // if (company_nameValue === "") {
-    //   this.setErrorMsgFor(company_name, "Company name should not be empty");
-    // } else {
-    //   this.setSuccessMsgFor(company_name);
-    // }
-
     if (emailValue === "") {
       this.setErrorMsgFor(email, "Email cannot be blank");
       var verified = false;
@@ -399,7 +393,6 @@ class UI {
   bookingLogic() {
     //clear booking items
     if (bookingSlug) {
-      console.log("here");
       clearBookings[0].addEventListener("click", () => {
         this.resetBookings();
         this.checkout();

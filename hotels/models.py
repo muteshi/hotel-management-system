@@ -90,6 +90,10 @@ class Hotels(models.Model, HitCountMixin):
     def get_hotel_type_id(self):
         return self.hotel_type.id
 
+    @property
+    def get_hotel_hits(self):
+        return self.hit_count.hits
+
     def get_absolute_url(self):
         # Redirects the form to photo uploads
         return reverse('photo-upload', kwargs={'pk': self.pk})
