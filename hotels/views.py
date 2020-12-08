@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from .models import Hotels, Room, Packages, HotelPackages, Slider
 
-from django.db.models import Min, Q
+from django.db.models import Min, Q, Max
 from .filters import HotelFilter, PackagesFilter
 
 today = datetime.date.today().strftime("%m/%d/%Y")
@@ -48,9 +48,9 @@ def home(request):
             'room__room_Price')).order_by('lowest_price')
     else:
         last_search_results = Hotels.objects.filter(
-            active=True).order_by('hit_count_generic')
-        last_search_results = last_search_results.annotate(lowest_price=Min(
-            'room__room_Price')).order_by('lowest_price')
+            active=True)
+        last_search_results = sorted(
+            last_search_results, key=lambda hotel: hotel.hit_count.hits_in_last(days=7), reverse=True)
 
     p_lowest_prices = {}
     for i in packages:
