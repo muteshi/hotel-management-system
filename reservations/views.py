@@ -33,6 +33,7 @@ def hotel_package_booking_checkout(request):
 def booking_success(request):
     try:
         del request.session['checkin']
+        del request.session['search']
         del request.session['checkout']
         del request.session['adult']
         del request.session['child']
