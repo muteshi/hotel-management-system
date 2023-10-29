@@ -2,6 +2,7 @@ from django import forms
 from users.models import UserProfile, Profile
 from django.contrib.auth.forms import UserCreationForm
 
+
 class RegistrationForm(UserCreationForm):
     """Handles users registration"""
     email = forms.EmailField()
@@ -27,6 +28,7 @@ class RegistrationForm(UserCreationForm):
 
         return user
 
+
 class UserUpdateForm(forms.ModelForm):
     """Used for updating user profile"""
     email = forms.EmailField()
@@ -45,8 +47,8 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['image',
-                'address',
-                'city',
-                'country',
-                'telephone_Number'
-                ]
+                  'address',
+                  'city',
+                  'country',
+                  'telephone_Number'
+                  ]

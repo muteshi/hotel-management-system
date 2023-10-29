@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, User
+from django.contrib.auth.models import (
+    AbstractBaseUser, PermissionsMixin, BaseUserManager)
 from PIL import Image
 from django.utils import timezone
 
@@ -84,7 +85,7 @@ class Profile(models.Model):
     """Creates users profile information"""
     user = models.OneToOneField(
         UserProfile, on_delete=models.CASCADE, null=True, blank=True,)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    image = models.ImageField(default='default.png', upload_to='profile_pics')
     address = models.CharField(max_length=255, null=True, blank=True,)
     city = models.CharField(max_length=255, null=True, blank=True,)
     country = models.CharField(max_length=255, null=True, blank=True,)

@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-from django.conf.urls import include, url
 from .views import (
     HotelsListView,
     ApartmentListView,
@@ -8,8 +7,6 @@ from .views import (
     ApartmentDetailView,
     PackagesDetailView,
     ConferenceHotelsDetailView
-
-
 )
 
 urlpatterns = [

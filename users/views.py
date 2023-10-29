@@ -18,7 +18,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
-from rest_framework.generics import RetrieveAPIView, ListAPIView, DestroyAPIView, GenericAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import (
+    RetrieveAPIView, ListAPIView, DestroyAPIView,
+    GenericAPIView, RetrieveUpdateAPIView)
 from hotels.api.permissions import IsAdminOrOwner
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -33,7 +35,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core import mail
 from django.views import View
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from users.tokens import account_activation_token
 from users import serializers
@@ -147,7 +149,7 @@ class ActivateAccount(View):
     def get(self, request, uidb64, token, *args, **kwargs):
         current_site = settings.SITE_URL
         try:
-            uid = force_text(urlsafe_base64_decode(uidb64))
+            uid = force_str(urlsafe_base64_decode(uidb64))
             user = UserProfile.objects.get(pk=uid)
         except (TypeError, ValueError, OverflowError, UserProfile.DoesNotExist):
             user = None
