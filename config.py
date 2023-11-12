@@ -1,7 +1,9 @@
 import os
-from dotenv import load_dotenv
+import json
 
 
-load_dotenv()
+with open('/etc/config.json') as config_file:
+    config = json.load(config_file)
 
-secret_key = os.environ.get('SECRET_KEY')
+
+secret_key = config.get('SECRET_KEY')

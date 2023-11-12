@@ -117,26 +117,27 @@
                       <div class="dropdown dropdown-login dropdown-tab">
                         {% if user.is_authenticated %}
                         <a
-                          href="{% url 'dashboard' %}"
+                          href="#"
                           class="btn"
                           style="color: white"
                           >Your Account</a
                         >
                         <a
-                          href="{% url 'logout' %}"
+                          href="#"
                           class="btn"
                           style="color: white"
                           >Logout</a
                         >
                         {% else %}
                         <a
-                          href="{% url 'register' %}"
+                          
+                          href = "#"
                           class="btn"
                           style="color: white"
                           >List Property</a
                         >
                         <a
-                          href="https://marvellousventures.com/dashboard/login"
+                          href="#"
                           class="btn"
                           style="color: white"
                           >Login</a
@@ -256,22 +257,22 @@
                       <ul class="footer-menu">
                         <li><a href="#">About Us</a></li>
                         <li>
-                          <a href="{% url 'package_honeymoon_list' %}"
+                          <a href="#"
                             >HoneyMoon</a
                           >
                         </li>
                         <li>
-                          <a href="{% url 'privacy-policy' %}"
+                          <a href="#"
                             >Privacy policy</a
                           >
                         </li>
                         <li>
-                          <a href="{% url 'package_selfdrive_list' %}"
+                          <a href="#"
                             >Self Drives</a
                           >
                         </li>
                         <li>
-                          <a href="{% url 'package_coast_list' %}"
+                          <a href="#"
                             >Coast Offers</a
                           >
                         </li>

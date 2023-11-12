@@ -679,7 +679,7 @@ def package_honeymoon_list(request):
         'lowest_prices': lowest_prices,
         "title": "Honeymoon Packages"
     }
-    return render(request, 'hotels/package_honeymoon_list.html', context)
+    return render(request, 'hotels/package_list.html', context)
 
 
 def package_easter_list(request):
